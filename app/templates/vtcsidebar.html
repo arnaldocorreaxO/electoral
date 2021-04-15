@@ -1,0 +1,54 @@
+{% load static %}
+{% load security_extras %}
+<aside class="main-sidebar elevation-4 {{ dshboard.sidebar }}">
+    <a href="{% url 'dashboard' %}" class="brand-link {{ dshboard.brand_logo }}">
+        <img src="{{ dshboard.get_image }}" alt="AdminLTE Logo" class="brand-image" style="opacity: .8">
+        <span class="brand-text text-light {{ dshboard.brand_logo }}">{{ dshboard.name }}</span>
+    </a>
+    <div class="sidebar">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="{{ request.user.get_image }}" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">{{ request.user.get_short_name }}</a>
+            </div>
+        </div>
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-header">Módulos</li>
+                {% for mt in request.session.group.id|getmoduletype %}
+                    <li class="nav-item has-treeview">
+                        <a class="nav-link">
+                            <i class="nav-icon {{ mt.icon }}"></i>
+                            <p>
+                                {{ mt.name }}
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            {% for m in mt.get_modules_vertical %}
+                                <li class="nav-item">
+                                    <a href="{{ m.url }}" class="nav-link">
+                                        <i class="{{ m.icon }} nav-icon"></i>
+                                        <p>{{ m.name }}</p>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+                {% for m in request.session.group.id|getmodulehorizontal %}
+                    <li class="nav-item">
+                        <a href="{{ m.url }}" class="nav-link">
+                            <i class="nav-icon {{ m.icon }}"></i>
+                            <p>
+                                {{ m.name }}
+                            </p>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
+    </div>
+</aside>

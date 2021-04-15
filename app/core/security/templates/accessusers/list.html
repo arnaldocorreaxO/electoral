@@ -1,0 +1,45 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/spanish.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.css' %}"/>
+    <script src="{% static 'accessusers/js/list.js' %}"></script>
+{% endblock %}
+
+{% block columns %}
+    <th>Nro</th>
+    <th>Usuario</th>
+    <th>Fecha de registro</th>
+    <th>Hora</th>
+    <th>LocalHost</th>
+    <th>HostName</th>
+    <th class="text-center">Opciones</th>
+{% endblock %}
+
+{% block javascript_list %}
+
+{% endblock %}
+
+{% block content_list_before %}
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label>Buscar por fecha de registro:</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" autocomplete="off" name="date_range">
+                    <span class="input-group-append">
+                        <button type="button" class="btn btn-primary btn-flat btnSearchAll">
+                            <i class="fas fa-search"></i> Ver todas
+                        </button>
+                      </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+{% endblock %}
+
+{% block box_footer %}
+
+{% endblock %}

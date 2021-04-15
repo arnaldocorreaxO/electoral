@@ -1,0 +1,79 @@
+{% extends 'form.html' %}
+{% load widget_tweaks %}
+{% load static %}
+{% block head_form %}
+    <script src="{% static 'group/js/form.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <form class="form" method="post" action="." enctype="multipart/form-data" id="frmGroup"
+          data-url="{{ list_url }}">
+        <div class="card {{ dshboard.card }}">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == 'add' %}
+                        <i class="fas fa-plus"></i>
+                    {% else %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body" style="display: block;">
+                <div class="container-fluid">
+                    <input type="hidden" name="action" id="action" value="{{ action }}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col col-lg-8">
+                            <div class="form-group">
+                                <label class="control-label">Ingrese un nombre:</label>
+                                {{ form.name|add_class:"form-control"|attr:"autocomplete:off" }}
+                            </div>
+                        </div>
+                        <div class="col col-lg-4">
+                            <div class="form-group">
+                                <label class="control-label">Seleccionar todos los módulos:</label><br>
+                                <input type="checkbox" class="check" value="" name="selectall">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label class="control-label">Seleccione los módulos del perfil:</label>
+                                <table width="100%" class="table table-bordered table-striped display nowrap" id="tblModules">
+                                    <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Módulo</th>
+                                        <th>Tipo de Módulo</th>
+                                        <th>Acceso al módulo</th>
+                                        <th>Permisos</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% block box_footer %}
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary btn-flat">
+                        <i class="fas fa-save"></i> Guardar registro
+                    </button>
+                    <a href="{{ list_url }}" class="btn btn-danger btn-flat">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                </div>
+            {% endblock %}
+        </div>
+    </form>
+    <script type="application/javascript">
+        $(function () {
+            groups.details.modules = {{ modules|safe }};
+            groups.list();
+        });
+    </script>
+{% endblock %}

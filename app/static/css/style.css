@@ -1,0 +1,145 @@
+@media (max-width: 991.98px) {
+    .control-sidebar-open .control-sidebar, .control-sidebar-open .control-sidebar::before {
+        right: 0;
+        display: block;
+    }
+}
+
+.breadcrumb {
+    background-color: white !important;
+    padding: 5px 20px !important;
+    margin-bottom: 0;
+    list-style: none;
+    border: 1px solid #e9ecef;
+}
+
+.breadcrumb a {
+    color: #4a4a4a;;
+    font-weight: 400;
+}
+
+.btn {
+    color: white !important;
+}
+
+.card-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+.card .card-header .card-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.table-bordered {
+    border: 0 !important;
+}
+
+table.table-bordered.dataTable tbody td {
+    border-bottom-width: 1px !important;
+}
+
+.panel-module {
+    min-height: 480px;
+}
+
+.sbox {
+    webkit-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
+    -moz-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
+    -ms-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
+    -o-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
+}
+
+.panel-module .icon {
+    padding-top: 12px;
+    width: 150px;
+    float: left;
+    height: 180px;
+    background: #ffffff26;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    border-radius: 5px;
+    transition: width 2s;
+    text-align: center;
+}
+
+.panel-module .icon .iconname {
+    font-weight: bold;
+    width: 100%;
+    position: absolute;
+    text-align: center;
+    font-size: 14px;
+    line-height: 10px;
+}
+
+.panel-module .icon .iconimage {
+    width: 100%;
+    text-align: center;
+}
+
+.panel-module .icon:hover {
+    background: #cdcdcd;
+    cursor: pointer;
+}
+
+.panel-module img {
+    height: 70px;
+    margin-top: 15px;
+    border-bottom: 1px solid #9E9E9E;
+    padding-bottom: 10px;
+}
+
+.pd {
+    padding: 5px;
+}
+
+.panel-module .icon .icondesc {
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 10px;
+}
+
+.panel-module .icon .iconname .tituloicon {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.panel-module a {
+    color: #222222;
+}
+
+.nav-info-user li a {
+    color: #0c0c0c;
+    font-weight: 500;
+}
+
+.nav-info-user li a span {;
+    font-weight: normal;
+}
+
+.control-sidebar-content hr {
+    border-color: #dee2e6;
+}
+
+.password-progress {
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.nav-info-user .nav-item span {
+    font-size: 13px;
+}
+
+.input-group-search .dropdown-item:active {
+    background-color: #dee2e6;
+}
+
+.dataTables_scrollHeadInner {
+    width: 100% !important;
+}
+
+.dataTables_scrollHeadInner table {
+    width: 100% !important;
+}

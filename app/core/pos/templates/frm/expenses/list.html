@@ -1,0 +1,44 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block head_list %}
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/spanish.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.css' %}"/>
+    <script src="{% static 'frm/expenses/js/list.js' %}"></script>
+{% endblock %}
+
+
+{% block columns %}
+    <th>Nro</th>
+    <th>Tipo de gasto</th>
+    <th>Fecha de registro</th>
+    <th>Valor</th>
+    <th>Detalles</th>
+    <th class="text-center">Opciones</th>
+{% endblock %}
+
+{% block javascript_list %}
+
+{% endblock %}
+
+{% block content_list_before %}
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="form-group">
+                <label>Rangos de fechas:</label>
+                <div class="input-group mb-3">
+                    {{ form.date_range }}
+                    <div class="input-group-append">
+                        <button class="btn btn-success btnSearch" type="button">
+                            <i class="fas fa-calendar-check"></i> Buscar por rangos
+                        </button>
+                        <button class="btn btn-warning btnSearchAll" type="button">
+                            <i class="fas fa-calendar-check"></i> Ver todas
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+{% endblock %}

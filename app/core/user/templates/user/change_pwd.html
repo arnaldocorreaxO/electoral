@@ -1,0 +1,75 @@
+{% extends 'form.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block head_form %}
+    <script src="{% static 'lib/formvalidation-dist-v1.7.0/dist/js/plugins/Tachyons.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-dist-v1.7.0/dist/js/plugins/PasswordStrength.min.js' %}"></script>
+    <script src="{% static 'js/zxcvbn.js' %}"></script>
+    <script src="{% static 'users/js/change_pwd.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+    <form class="form" method="post" action="." enctype="multipart/form-data" id="frmPassword"
+          data-url="{% url 'dashboard' %}">
+        <div class="card {{ dshboard.card }}">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-edit"></i>
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body" style="display: block;">
+                <div class="container-fluid">
+                    <input type="hidden" name="action" id="action" value="{{ action }}">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label>Introduzca su password anterior:</label>
+                        <div class="input-group my-group">
+                            {{ form.old_password }}
+                            <div class="input-group-append">
+                                <button class="btn btn-primary btnShowPassword btn-flat" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label>Ingrese su password:</label>
+                        <div class="input-group my-group">
+                            {{ form.new_password1 }}
+                            <div class="input-group-append">
+                                <button class="btn btn-primary btnShowPassword btn-flat" type="button">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label>Repita su password:</label>
+                        <div class="input-group my-group">
+                            {{ form.new_password2 }}
+                            <span class="input-group-btn">
+                                            <a class="btn btn-primary my-group-button btnShowPassword btn-flat"
+                                               type="button">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </span>
+                        </div>
+                        <div class="progress password-progress">
+                            <div id="strengthBar" class="progress-bar" role="progressbar"
+                                 style="width: 0;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary btn-flat">
+                    <i class="fas fa-save"></i> Cambiar password
+                </button>
+                <a href="{% url 'dashboard' %}" class="btn btn-danger btn-flat">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,2573 @@
+[
+{
+  "model": "auth.permission",
+  "pk": 1,
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": 1,
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 2,
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": 1,
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 3,
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": 1,
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 4,
+  "fields": {
+    "name": "Can view log entry",
+    "content_type": 1,
+    "codename": "view_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 5,
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 2,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 6,
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 2,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 7,
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 2,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 8,
+  "fields": {
+    "name": "Can view permission",
+    "content_type": 2,
+    "codename": "view_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 9,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 3,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 10,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 3,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 11,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 3,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 12,
+  "fields": {
+    "name": "Can view group",
+    "content_type": 3,
+    "codename": "view_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 13,
+  "fields": {
+    "name": "Can add content type",
+    "content_type": 4,
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 14,
+  "fields": {
+    "name": "Can change content type",
+    "content_type": 4,
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 15,
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": 4,
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 16,
+  "fields": {
+    "name": "Can view content type",
+    "content_type": 4,
+    "codename": "view_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 17,
+  "fields": {
+    "name": "Can add session",
+    "content_type": 5,
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 18,
+  "fields": {
+    "name": "Can change session",
+    "content_type": 5,
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 19,
+  "fields": {
+    "name": "Can delete session",
+    "content_type": 5,
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 20,
+  "fields": {
+    "name": "Can view session",
+    "content_type": 5,
+    "codename": "view_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 21,
+  "fields": {
+    "name": "Can view Acceso del usuario",
+    "content_type": 6,
+    "codename": "view_accessusers"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 22,
+  "fields": {
+    "name": "Can delete Acceso del usuario",
+    "content_type": 6,
+    "codename": "delete_accessusers"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 23,
+  "fields": {
+    "name": "Can view Dashboard",
+    "content_type": 7,
+    "codename": "view_dashboard"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 24,
+  "fields": {
+    "name": "Can view Respaldos de BD",
+    "content_type": 8,
+    "codename": "view_databasebackups"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 25,
+  "fields": {
+    "name": "Can add Respaldos de BD",
+    "content_type": 8,
+    "codename": "add_databasebackups"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 26,
+  "fields": {
+    "name": "Can delete Respaldos de BD",
+    "content_type": 8,
+    "codename": "delete_databasebackups"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 27,
+  "fields": {
+    "name": "Can add Tipo de Módulo",
+    "content_type": 9,
+    "codename": "add_moduletype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 28,
+  "fields": {
+    "name": "Can change Tipo de Módulo",
+    "content_type": 9,
+    "codename": "change_moduletype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 29,
+  "fields": {
+    "name": "Can delete Tipo de Módulo",
+    "content_type": 9,
+    "codename": "delete_moduletype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 30,
+  "fields": {
+    "name": "Can view Tipo de Módulo",
+    "content_type": 9,
+    "codename": "view_moduletype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 31,
+  "fields": {
+    "name": "Can add Módulo",
+    "content_type": 10,
+    "codename": "add_module"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 32,
+  "fields": {
+    "name": "Can change Módulo",
+    "content_type": 10,
+    "codename": "change_module"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 33,
+  "fields": {
+    "name": "Can delete Módulo",
+    "content_type": 10,
+    "codename": "delete_module"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 34,
+  "fields": {
+    "name": "Can view Módulo",
+    "content_type": 10,
+    "codename": "view_module"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 35,
+  "fields": {
+    "name": "Can add user",
+    "content_type": 13,
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 36,
+  "fields": {
+    "name": "Can change user",
+    "content_type": 13,
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 37,
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 13,
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 38,
+  "fields": {
+    "name": "Can view user",
+    "content_type": 13,
+    "codename": "view_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 39,
+  "fields": {
+    "name": "Can add Categoria",
+    "content_type": 14,
+    "codename": "add_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 40,
+  "fields": {
+    "name": "Can change Categoria",
+    "content_type": 14,
+    "codename": "change_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 41,
+  "fields": {
+    "name": "Can delete Categoria",
+    "content_type": 14,
+    "codename": "delete_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 42,
+  "fields": {
+    "name": "Can view Categoria",
+    "content_type": 14,
+    "codename": "view_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 43,
+  "fields": {
+    "name": "Can add Cliente",
+    "content_type": 15,
+    "codename": "add_client"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 44,
+  "fields": {
+    "name": "Can change Cliente",
+    "content_type": 15,
+    "codename": "change_client"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 45,
+  "fields": {
+    "name": "Can delete Cliente",
+    "content_type": 15,
+    "codename": "delete_client"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 46,
+  "fields": {
+    "name": "Can view Cliente",
+    "content_type": 15,
+    "codename": "view_client"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 47,
+  "fields": {
+    "name": "Can view Company",
+    "content_type": 16,
+    "codename": "view_company"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 48,
+  "fields": {
+    "name": "Can view Cuentas por cobrar",
+    "content_type": 17,
+    "codename": "view_ctascollect"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 49,
+  "fields": {
+    "name": "Can add Cuentas por cobrar",
+    "content_type": 17,
+    "codename": "add_ctascollect"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 50,
+  "fields": {
+    "name": "Can delete Cuentas por cobrar",
+    "content_type": 17,
+    "codename": "delete_ctascollect"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 51,
+  "fields": {
+    "name": "Can view Cuentas por pagar",
+    "content_type": 18,
+    "codename": "view_debtspay"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 52,
+  "fields": {
+    "name": "Can add Cuentas por pagar",
+    "content_type": 18,
+    "codename": "add_debtspay"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can delete Cuentas por pagar",
+    "content_type": 18,
+    "codename": "delete_debtspay"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can add Gasto",
+    "content_type": 19,
+    "codename": "add_expenses"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can change Gasto",
+    "content_type": 19,
+    "codename": "change_expenses"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can delete Gasto",
+    "content_type": 19,
+    "codename": "delete_expenses"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can view Gasto",
+    "content_type": 19,
+    "codename": "view_expenses"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can add Producto",
+    "content_type": 22,
+    "codename": "add_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
+  "fields": {
+    "name": "Can change Producto",
+    "content_type": 22,
+    "codename": "change_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 60,
+  "fields": {
+    "name": "Can delete Producto",
+    "content_type": 22,
+    "codename": "delete_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 61,
+  "fields": {
+    "name": "Can view Producto",
+    "content_type": 22,
+    "codename": "view_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 62,
+  "fields": {
+    "name": "Can add Promoción",
+    "content_type": 23,
+    "codename": "add_promotions"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 63,
+  "fields": {
+    "name": "Can change Promoción",
+    "content_type": 23,
+    "codename": "change_promotions"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 64,
+  "fields": {
+    "name": "Can delete Promoción",
+    "content_type": 23,
+    "codename": "delete_promotions"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 65,
+  "fields": {
+    "name": "Can view Promoción",
+    "content_type": 23,
+    "codename": "view_promotions"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 66,
+  "fields": {
+    "name": "Can add Detalle Promoción",
+    "content_type": 24,
+    "codename": "add_promotionsdetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 67,
+  "fields": {
+    "name": "Can change Detalle Promoción",
+    "content_type": 24,
+    "codename": "change_promotionsdetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 68,
+  "fields": {
+    "name": "Can delete Detalle Promoción",
+    "content_type": 24,
+    "codename": "delete_promotionsdetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 69,
+  "fields": {
+    "name": "Can view Detalle Promoción",
+    "content_type": 24,
+    "codename": "view_promotionsdetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 70,
+  "fields": {
+    "name": "Can add Proveedor",
+    "content_type": 25,
+    "codename": "add_provider"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 71,
+  "fields": {
+    "name": "Can change Proveedor",
+    "content_type": 25,
+    "codename": "change_provider"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 72,
+  "fields": {
+    "name": "Can delete Proveedor",
+    "content_type": 25,
+    "codename": "delete_provider"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 73,
+  "fields": {
+    "name": "Can view Proveedor",
+    "content_type": 25,
+    "codename": "view_provider"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 74,
+  "fields": {
+    "name": "Can view Compras",
+    "content_type": 26,
+    "codename": "view_purchase"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 75,
+  "fields": {
+    "name": "Can add Compras",
+    "content_type": 26,
+    "codename": "add_purchase"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 76,
+  "fields": {
+    "name": "Can delete Compras",
+    "content_type": 26,
+    "codename": "delete_purchase"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 77,
+  "fields": {
+    "name": "Can add Detalle de Compra",
+    "content_type": 27,
+    "codename": "add_purchasedetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 78,
+  "fields": {
+    "name": "Can change Detalle de Compra",
+    "content_type": 27,
+    "codename": "change_purchasedetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 79,
+  "fields": {
+    "name": "Can delete Detalle de Compra",
+    "content_type": 27,
+    "codename": "delete_purchasedetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 80,
+  "fields": {
+    "name": "Can view Detalle de Compra",
+    "content_type": 27,
+    "codename": "view_purchasedetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 81,
+  "fields": {
+    "name": "Can view Ventas",
+    "content_type": 28,
+    "codename": "view_sale"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 82,
+  "fields": {
+    "name": "Can add Ventas",
+    "content_type": 28,
+    "codename": "add_sale"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 83,
+  "fields": {
+    "name": "Can delete Ventas",
+    "content_type": 28,
+    "codename": "delete_sale"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 84,
+  "fields": {
+    "name": "Can add Tipo de Gasto",
+    "content_type": 29,
+    "codename": "add_typeexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 85,
+  "fields": {
+    "name": "Can change Tipo de Gasto",
+    "content_type": 29,
+    "codename": "change_typeexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 86,
+  "fields": {
+    "name": "Can delete Tipo de Gasto",
+    "content_type": 29,
+    "codename": "delete_typeexpense"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 87,
+  "fields": {
+    "name": "Can view Tipo de Gasto",
+    "content_type": 29,
+    "codename": "view_typeexpense"
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 1,
+  "fields": {
+    "name": "Administrador",
+    "permissions": [
+      9,
+      10,
+      11,
+      12,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      49,
+      50,
+      48,
+      52,
+      53,
+      51,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      70,
+      71,
+      72,
+      73,
+      75,
+      76,
+      74,
+      82,
+      83,
+      81,
+      84,
+      85,
+      86,
+      87,
+      22,
+      21,
+      25,
+      26,
+      24,
+      31,
+      32,
+      33,
+      34,
+      27,
+      28,
+      29,
+      30,
+      35,
+      36,
+      37,
+      38
+    ]
+  }
+},
+{
+  "model": "auth.group",
+  "pk": 2,
+  "fields": {
+    "name": "Cliente",
+    "permissions": []
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 1,
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 2,
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 3,
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 4,
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 5,
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 6,
+  "fields": {
+    "app_label": "security",
+    "model": "accessusers"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 7,
+  "fields": {
+    "app_label": "security",
+    "model": "dashboard"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 8,
+  "fields": {
+    "app_label": "security",
+    "model": "databasebackups"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 9,
+  "fields": {
+    "app_label": "security",
+    "model": "moduletype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 10,
+  "fields": {
+    "app_label": "security",
+    "model": "module"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 11,
+  "fields": {
+    "app_label": "security",
+    "model": "grouppermission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 12,
+  "fields": {
+    "app_label": "security",
+    "model": "groupmodule"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 13,
+  "fields": {
+    "app_label": "user",
+    "model": "user"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 14,
+  "fields": {
+    "app_label": "pos",
+    "model": "category"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 15,
+  "fields": {
+    "app_label": "pos",
+    "model": "client"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 16,
+  "fields": {
+    "app_label": "pos",
+    "model": "company"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 17,
+  "fields": {
+    "app_label": "pos",
+    "model": "ctascollect"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 18,
+  "fields": {
+    "app_label": "pos",
+    "model": "debtspay"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 19,
+  "fields": {
+    "app_label": "pos",
+    "model": "expenses"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 20,
+  "fields": {
+    "app_label": "pos",
+    "model": "paymentsctacollect"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 21,
+  "fields": {
+    "app_label": "pos",
+    "model": "paymentsdebtspay"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 22,
+  "fields": {
+    "app_label": "pos",
+    "model": "product"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 23,
+  "fields": {
+    "app_label": "pos",
+    "model": "promotions"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 24,
+  "fields": {
+    "app_label": "pos",
+    "model": "promotionsdetail"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 25,
+  "fields": {
+    "app_label": "pos",
+    "model": "provider"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 26,
+  "fields": {
+    "app_label": "pos",
+    "model": "purchase"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 27,
+  "fields": {
+    "app_label": "pos",
+    "model": "purchasedetail"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 28,
+  "fields": {
+    "app_label": "pos",
+    "model": "sale"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 29,
+  "fields": {
+    "app_label": "pos",
+    "model": "typeexpense"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 30,
+  "fields": {
+    "app_label": "pos",
+    "model": "saledetail"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "4mi8mj5cmwmvqtr156qyx6mz8hh3j0lt",
+  "fields": {
+    "session_data": ".eJxNkctvEzEQxtuShpJSEKW8BII90kN3m2zI4wZcOESVEEhcV7P2bGy6L_kRqYdKcAC1km8d-HuxN6WqD5bG3zx-8_lH78_frY3unNNbt5eBNSKzGlUmObnNIbn9W285sFOsvXDIv0O9bGLW1EbJPA4p8bWq45OGY_nxf-7DWw0EaEHu_eh4OE6PZ2zGeJrOhghpMR_lPAXGR3yY-osX0zEbTdIJ8vEUZjCZ4wTTaQqT2TuYk9teqsa25J5cg_A8rsJU7Sk0knvQRZmtW8lOS6Qrcr2A4Ss_dZW_6Rd9obB0P9MGDJLYcYOO_GsXXtHhz7UOnMt6SZdui-fk7nIswJaG3P1CYsl1xoAJ9Kk2d1vetcWm69VQeYi9D7yStdRGAW9UcGJNm61QadnUHiaNh_EoVPY9sPWgYuB2NDKrpDkj1z9Zv97Qikfi8ZpLvDgn8fRSPBPPbS5eLvbdHatKcgdJ2-iEqSrRUGICASEh8cr1v2FtQHus9Shz1mL45UXP7XLUTMnWdFDJZ1SVNBjBDb6KStDRqmsQcYzKRket8m2YaXzHnmSh8KDwagFHWjRt6y07YqC8T9uygqW3Y4PcrtRheSMZlHTh7vkQmJEr9MEgaFLL3O97IV6LNza38T_gBf5W:1kttgz:bqIPK3UoihjSUJqx6iaCGkby4NNX7lV1ERcsBC8RIqQ",
+    "expire_date": "2021-01-11T14:40:13.283Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qxqb7ubxs2nv0glix7vv8te5gnq3p2g3",
+  "fields": {
+    "session_data": ".eJxtkstuEzEUhts0TUtKqFSgwIpZ0kUnTSbkworLgkVVCcEDjM7YZzKmnot8qdRFJViAqORdD6_FM2FPGlSpeGHpP_-5fD7yt-7vP52N9lzRKzdIwZoitRpVKji5zRG5gzuxDNg5Vt444l-hWtYxqyujRBaHlPjW1fFZzVG-X-fu32lQgC7IvR2fjCbJyZzNGU-S-QghyRfjjCfA-JiPEn_xfDZh42kyRT6ZwRymC5xiMktgOn8NC3LbS1XbhtzTWxCexWWYqj2FRnKPWpXaqhHsXCLdkOsGDF_5sa38ST_oM4VH91JtwCAVu67fkn9p5Q0dfV_5wLmolnTtOjwjt8MxBysNuYe5QMl1yoAV6FNt5jp-a6ebrltB6SEG73gpKqGNAl6rsIkVbXqBSou68jBJPIrHobLnga0HLfpuVyOzSphLcr2zVfQ_tI9XeMWLKyoOr4tnxfP1_H23ZZUkdzhsaj3MVTlkBvSQ1VIiM0Na4x18sFh5J2pqFbE6U-AZBysOc9lg-AKnW26Po2ZKNKYlfvMJVSkMRvDvbSqSvgm71yziGMnaO1J4C7UfLFjo8ST3eTkc57aqUB5zDxZGb4sSlp5rg9ye0GFJRjCQ9Ms98BKYERfoRT94QotMBnVvp8VLm9n4L2INFZI:1ktMp2:GWDt9-WN4t07zYu5ynRL7gPxXdJq5UouAojtek-90zQ",
+    "expire_date": "2021-01-10T03:34:20.853Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "yd7lnpmis09zoujw158zdk06sy8jdrtf",
+  "fields": {
+    "session_data": ".eJxtkktvEzEQx9uQpiGhIPEocGKP9NDNY0MeNx4HDlUlBB9gNWvPZk29D9neSjlUggOISr51-HB8G2azLapUfLA0ntfvP-Nv3d9_Ojvbc0Gv_UEMtcvi2qKJlSS_OyH_-NZbAuIMC3Ycya9QrMtQlIUzKgmbkPDaa8PTUqJ-fxP76FaBDGxG_u10PJlF46VYChlFywlClK6miYxAyKmcRHzJdDET03k0RzlbwBLmK5xjtIhgvnwDK_J7a1PWFfln1yAyCfOmq2UKi-Qfbq24LiolzjTSFflug8GZH7eZP-kHfaZGdC-2DhxS1veDLfmXrXlFR99bP0ipijVd-o5MyO9LTKHWjvyDVKGWNhYgMuTQOvEdntrJru8WkDPEwTuZq0JZZ0CWpplESxufo7GqLBgmCifhtMnsMXDNoNnA9y2K2ii3Id87bV__Q_ukxcteXlB2eJk9z17c9B_6e7XRvLlRVdqRFfmoqo3g0eOIbtD2P5R5ZcAyZNvYbSpsdn7S8UOJVhhVuS3i-BOaXDkM4J8YE2iwgWgrBBIDXdqgMlxHuJJLdpVoMp-m7E3hWJZab45TDS5B_g97Koc1I-yQHyrbzMIpAZp--ftsgnDqHNkYND5lVaIb687oslcst886Y2bhZRzeFct7G1Ed_gUggxpM:1kwQ0k:e071hkcNlMxlb9JG7WQUK4pi0uhAXmS3tgVrPgF8YWg",
+    "expire_date": "2021-01-18T13:35:02.038Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "z4a48r5niourkmmsyzuwbz07m1jkawdm",
+  "fields": {
+    "session_data": ".eJxtkctu1DAUhtvpdCjTliIQtxVZ0gWZyYVkugM2XaBKCB4gOrGdsWlu8qVSF5VgAaKSdz28B4-InXRQJcjKv8_l__zn6_TX78nW8F3hK3tYgNG8MIrJQlC02xHaR3fuSiDnrHWFY_oF2nUXkq7VUpShbwlvqyo86yir3296j-4s4KA42rcJkCpOyUlV0aSKkyQtsyVJgSRptiohOknzN1FGonyVAc1LkqV5miwhT-JVHC1jVqHdXcvO9Gif3ILQMmy8q3IUiqF9MKjCtL0g5zXDG7RTj-EmT4fJH_gdP6F_9KxQGjRDvmfnA_nnQd7g8bexDpSKdo3XdkJLtPcoq8DUGu1BJVhNVUGAcOZaTWknLrUP23baQuMgDt_RRrRCaQm0kz6Jkba4YFKJrnUwSRiFsZ-cOWDjQPnc7ilGjBT6Eu3sbLz9D-3jEY-_uEL-9Jo_4883_jt2x8ga7cPFZtFiSGuBG7DZqTR9pxzh6Kove1aM6PuUKSJFrwe-7COTjdAsgL8vkUHdqWA9LAgoC4wyIMVwrgPlWlgDzkgQP39QgQoqeO1_vrPbFQ2snf8W2n2hfAxaEKjxp73vJBAtLpgTc18TSpS1V_-kxl-a0oR_ANNUCj8:1knqFK:ulqd3ir50iOkc0w1SlKHFaT219KH4oKD6yJDaayGEC0",
+    "expire_date": "2020-12-25T21:46:38.262Z"
+  }
+},
+{
+  "model": "security.dashboard",
+  "pk": 1,
+  "fields": {
+    "name": "FACTORA POS",
+    "image": "dashboard/2020/12/11/iconfinder_shopping-cart-trolley-purchase_2205208.png",
+    "icon": "fas fa-at",
+    "layout": 1,
+    "card": " ",
+    "navbar": "navbar-dark navbar-primary",
+    "brand_logo": " ",
+    "sidebar": "sidebar-light-primary"
+  }
+},
+{
+  "model": "security.moduletype",
+  "pk": 1,
+  "fields": {
+    "name": "Seguridad",
+    "icon": "fas fa-lock",
+    "is_active": true
+  }
+},
+{
+  "model": "security.moduletype",
+  "pk": 2,
+  "fields": {
+    "name": "Bodega",
+    "icon": "fas fa-boxes",
+    "is_active": true
+  }
+},
+{
+  "model": "security.moduletype",
+  "pk": 3,
+  "fields": {
+    "name": "Administrativo",
+    "icon": "fas fa-hand-holding-usd",
+    "is_active": true
+  }
+},
+{
+  "model": "security.moduletype",
+  "pk": 4,
+  "fields": {
+    "name": "Facturación",
+    "icon": "fas fa-calculator",
+    "is_active": true
+  }
+},
+{
+  "model": "security.moduletype",
+  "pk": 5,
+  "fields": {
+    "name": "Reportes",
+    "icon": "fas fa-chart-pie",
+    "is_active": true
+  }
+},
+{
+  "model": "security.module",
+  "pk": 1,
+  "fields": {
+    "url": "/security/module/type/",
+    "name": "Tipos de Módulos",
+    "moduletype": 1,
+    "description": "Permite administrar los tipos de módulos del sistema",
+    "icon": "fas fa-door-open",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      27,
+      28,
+      29,
+      30
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 2,
+  "fields": {
+    "url": "/security/module/",
+    "name": "Módulos",
+    "moduletype": 1,
+    "description": "Permite administrar los módulos del sistema",
+    "icon": "fas fa-th-large",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      31,
+      32,
+      33,
+      34
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 3,
+  "fields": {
+    "url": "/security/group/",
+    "name": "Grupos",
+    "moduletype": 1,
+    "description": "Permite administrar los grupos de usuarios del sistema",
+    "icon": "fas fa-users",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      9,
+      10,
+      11,
+      12
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 4,
+  "fields": {
+    "url": "/security/database/backups/",
+    "name": "Respaldos",
+    "moduletype": 1,
+    "description": "Permite administrar los respaldos de base de datos",
+    "icon": "fas fa-database",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      25,
+      26,
+      24
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 5,
+  "fields": {
+    "url": "/security/dashboard/update/",
+    "name": "Conf. Dashboard",
+    "moduletype": 1,
+    "description": "Permite configurar los datos de la plantilla",
+    "icon": "fas fa-tools",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 6,
+  "fields": {
+    "url": "/security/access/users/",
+    "name": "Accesos",
+    "moduletype": 1,
+    "description": "Permite administrar los accesos de los usuarios",
+    "icon": "fas fa-user-secret",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      22,
+      21
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 7,
+  "fields": {
+    "url": "/user/admin/",
+    "name": "Usuarios",
+    "moduletype": 1,
+    "description": "Permite administrar a los administradores del sistema",
+    "icon": "fas fa-user",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      35,
+      36,
+      37,
+      38
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 8,
+  "fields": {
+    "url": "/pos/scm/provider/",
+    "name": "Proveedores",
+    "moduletype": 2,
+    "description": "Permite administrar a los proveedores de las compras",
+    "icon": "fas fa-truck",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      70,
+      71,
+      72,
+      73
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 9,
+  "fields": {
+    "url": "/pos/scm/category/",
+    "name": "Categorías",
+    "moduletype": 2,
+    "description": "Permite administrar las categorías de los productos",
+    "icon": "fas fa-truck-loading",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      39,
+      40,
+      41,
+      42
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 10,
+  "fields": {
+    "url": "/pos/scm/product/",
+    "name": "Productos",
+    "moduletype": 2,
+    "description": "Permite administrar los productos del sistema",
+    "icon": "fas fa-box",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      58,
+      59,
+      60,
+      61
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 11,
+  "fields": {
+    "url": "/pos/scm/purchase/",
+    "name": "Compras",
+    "moduletype": 2,
+    "description": "Permite administrar las compras de los productos",
+    "icon": "fas fa-dolly-flatbed",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      75,
+      76,
+      74
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 12,
+  "fields": {
+    "url": "/pos/scm/product/stock/adjustment/",
+    "name": "Ajuste de Stock",
+    "moduletype": 2,
+    "description": "Permite administrar los ajustes de stock de productos",
+    "icon": "fas fa-sliders-h",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 13,
+  "fields": {
+    "url": "/pos/frm/type/expense/",
+    "name": "Tipos de Gastos",
+    "moduletype": 3,
+    "description": "Permite administrar los tipos de gastos",
+    "icon": "fas fa-comments-dollar",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      84,
+      85,
+      86,
+      87
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 14,
+  "fields": {
+    "url": "/pos/frm/expenses/",
+    "name": "Gastos",
+    "moduletype": 3,
+    "description": "Permite administrar los gastos de la compañia",
+    "icon": "fas fa-file-invoice-dollar",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      54,
+      55,
+      56,
+      57
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 15,
+  "fields": {
+    "url": "/pos/frm/ctas/collect/",
+    "name": "Cuentas por cobrar",
+    "moduletype": 3,
+    "description": "Permite administrar las cuentas por cobrar de los clientes",
+    "icon": "fas fa-funnel-dollar",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      49,
+      50,
+      48
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 16,
+  "fields": {
+    "url": "/pos/frm/debts/pay/",
+    "name": "Cuentas por pagar",
+    "moduletype": 3,
+    "description": "Permite administrar las cuentas por pagar de los proveedores",
+    "icon": "fas fa-money-check-alt",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      52,
+      53,
+      51
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 17,
+  "fields": {
+    "url": "/pos/crm/client/",
+    "name": "Clientes",
+    "moduletype": 4,
+    "description": "Permite administrar los clientes del sistema",
+    "icon": "fas fa-user-friends",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      43,
+      44,
+      45,
+      46
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 18,
+  "fields": {
+    "url": "/pos/crm/sale/admin/",
+    "name": "Ventas",
+    "moduletype": 4,
+    "description": "Permite administrar las ventas de los productos",
+    "icon": "fas fa-shopping-cart",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      82,
+      83,
+      81
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 19,
+  "fields": {
+    "url": "/pos/crm/sale/client/",
+    "name": "Ventas",
+    "moduletype": null,
+    "description": "Permite administrar las ventas de los productos",
+    "icon": "fas fa-shopping-cart",
+    "image": "",
+    "is_vertical": false,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 20,
+  "fields": {
+    "url": "/pos/crm/promotions/",
+    "name": "Promociones",
+    "moduletype": 4,
+    "description": "Permite administrar las promociones de los productos",
+    "icon": "far fa-calendar-check",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": [
+      62,
+      63,
+      64,
+      65
+    ]
+  }
+},
+{
+  "model": "security.module",
+  "pk": 21,
+  "fields": {
+    "url": "/reports/sale/",
+    "name": "Ventas",
+    "moduletype": 5,
+    "description": "Permite ver los reportes de las ventas",
+    "icon": "fas fa-chart-bar",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 22,
+  "fields": {
+    "url": "/reports/purchase/",
+    "name": "Compras",
+    "moduletype": 5,
+    "description": "Permite ver los reportes de las compras",
+    "icon": "fas fa-chart-bar",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 23,
+  "fields": {
+    "url": "/reports/expenses/",
+    "name": "Gastos",
+    "moduletype": 5,
+    "description": "Permite ver los reportes de los gastos",
+    "icon": "fas fa-chart-bar",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 24,
+  "fields": {
+    "url": "/reports/debts/pay/",
+    "name": "Cuentas por Pagar",
+    "moduletype": 5,
+    "description": "Permite ver los reportes de las cuentas por pagar",
+    "icon": "fas fa-chart-bar",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 25,
+  "fields": {
+    "url": "/reports/ctas/collect/",
+    "name": "Cuentas por Cobrar",
+    "moduletype": 5,
+    "description": "Permite ver los reportes de las cuentas por cobrar",
+    "icon": "fas fa-chart-bar",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 26,
+  "fields": {
+    "url": "/reports/results/",
+    "name": "Perdidas y Ganacias",
+    "moduletype": 5,
+    "description": "Permite ver los reportes de perdidas y ganancias",
+    "icon": "fas fa-chart-bar",
+    "image": "",
+    "is_vertical": true,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 27,
+  "fields": {
+    "url": "/user/admin/update/password/",
+    "name": "Cambiar password",
+    "moduletype": null,
+    "description": "Permite cambiar tu password de tu cuenta",
+    "icon": "fas fa-key",
+    "image": "",
+    "is_vertical": false,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 28,
+  "fields": {
+    "url": "/user/admin/update/profile/",
+    "name": "Editar perfil",
+    "moduletype": null,
+    "description": "Permite cambiar la información de tu cuenta",
+    "icon": "fas fa-user",
+    "image": "",
+    "is_vertical": false,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 29,
+  "fields": {
+    "url": "/pos/crm/client/update/profile/",
+    "name": "Editar perfil",
+    "moduletype": null,
+    "description": "Permite cambiar la información de tu cuenta",
+    "icon": "fas fa-user",
+    "image": "",
+    "is_vertical": false,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.module",
+  "pk": 30,
+  "fields": {
+    "url": "/pos/crm/company/update/",
+    "name": "Compañia",
+    "moduletype": null,
+    "description": "Permite gestionar la información de la compañia",
+    "icon": "fas fa-building",
+    "image": "",
+    "is_vertical": false,
+    "is_active": true,
+    "is_visible": true,
+    "permits": []
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 31,
+  "fields": {
+    "group": 2,
+    "module": 27
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 32,
+  "fields": {
+    "group": 2,
+    "module": 29
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 33,
+  "fields": {
+    "group": 2,
+    "module": 19
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 63,
+  "fields": {
+    "group": 1,
+    "module": 6
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 64,
+  "fields": {
+    "group": 1,
+    "module": 12
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 65,
+  "fields": {
+    "group": 1,
+    "module": 27
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 66,
+  "fields": {
+    "group": 1,
+    "module": 9
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 67,
+  "fields": {
+    "group": 1,
+    "module": 17
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 68,
+  "fields": {
+    "group": 1,
+    "module": 30
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 69,
+  "fields": {
+    "group": 1,
+    "module": 11
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 70,
+  "fields": {
+    "group": 1,
+    "module": 22
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 71,
+  "fields": {
+    "group": 1,
+    "module": 5
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 72,
+  "fields": {
+    "group": 1,
+    "module": 25
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 73,
+  "fields": {
+    "group": 1,
+    "module": 24
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 74,
+  "fields": {
+    "group": 1,
+    "module": 15
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 75,
+  "fields": {
+    "group": 1,
+    "module": 16
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 76,
+  "fields": {
+    "group": 1,
+    "module": 28
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 77,
+  "fields": {
+    "group": 1,
+    "module": 14
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 78,
+  "fields": {
+    "group": 1,
+    "module": 23
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 79,
+  "fields": {
+    "group": 1,
+    "module": 3
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 80,
+  "fields": {
+    "group": 1,
+    "module": 2
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 81,
+  "fields": {
+    "group": 1,
+    "module": 26
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 82,
+  "fields": {
+    "group": 1,
+    "module": 10
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 83,
+  "fields": {
+    "group": 1,
+    "module": 20
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 84,
+  "fields": {
+    "group": 1,
+    "module": 8
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 85,
+  "fields": {
+    "group": 1,
+    "module": 4
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 86,
+  "fields": {
+    "group": 1,
+    "module": 13
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 87,
+  "fields": {
+    "group": 1,
+    "module": 1
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 88,
+  "fields": {
+    "group": 1,
+    "module": 7
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 89,
+  "fields": {
+    "group": 1,
+    "module": 18
+  }
+},
+{
+  "model": "security.groupmodule",
+  "pk": 90,
+  "fields": {
+    "group": 1,
+    "module": 21
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 123,
+  "fields": {
+    "group": 1,
+    "permission": 22,
+    "module": 6
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 124,
+  "fields": {
+    "group": 1,
+    "permission": 21,
+    "module": 6
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 125,
+  "fields": {
+    "group": 1,
+    "permission": 39,
+    "module": 9
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 126,
+  "fields": {
+    "group": 1,
+    "permission": 40,
+    "module": 9
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 127,
+  "fields": {
+    "group": 1,
+    "permission": 41,
+    "module": 9
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 128,
+  "fields": {
+    "group": 1,
+    "permission": 42,
+    "module": 9
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 129,
+  "fields": {
+    "group": 1,
+    "permission": 43,
+    "module": 17
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 130,
+  "fields": {
+    "group": 1,
+    "permission": 44,
+    "module": 17
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 131,
+  "fields": {
+    "group": 1,
+    "permission": 45,
+    "module": 17
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 132,
+  "fields": {
+    "group": 1,
+    "permission": 46,
+    "module": 17
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 133,
+  "fields": {
+    "group": 1,
+    "permission": 75,
+    "module": 11
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 134,
+  "fields": {
+    "group": 1,
+    "permission": 76,
+    "module": 11
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 135,
+  "fields": {
+    "group": 1,
+    "permission": 74,
+    "module": 11
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 136,
+  "fields": {
+    "group": 1,
+    "permission": 49,
+    "module": 15
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 137,
+  "fields": {
+    "group": 1,
+    "permission": 50,
+    "module": 15
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 138,
+  "fields": {
+    "group": 1,
+    "permission": 48,
+    "module": 15
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 139,
+  "fields": {
+    "group": 1,
+    "permission": 52,
+    "module": 16
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 140,
+  "fields": {
+    "group": 1,
+    "permission": 53,
+    "module": 16
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 141,
+  "fields": {
+    "group": 1,
+    "permission": 51,
+    "module": 16
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 142,
+  "fields": {
+    "group": 1,
+    "permission": 54,
+    "module": 14
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 143,
+  "fields": {
+    "group": 1,
+    "permission": 55,
+    "module": 14
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 144,
+  "fields": {
+    "group": 1,
+    "permission": 56,
+    "module": 14
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 145,
+  "fields": {
+    "group": 1,
+    "permission": 57,
+    "module": 14
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 146,
+  "fields": {
+    "group": 1,
+    "permission": 9,
+    "module": 3
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 147,
+  "fields": {
+    "group": 1,
+    "permission": 10,
+    "module": 3
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 148,
+  "fields": {
+    "group": 1,
+    "permission": 11,
+    "module": 3
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 149,
+  "fields": {
+    "group": 1,
+    "permission": 12,
+    "module": 3
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 150,
+  "fields": {
+    "group": 1,
+    "permission": 31,
+    "module": 2
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 151,
+  "fields": {
+    "group": 1,
+    "permission": 32,
+    "module": 2
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 152,
+  "fields": {
+    "group": 1,
+    "permission": 33,
+    "module": 2
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 153,
+  "fields": {
+    "group": 1,
+    "permission": 34,
+    "module": 2
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 154,
+  "fields": {
+    "group": 1,
+    "permission": 58,
+    "module": 10
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 155,
+  "fields": {
+    "group": 1,
+    "permission": 59,
+    "module": 10
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 156,
+  "fields": {
+    "group": 1,
+    "permission": 60,
+    "module": 10
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 157,
+  "fields": {
+    "group": 1,
+    "permission": 61,
+    "module": 10
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 158,
+  "fields": {
+    "group": 1,
+    "permission": 62,
+    "module": 20
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 159,
+  "fields": {
+    "group": 1,
+    "permission": 63,
+    "module": 20
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 160,
+  "fields": {
+    "group": 1,
+    "permission": 64,
+    "module": 20
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 161,
+  "fields": {
+    "group": 1,
+    "permission": 65,
+    "module": 20
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 162,
+  "fields": {
+    "group": 1,
+    "permission": 70,
+    "module": 8
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 163,
+  "fields": {
+    "group": 1,
+    "permission": 71,
+    "module": 8
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 164,
+  "fields": {
+    "group": 1,
+    "permission": 72,
+    "module": 8
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 165,
+  "fields": {
+    "group": 1,
+    "permission": 73,
+    "module": 8
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 166,
+  "fields": {
+    "group": 1,
+    "permission": 25,
+    "module": 4
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 167,
+  "fields": {
+    "group": 1,
+    "permission": 26,
+    "module": 4
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 168,
+  "fields": {
+    "group": 1,
+    "permission": 24,
+    "module": 4
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 169,
+  "fields": {
+    "group": 1,
+    "permission": 84,
+    "module": 13
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 170,
+  "fields": {
+    "group": 1,
+    "permission": 85,
+    "module": 13
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 171,
+  "fields": {
+    "group": 1,
+    "permission": 86,
+    "module": 13
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 172,
+  "fields": {
+    "group": 1,
+    "permission": 87,
+    "module": 13
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 173,
+  "fields": {
+    "group": 1,
+    "permission": 27,
+    "module": 1
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 174,
+  "fields": {
+    "group": 1,
+    "permission": 28,
+    "module": 1
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 175,
+  "fields": {
+    "group": 1,
+    "permission": 29,
+    "module": 1
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 176,
+  "fields": {
+    "group": 1,
+    "permission": 30,
+    "module": 1
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 177,
+  "fields": {
+    "group": 1,
+    "permission": 35,
+    "module": 7
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 178,
+  "fields": {
+    "group": 1,
+    "permission": 36,
+    "module": 7
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 179,
+  "fields": {
+    "group": 1,
+    "permission": 37,
+    "module": 7
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 180,
+  "fields": {
+    "group": 1,
+    "permission": 38,
+    "module": 7
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 181,
+  "fields": {
+    "group": 1,
+    "permission": 82,
+    "module": 18
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 182,
+  "fields": {
+    "group": 1,
+    "permission": 83,
+    "module": 18
+  }
+},
+{
+  "model": "security.grouppermission",
+  "pk": 183,
+  "fields": {
+    "group": 1,
+    "permission": 81,
+    "module": 18
+  }
+},
+{
+  "model": "user.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$216000$LRIazTXE7CgH$Bt7NsG6D54/UXG1xgiiDxSs9yH+0fOpK2VH7V3xpeEA=",
+    "last_login": "2021-01-04T13:20:20.462Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "William Dávila",
+    "last_name": "Dávila Vargas",
+    "email": "davilawilliam93@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2020-12-11T16:54:34.228Z",
+    "dni": "0928363993",
+    "image": "",
+    "is_change_password": false,
+    "token": "a78454f0-8032-4dbd-9469-53a6cdb699d5",
+    "groups": [
+      1
+    ],
+    "user_permissions": []
+  }
+}
+]
