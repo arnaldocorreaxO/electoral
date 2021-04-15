@@ -6,10 +6,9 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
 from core.electoral.models import Elector,Padgral
-from core.electoral.forms import ElectorForm2
+from core.electoral.forms import *
 
-
-ElectorForm = select2_modelform(Elector, attrs={'width': '250px'})
+# ElectorForm = select2_modelform(Elector, attrs={'width': '250px'})
 
 
 ''' 
@@ -19,6 +18,7 @@ ElectorForm = select2_modelform(Elector, attrs={'width': '250px'})
 class ElectorResource(resources.ModelResource):
     class Meta:
         model = Elector
+        fields = '__all__'
 
 class ElectorAdmin(ImportExportModelAdmin):
     form = ElectorForm
@@ -35,7 +35,11 @@ class PadGralResource(resources.ModelResource):
 class PadGralAdmin(ImportExportModelAdmin):
     resource_class = PadGralResource
 
-
+''' 
+====================
+===   ELECTOR2    ===
+==================== '''
+# @admin.register(Elector2)
 
 #Registrar el mismo modelo varias veces hay que hacer un proxy
 class Elector2(Elector):
@@ -45,19 +49,11 @@ class Elector2(Elector):
         proxy = True
 
 
-''' 
-====================
-===   ELECTOR2    ===
-==================== '''
-# @admin.register(Elector2)
-
-
 class ElectorResources2(resources.ModelResource):
     class Meta:
         model = Elector2
         fields = ('ci', 'nombre', 'apellido','telefono','direccion','partido','fecha_nacimiento',	
                   'fecha_afiliacion','barrio','manzana'	,'nro_casa','telefono',)
-
 
 
 class ElectorAdmin2(ImportExportModelAdmin):

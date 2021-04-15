@@ -34,8 +34,7 @@ class Distrito(models.Model):
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
 
     def __str__(self):
-        return self.denominacion
-    
+        return self.denominacion    
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -68,8 +67,7 @@ class Ciudad(models.Model):
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
 
     def __str__(self):
-        return self.denominacion
-    
+        return self.denominacion    
 
     def toJSON(self):
         item = model_to_dict(self)
@@ -115,16 +113,16 @@ class Manzana(models.Model):
         ordering = ['barrio','denominacion']
 
 class Elector(models.Model):    
-    departamento = models.ForeignKey(Departamento, on_delete=models.PROTECT)
-    distrito = models.ForeignKey(Distrito, on_delete=models.PROTECT)
-    seccional = models.ForeignKey(Seccional, on_delete=models.PROTECT)
-    ci = models.IntegerField()
+    departamento = models.ForeignKey(Departamento, on_delete=models.PROTECT,null=True, blank=True)
+    distrito = models.ForeignKey(Distrito, on_delete=models.PROTECT,null=True, blank=True)
+    seccional = models.ForeignKey(Seccional, on_delete=models.PROTECT,null=True, blank=True)
+    ci = models.IntegerField(null=True)
     apellido = models.CharField(max_length=120)
     nombre = models.CharField(max_length=120)
     direccion = models.CharField(max_length=250,null=True, blank=True)
     partido = models.CharField(max_length=250,null=True, blank=True)
-    fecha_nacimiento = models.DateField()
-    fecha_afiliacion = models.DateField()
+    fecha_nacimiento = models.DateField(null=True, blank=True)
+    fecha_afiliacion = models.DateField(null=True, blank=True)
     voto1 = models.CharField(max_length=1,default='N')
     voto2 = models.CharField(max_length=1,default='N')
     voto3 = models.CharField(max_length=1,default='N')
@@ -143,8 +141,8 @@ class Elector(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self,exclude=[''])
-        item['barrio'] =  {'id':None,'denominacion':None} if self.barrio is None else self.barrio.toJSON()
-        item['manzana'] =  {'id':None,'denominacion':None} if self.manzana is None else self.manzana.toJSON()        
+        item['barrio'] =  {'id':'','denominacion':''} if self.barrio is None else self.barrio.toJSON()
+        item['manzana'] =  {'id':'','denominacion':''} if self.manzana is None else self.manzana.toJSON()        
         item['fecha_nacimiento'] = self.fecha_nacimiento.strftime('%Y-%m-%d')
         item['fecha_afiliacion'] = self.fecha_afiliacion.strftime('%Y-%m-%d')
         item['edad'] = self.get_edad()
@@ -153,17 +151,6 @@ class Elector(models.Model):
     class Meta:
         verbose_name = 'Elector'
         verbose_name_plural = 'Electores'
-        # default_permissions = ()
-        # permissions = (
-        #     ('view_departamento', 'Can view Departamento'),
-        #     ('add_departamento', 'Can add Departamento'),
-        #     ('change_departamento', 'Can change Departamento'),
-        #     ('delete_departamento', 'Can delete Departamento'),
-        # )
-        # ordering = ['-id']
-
-
-
 
 class Padgral(models.Model):
     mesa = models.CharField(max_length=3, blank=True, null=True)

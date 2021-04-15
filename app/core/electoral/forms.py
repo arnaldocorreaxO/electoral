@@ -173,8 +173,7 @@ class ManzanaForm(ModelForm):
 class ElectorForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance:
-            # self.fields['cat'].queryset = Cat.objects.filter(supplier=self.instance)
+        if self.instance.barrio:
             self.fields['manzana'].queryset = Manzana.objects.filter(barrio=self.instance.barrio)
         self.fields['ci'].widget.attrs['autofocus'] = True
 
@@ -182,17 +181,14 @@ class ElectorForm(ModelForm):
         model = Elector
         fields = '__all__'
 
-        # manzana = ModelChoiceField(queryset=Manzana.objects.none(), 
-        # widget=Select(attrs={
-        # 'class': 'form-control select2',
-        # 'style': 'width: 100%'}))
-
-
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre'}),
             'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido'}),
-            'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;'}),
-            'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;'}),
+            'departamento': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
+            'distrito': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
+            'seccional': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
+            'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
+            'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
         }
 
     def save(self, commit=True):
@@ -212,8 +208,7 @@ class ElectorForm(ModelForm):
 class ElectorForm2(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance:
-            # self.fields['cat'].queryset = Cat.objects.filter(supplier=self.instance)
+        if self.instance.barrio:
             self.fields['manzana'].queryset = Manzana.objects.filter(barrio=self.instance.barrio)
         self.fields['barrio'].widget.attrs['autofocus'] = True
 
@@ -224,8 +219,8 @@ class ElectorForm2(ModelForm):
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre'}),
             'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido'}),
-            'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;'}),
-            'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;'}),
+            'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
+            'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             # 'barrio': apply_select2(forms.Select),
             # 'manzana': apply_select2(forms.Select),
         }
