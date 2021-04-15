@@ -1,6 +1,5 @@
-
-# Created by https://www.toptal.com/developers/gitignore/api/python,vscode,django
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,vscode,django
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,vscode,python,django
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,vscode,python,django
 
 ### Django ###
 *.log
@@ -228,15 +227,22 @@ Thumbs.db
 # profiling data
 
 
-### vscode ###
+### VisualStudioCode ###
 .vscode/*
-!.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
-!.vscode/extensions.json
 *.code-workspace
 
-# End of https://www.toptal.com/developers/gitignore/api/python,vscode,django
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
+
+### vscode ###
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,vscode,python,django
 
 ### Django ###
 *.log
