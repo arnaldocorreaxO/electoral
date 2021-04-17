@@ -173,8 +173,6 @@ class ManzanaForm(ModelForm):
 class ElectorForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance.barrio:
-            self.fields['manzana'].queryset = Manzana.objects.filter(barrio=self.instance.barrio)
         self.fields['ci'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -208,8 +206,6 @@ class ElectorForm(ModelForm):
 class ElectorForm2(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance.barrio:
-            self.fields['manzana'].queryset = Manzana.objects.filter(barrio=self.instance.barrio)
         self.fields['barrio'].widget.attrs['autofocus'] = True
 
     class Meta:

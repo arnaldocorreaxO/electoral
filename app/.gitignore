@@ -250,6 +250,7 @@ Thumbs.db
 *.pyc
 __pycache__/
 */migrations/*
+*/migraciones/*
 **/migrations/*
 */logs/*
 config/*
