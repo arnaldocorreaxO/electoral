@@ -74,7 +74,7 @@ class Rpt001ReportView(ModuleMixin, FormView):
                 print(qs.query)
                 for i in qs:
                     item = {'barrio':f"({i['barrio__id']}) - {i['barrio__denominacion']}" ,\
-                           'manzana':f"({i['barrio__id']}) / ({i['manzana__cod']}) - {i['manzana__denominacion']}",\
+                           'manzana':f"({i['barrio__id']} / {i['manzana__cod']}) - {i['manzana__denominacion']}",\
                            'cant_manzana': i['cant_manzana']
                            }
                     data.append(item)

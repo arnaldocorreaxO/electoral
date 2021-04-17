@@ -119,16 +119,20 @@ function generateReport(all) {
             {data: "cant_manzana"},
         ],
         columnDefs: [
-            // {
-            //     targets: [-4],
-            //     class: 'text-center',
-            //     render: function (data, type, row) {
-            //         return data;
-            //     }
-            // },
+           {
+                targets: [ 0,  ],
+                visible: false
+            },
+            {
+                targets: [-2,],
+                className: 'text-left',
+                render: function (data, type, row) {
+                    return data;
+                }
+            },
             {
                 targets: [-1],
-                class: 'text-center',
+                className: "text-right",
                 render: function (data, type, row) {                    
                     return parseInt(data);
                 }
@@ -152,21 +156,13 @@ function generateReport(all) {
                         
                     }, 0);
 
-                // cantElectorxBarrio = $.fn.dataTable.render.number(',', '.', 0, '$').display( cantElectorxBarrio );
-
-            return $('<tr/>')
-                .append( '<td colspan="1">Total '+group+'</td>' )
-                .append( '<td>'+ cantElectorxBarrio +'</td>' )
-                // .append( '<td/>' )
-                // .append( '<td>'+salaryAvg+'</td>' );
+                return $('<tr/>')
+                .append( '<td colspan="1">'+group+'</td>' )
+                .append( '<td class="text-right"> Total: '+ cantElectorxBarrio +'</td>' )
             },
-            // dataSrc: ["barrio__denominacion","manzana__denominacion"]
-            dataSrc: ["barrio",]
+             dataSrc: ["barrio",]
         },
-        columnDefs: [ {
-            targets: [ 0,  ],
-            visible: false
-        } ]
+        
     });
 }
 

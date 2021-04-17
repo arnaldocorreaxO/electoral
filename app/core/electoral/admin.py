@@ -1,5 +1,4 @@
 from django.contrib import admin
-from easy_select2 import select2_modelform
 # Register your models here.
 from .models import Elector
 from import_export import resources

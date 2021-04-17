@@ -1,7 +1,5 @@
 from django.forms import *
 from django import forms
-from easy_select2.utils import apply_select2
-
 from .models import *
 
 ''' 

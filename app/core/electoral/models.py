@@ -2,7 +2,7 @@
 from django.db import models
 from django.forms import model_to_dict
 from core.electoral.utils import calculate_age
-from smart_selects.db_fields import ChainedForeignKey
+
 ''' 
 ====================
 === DEPARTAMENTO ===
@@ -133,15 +133,7 @@ class Elector(models.Model):
     voto4 = models.CharField(max_length=1,default='N')
     voto5 = models.CharField(max_length=1,default='N')    
     barrio = models.ForeignKey(Barrio, on_delete=models.PROTECT,null=True,blank=True) 
-    # manzana = models.ForeignKey(Manzana, on_delete=models.PROTECT,null=True,blank=True) 
-    manzana = ChainedForeignKey(
-        Manzana,
-        chained_field="barrio",
-        chained_model_field="barrio",
-        show_all=False,
-        auto_choose=True,
-        sort=True,
-        null=True)
+    manzana = models.ForeignKey(Manzana, on_delete=models.PROTECT,null=True,blank=True) 
     nro_casa = models.IntegerField(null=True,blank=True)
     telefono = models.CharField(max_length=120,null=True,blank=True)
 

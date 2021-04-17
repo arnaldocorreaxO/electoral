@@ -95,6 +95,10 @@ class ElectorCreateView(PermissionMixin, CreateView):
                 data = self.get_form().save()
             elif action == 'validate_data':
                 return self.validate_data()
+            elif action == 'search_manzana_id':
+                data = [{'id': '', 'text': '------------'}]
+                for i in Manzana.objects.filter(barrio_id=request.POST['id']):
+                    data.append({'id': i.id, 'text': i.denominacion, 'data': i.barrio.toJSON()})
             else:
                 data['error'] = 'No ha seleccionado ninguna opción'
         except Exception as e:
@@ -142,6 +146,10 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
                 data = self.get_form().save()
             elif action == 'validate_data':
                 return self.validate_data()
+            elif action == 'search_manzana_id':
+                data = [{'id': '', 'text': '------------'}]
+                for i in Manzana.objects.filter(barrio_id=request.POST['id']):
+                    data.append({'id': i.id, 'text': i.denominacion, 'data': i.barrio.toJSON()})
             else:
                 data['error'] = 'No ha seleccionado ninguna opción'
         except Exception as e:
