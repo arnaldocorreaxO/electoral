@@ -1,7 +1,5 @@
 from django.forms import *
 from django import forms
-from easy_select2.utils import apply_select2
-
 from .models import *
 
 ''' 
@@ -73,6 +71,33 @@ class SeccionalForm(ModelForm):
         fields = '__all__'
         widgets = {
             'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una Seccional'}),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        try:
+            if self.is_valid():
+                super().save()
+            else:
+                data['error'] = self.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+''' 
+====================
+===    PAIS    ===
+==================== '''
+class PaisForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['denominacion'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Pais
+        fields = '__all__'
+        widgets = {
+            'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una Ciudad'}),
         }
 
     def save(self, commit=True):
@@ -165,6 +190,32 @@ class ManzanaForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+'''        
+====================
+===  TIPO VOTO   ===
+==================== '''
+class TipoVotoForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cod'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = TipoVoto
+        fields = '__all__'
+        widgets = {
+            'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una TipoVoto'}),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        try:
+            if self.is_valid():
+                super().save()
+            else:
+                data['error'] = self.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
 
 ''' 
 ====================
@@ -173,8 +224,6 @@ class ManzanaForm(ModelForm):
 class ElectorForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance.barrio:
-            self.fields['manzana'].queryset = Manzana.objects.filter(barrio=self.instance.barrio)
         self.fields['ci'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -208,19 +257,21 @@ class ElectorForm(ModelForm):
 class ElectorForm2(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance.barrio:
-            self.fields['manzana'].queryset = Manzana.objects.filter(barrio=self.instance.barrio)
         self.fields['barrio'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Elector
-        fields = ['ci','nombre','apellido','barrio','manzana','nro_casa','telefono',]
+        fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
+                  'tipo_voto']
+
         
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre'}),
             'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido'}),
+            'ciudad': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
+            'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             # 'barrio': apply_select2(forms.Select),
             # 'manzana': apply_select2(forms.Select),
         }

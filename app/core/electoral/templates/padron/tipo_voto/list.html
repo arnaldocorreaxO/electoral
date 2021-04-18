@@ -1,11 +1,8 @@
 {% extends 'list.html' %}
 
 {% block columns %}
-    <th>CI</th>
-    <th>Nombre</th>
-    <th>Apellido</th>
-    <th>Fec. Nac.</th>
-    <th>Fec. Afil.</th>
+    <th>Cod.</th>
+     <th>Denominación</th>
     <!-- <th>Inventariado</th> -->
     <th class="text-center">Opciones</th>
 {% endblock %}
@@ -13,11 +10,8 @@
 {% block rows %}
     {% for i in object_list %}
         <tr>
-            <td>{{ i.ci }}</td>
-            <td>{{ i.nombre }}</td>
-            <td>{{ i.apellido }}</td>
-            <td>{{ i.fecha_nacimiento|date:"d/m/Y" }}</td>
-            <td>{{ i.fecha_afiliacion|date:"d/m/Y" }}</td>
+            <td>{{ i.cod }}</td>
+            <td>{{ i.denominacion }}</td>
             <!-- <td class="text-center">
                 {% if i.inventoried %}
                     <span class="badge badge-success">Si</span>
@@ -26,11 +20,11 @@
                 {% endif %}
             </td> -->
             <td class="text-center">
-                <a href="{% url 'elector_update' i.id %}" data-toggle="tooltip" title="Editar registro"
+                <a href="{% url 'tipo_voto_update' i.id %}" data-toggle="tooltip" title="Editar registro"
                    class="btn btn-warning btn-xs btn-flat">
                     <i class="fas fa-edit"></i>
                 </a>
-                <a href="{% url 'elector_delete' i.id %}" rel="delete" data-toggle="tooltip" title="Eliminar registro"
+                <a href="{% url 'tipo_voto_delete' i.id %}" rel="delete" data-toggle="tooltip" title="Eliminar registro"
                    class="btn btn-danger btn-xs btn-flat">
                     <i class="fas fa-trash"></i>
                 </a>

@@ -30,7 +30,7 @@ $(function () {
         $.ajax({
             headers: { "X-CSRFToken": token.val() },            
             // url: window.location.pathname,
-            url: '/electoral/padron/elector/add/',
+            url: '/electoral/elector/add/',
             type: 'POST',
             data: {
                 'action': 'search_manzana_id',
@@ -43,10 +43,7 @@ $(function () {
                     theme: "bootstrap4",
                     language: 'es',
                     data: data                    
-                });                        
-                /*$.each(data, function (key, value) {
-                    options += '<option value="' + value.id + '">' + value.name + '</option>';
-                });*/
+                });
                 return false;
             }
             message_error(data.error);
