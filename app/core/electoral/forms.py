@@ -263,7 +263,6 @@ class ElectorForm2(ModelForm):
         model = Elector
         fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
                   'tipo_voto']
-
         
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre'}),
@@ -275,4 +274,3 @@ class ElectorForm2(ModelForm):
             # 'barrio': apply_select2(forms.Select),
             # 'manzana': apply_select2(forms.Select),
         }
-
