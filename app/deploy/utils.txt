@@ -1,0 +1,53 @@
+// EXPORTAR UNA BASE DE DATOS
+python manage.py dumpdata --indent 2 > deploy/backup.json
+
+// RESTAURAR UNA BASE DE DATOS
+python manage.py loaddata deploy/backup.json
+
+// RESET INCREMENT SQLITE
+sqlite3 nombre_base
+delete from auth_permission;
+delete from sqlite_sequence where name='auth_permission';
+delete from django_content_type;
+delete from sqlite_sequence where name='django_content_type';
+
+// RESET INCREMENT POSTGRESQL
+sudo -u postgres psql -d nombre_base
+use nombre_base;
+delete from public.auth_permission;
+ALTER SEQUENCE public.auth_permission_id_seq RESTART WITH 1;
+delete from public.django_content_type;
+ALTER SEQUENCE public.django_content_type_id_seq RESTART WITH 1;
+
+// RESET INCREMENT MYSQL
+delete from auth_permission;
+ALTER TABLE auth_permission AUTO_INCREMENT = 1;
+delete from django_content_type;
+ALTER TABLE django_content_type AUTO_INCREMENT = 1;
+
+find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+
+delete from pos_paymentsctacollect;
+delete from sqlite_sequence where name='pos_paymentsctacollect';
+delete from pos_ctascollect;
+delete from sqlite_sequence where name='pos_ctascollect';
+delete from pos_paymentsdebtspay;
+delete from sqlite_sequence where name='pos_paymentsdebtspay';
+delete from pos_debtspay;
+delete from sqlite_sequence where name='pos_debtspay';
+delete from pos_saledetail;
+delete from sqlite_sequence where name='pos_saledetail';
+delete from pos_sale;
+delete from sqlite_sequence where name='pos_sale';
+delete from pos_purchasedetail;
+delete from sqlite_sequence where name='pos_purchasedetail';
+delete from pos_purchase;
+delete from sqlite_sequence where name='pos_purchase';
+delete from pos_promotionsdetail;
+delete from sqlite_sequence where name='pos_promotionsdetail';
+delete from pos_promotions;
+delete from sqlite_sequence where name='pos_promotions';
+delete from pos_product;
+delete from sqlite_sequence where name='pos_product';
+delete from pos_category;
+delete from sqlite_sequence where name='pos_category';

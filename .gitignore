@@ -1,0 +1,6 @@
+*migrations/* 
+*migrations/ 
+*env/ 
+env/* 
+*.directory 
+*/.directory

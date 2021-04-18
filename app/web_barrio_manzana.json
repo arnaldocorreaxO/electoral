@@ -1,0 +1,1175 @@
+[
+{
+  "model": "electoral.barrio",
+  "pk": 0,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "NO DEFINIDO"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 1,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "SAN JOSE"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 2,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "SAN JUAN"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 3,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "STA TERESITA"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 4,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "CAACUPEMI"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 5,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "SAN RAMON"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 6,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "SAN ANTONIO"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 7,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "Vº DE FATIMA"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 8,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "SAN CARLOS"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 9,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "Vº DE LORETO"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 10,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "SAN BLAS"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 11,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "LAS CARMELITAS"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 12,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "SAN MARTIN"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 13,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "SAN GERARDO"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 14,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "STA. ELENA"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 15,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "STO. DOMINGO"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 16,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "COL. INDIGENA"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 17,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "PAGANI"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 18,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "CAMINO A TRES CERROS"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 19,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "RIACHO MOSQUITO"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 20,
+  "fields": {
+    "ciudad": 2,
+    "denominacion": "SAN LAZARO"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 21,
+  "fields": {
+    "ciudad": 3,
+    "denominacion": "TRES CERROS"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 22,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "ÑATI-U RETIRO"
+  }
+},
+{
+  "model": "electoral.barrio",
+  "pk": 23,
+  "fields": {
+    "ciudad": 1,
+    "denominacion": "CERRO MORADO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 1,
+  "fields": {
+    "barrio": 0,
+    "cod": 0,
+    "denominacion": "NO DEFINIDO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 2,
+  "fields": {
+    "barrio": 1,
+    "cod": 1,
+    "denominacion": "JOSE LUIS SANTACRUZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 3,
+  "fields": {
+    "barrio": 1,
+    "cod": 2,
+    "denominacion": "DOMINGO BURGOS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 4,
+  "fields": {
+    "barrio": 1,
+    "cod": 3,
+    "denominacion": "WILSON ARZAMENDIA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 5,
+  "fields": {
+    "barrio": 1,
+    "cod": 4,
+    "denominacion": "FRANCISCO NARVAEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 6,
+  "fields": {
+    "barrio": 1,
+    "cod": 5,
+    "denominacion": "MIGUEL PARODI"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 7,
+  "fields": {
+    "barrio": 1,
+    "cod": 6,
+    "denominacion": "VICTOR RAMIREZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 8,
+  "fields": {
+    "barrio": 1,
+    "cod": 7,
+    "denominacion": "CARLOS ECHAURI"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 9,
+  "fields": {
+    "barrio": 1,
+    "cod": 8,
+    "denominacion": "COSTANERA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 10,
+  "fields": {
+    "barrio": 2,
+    "cod": 1,
+    "denominacion": "JORGE VILLALBA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 11,
+  "fields": {
+    "barrio": 2,
+    "cod": 2,
+    "denominacion": "SANTIAGO OJEDA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 12,
+  "fields": {
+    "barrio": 2,
+    "cod": 3,
+    "denominacion": "JAVIER CABALLERO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 13,
+  "fields": {
+    "barrio": 2,
+    "cod": 4,
+    "denominacion": "HECTOR RUIZ DIAZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 14,
+  "fields": {
+    "barrio": 2,
+    "cod": 5,
+    "denominacion": "EL TRIANGULO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 15,
+  "fields": {
+    "barrio": 3,
+    "cod": 1,
+    "denominacion": "MARIQUI CARDENAS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 16,
+  "fields": {
+    "barrio": 3,
+    "cod": 2,
+    "denominacion": "MEDITERRANEO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 17,
+  "fields": {
+    "barrio": 3,
+    "cod": 3,
+    "denominacion": "MANUEL CORREA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 18,
+  "fields": {
+    "barrio": 3,
+    "cod": 4,
+    "denominacion": "CIPRIANO LOPEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 19,
+  "fields": {
+    "barrio": 3,
+    "cod": 5,
+    "denominacion": "G-15"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 20,
+  "fields": {
+    "barrio": 3,
+    "cod": 6,
+    "denominacion": "RIVERA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 21,
+  "fields": {
+    "barrio": 4,
+    "cod": 1,
+    "denominacion": "CASA DOMITILA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 22,
+  "fields": {
+    "barrio": 4,
+    "cod": 2,
+    "denominacion": "FAUSTINO LEON"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 23,
+  "fields": {
+    "barrio": 4,
+    "cod": 3,
+    "denominacion": "SANTIAGO RAMIREZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 24,
+  "fields": {
+    "barrio": 4,
+    "cod": 4,
+    "denominacion": "GILDA DE CORREA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 25,
+  "fields": {
+    "barrio": 4,
+    "cod": 5,
+    "denominacion": "KARINA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 26,
+  "fields": {
+    "barrio": 4,
+    "cod": 6,
+    "denominacion": "RAMON GUTIERREZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 27,
+  "fields": {
+    "barrio": 4,
+    "cod": 7,
+    "denominacion": "FRANCISCA VDA DE PUCHETA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 28,
+  "fields": {
+    "barrio": 4,
+    "cod": 8,
+    "denominacion": "ICO RUIZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 29,
+  "fields": {
+    "barrio": 4,
+    "cod": 9,
+    "denominacion": "SEBASTIAN AMARILLA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 30,
+  "fields": {
+    "barrio": 5,
+    "cod": 1,
+    "denominacion": "EXPEDITO GUERRERO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 31,
+  "fields": {
+    "barrio": 5,
+    "cod": 2,
+    "denominacion": "PIZERIA MAITE"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 32,
+  "fields": {
+    "barrio": 5,
+    "cod": 3,
+    "denominacion": "ANTONIO FERREIRA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 33,
+  "fields": {
+    "barrio": 5,
+    "cod": 4,
+    "denominacion": "EMILSON PORTILLO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 34,
+  "fields": {
+    "barrio": 5,
+    "cod": 5,
+    "denominacion": "MIRTHA NARVAEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 35,
+  "fields": {
+    "barrio": 5,
+    "cod": 6,
+    "denominacion": "DESPENSA PICAFLOR"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 36,
+  "fields": {
+    "barrio": 6,
+    "cod": 1,
+    "denominacion": "TETI BENITEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 37,
+  "fields": {
+    "barrio": 6,
+    "cod": 2,
+    "denominacion": "LA NORTEÑITA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 38,
+  "fields": {
+    "barrio": 6,
+    "cod": 3,
+    "denominacion": "MENDIETA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 39,
+  "fields": {
+    "barrio": 6,
+    "cod": 4,
+    "denominacion": "MARIA VDA DE FERREIRA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 40,
+  "fields": {
+    "barrio": 6,
+    "cod": 5,
+    "denominacion": "KAMBUCHI"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 41,
+  "fields": {
+    "barrio": 6,
+    "cod": 6,
+    "denominacion": "ARTURITO COMERCIAL"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 42,
+  "fields": {
+    "barrio": 6,
+    "cod": 7,
+    "denominacion": "ALFREDO ANDINO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 43,
+  "fields": {
+    "barrio": 6,
+    "cod": 8,
+    "denominacion": "CATALINO FRANCO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 44,
+  "fields": {
+    "barrio": 6,
+    "cod": 9,
+    "denominacion": "RUTILIO COLMAN"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 45,
+  "fields": {
+    "barrio": 6,
+    "cod": 10,
+    "denominacion": "KACHACA TROPICAL"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 46,
+  "fields": {
+    "barrio": 6,
+    "cod": 11,
+    "denominacion": "TEODORO ORTEGA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 47,
+  "fields": {
+    "barrio": 6,
+    "cod": 12,
+    "denominacion": "HELADERIA DENISSE"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 48,
+  "fields": {
+    "barrio": 6,
+    "cod": 13,
+    "denominacion": "VICTOR RIOS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 49,
+  "fields": {
+    "barrio": 7,
+    "cod": 1,
+    "denominacion": "COOPEMAVA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 50,
+  "fields": {
+    "barrio": 7,
+    "cod": 2,
+    "denominacion": "IGLESIA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 51,
+  "fields": {
+    "barrio": 7,
+    "cod": 3,
+    "denominacion": "RAMON DEL PILAR GOMEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 52,
+  "fields": {
+    "barrio": 7,
+    "cod": 4,
+    "denominacion": "NARCISO ROMAN"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 53,
+  "fields": {
+    "barrio": 7,
+    "cod": 5,
+    "denominacion": "CASA NOLY"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 54,
+  "fields": {
+    "barrio": 7,
+    "cod": 6,
+    "denominacion": "ANASTACIO PALACIOS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 55,
+  "fields": {
+    "barrio": 7,
+    "cod": 7,
+    "denominacion": "CASA ÑASAINDY"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 56,
+  "fields": {
+    "barrio": 7,
+    "cod": 8,
+    "denominacion": "COPACO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 57,
+  "fields": {
+    "barrio": 7,
+    "cod": 9,
+    "denominacion": "OSVALDO BURGOS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 58,
+  "fields": {
+    "barrio": 7,
+    "cod": 10,
+    "denominacion": "BARATOTE"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 59,
+  "fields": {
+    "barrio": 7,
+    "cod": 11,
+    "denominacion": "AUGUSTO ALVAREZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 60,
+  "fields": {
+    "barrio": 7,
+    "cod": 12,
+    "denominacion": "ARNALDO AVALOS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 61,
+  "fields": {
+    "barrio": 8,
+    "cod": 1,
+    "denominacion": "CARPINTERIA SAN ISIDRO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 62,
+  "fields": {
+    "barrio": 8,
+    "cod": 2,
+    "denominacion": "DESP. 13 DE MARZO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 63,
+  "fields": {
+    "barrio": 8,
+    "cod": 3,
+    "denominacion": "ANGEL VALDEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 64,
+  "fields": {
+    "barrio": 8,
+    "cod": 4,
+    "denominacion": "IRAN DUO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 65,
+  "fields": {
+    "barrio": 8,
+    "cod": 5,
+    "denominacion": "CARLOS ZORRILLA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 66,
+  "fields": {
+    "barrio": 8,
+    "cod": 6,
+    "denominacion": "TINA GONZALEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 67,
+  "fields": {
+    "barrio": 8,
+    "cod": 7,
+    "denominacion": "VIDRERIA SAN MIGUEL"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 68,
+  "fields": {
+    "barrio": 8,
+    "cod": 8,
+    "denominacion": "LA MOVIDA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 69,
+  "fields": {
+    "barrio": 8,
+    "cod": 9,
+    "denominacion": "GUILLERMO FERNANDEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 70,
+  "fields": {
+    "barrio": 9,
+    "cod": 1,
+    "denominacion": "SANTIAGO VILLALBA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 71,
+  "fields": {
+    "barrio": 9,
+    "cod": 2,
+    "denominacion": "ELEUTERIA DE BRITOS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 72,
+  "fields": {
+    "barrio": 9,
+    "cod": 3,
+    "denominacion": "IPS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 73,
+  "fields": {
+    "barrio": 9,
+    "cod": 4,
+    "denominacion": "SIXTO VERA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 74,
+  "fields": {
+    "barrio": 10,
+    "cod": 1,
+    "denominacion": "EGIDIO PAREDES"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 75,
+  "fields": {
+    "barrio": 10,
+    "cod": 2,
+    "denominacion": "TALLER JAIME FERNANDEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 76,
+  "fields": {
+    "barrio": 10,
+    "cod": 3,
+    "denominacion": "COSTADO DEL CEMENTERIO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 77,
+  "fields": {
+    "barrio": 12,
+    "cod": 1,
+    "denominacion": "LA ECONOMIA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 78,
+  "fields": {
+    "barrio": 12,
+    "cod": 2,
+    "denominacion": "ROSA SORIA CABALLERO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 79,
+  "fields": {
+    "barrio": 12,
+    "cod": 3,
+    "denominacion": "ALEJANDRO ALCARAZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 80,
+  "fields": {
+    "barrio": 12,
+    "cod": 4,
+    "denominacion": "MEDICO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 81,
+  "fields": {
+    "barrio": 12,
+    "cod": 5,
+    "denominacion": "MIRTA RUIZ DIAZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 82,
+  "fields": {
+    "barrio": 13,
+    "cod": 1,
+    "denominacion": "EX-HIPICO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 83,
+  "fields": {
+    "barrio": 13,
+    "cod": 2,
+    "denominacion": "ANICIA GOMEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 84,
+  "fields": {
+    "barrio": 13,
+    "cod": 3,
+    "denominacion": "P. QUIÑONEZ"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 85,
+  "fields": {
+    "barrio": 14,
+    "cod": 1,
+    "denominacion": "AVDA PRINCIPAL"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 86,
+  "fields": {
+    "barrio": 14,
+    "cod": 2,
+    "denominacion": "MIRADOR / ZUCAL"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 87,
+  "fields": {
+    "barrio": 14,
+    "cod": 3,
+    "denominacion": "CAMINO A SANTO DOMINGO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 88,
+  "fields": {
+    "barrio": 14,
+    "cod": 4,
+    "denominacion": "EX-TORALES"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 89,
+  "fields": {
+    "barrio": 15,
+    "cod": 1,
+    "denominacion": "AVDA PRINCIPAL"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 90,
+  "fields": {
+    "barrio": 15,
+    "cod": 2,
+    "denominacion": "DETRAS DEL AEROPUERTO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 91,
+  "fields": {
+    "barrio": 15,
+    "cod": 3,
+    "denominacion": "CAMINO A SANTA ELENA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 92,
+  "fields": {
+    "barrio": 15,
+    "cod": 4,
+    "denominacion": "CAMINO A RIO APA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 93,
+  "fields": {
+    "barrio": 15,
+    "cod": 5,
+    "denominacion": "CAMINO A COL. INDIGENA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 94,
+  "fields": {
+    "barrio": 16,
+    "cod": 1,
+    "denominacion": "COL. INDIGENA - RIO APA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 95,
+  "fields": {
+    "barrio": 11,
+    "cod": 1,
+    "denominacion": "LAS CARMELITAS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 96,
+  "fields": {
+    "barrio": 17,
+    "cod": 1,
+    "denominacion": "WENCESLAO SILVANO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 97,
+  "fields": {
+    "barrio": 17,
+    "cod": 2,
+    "denominacion": "ELADIO PONCE"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 98,
+  "fields": {
+    "barrio": 18,
+    "cod": 1,
+    "denominacion": "CAMINO A TRES CERROS"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 99,
+  "fields": {
+    "barrio": 19,
+    "cod": 1,
+    "denominacion": "RIACHO MOSQUITO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 100,
+  "fields": {
+    "barrio": 20,
+    "cod": 1,
+    "denominacion": "SAN LAZARO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 101,
+  "fields": {
+    "barrio": 21,
+    "cod": 1,
+    "denominacion": "TRES CERROS - MORADO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 102,
+  "fields": {
+    "barrio": 1,
+    "cod": 9,
+    "denominacion": "MIGUEL KIM"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 103,
+  "fields": {
+    "barrio": 22,
+    "cod": 1,
+    "denominacion": "ÑATI-U RETIRO"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 104,
+  "fields": {
+    "barrio": 13,
+    "cod": 4,
+    "denominacion": "ISABELINO VILLALVA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 105,
+  "fields": {
+    "barrio": 21,
+    "cod": 2,
+    "denominacion": "ZONA NORTE"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 106,
+  "fields": {
+    "barrio": 21,
+    "cod": 3,
+    "denominacion": "ZONA SUR"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 107,
+  "fields": {
+    "barrio": 21,
+    "cod": 4,
+    "denominacion": "ZONA CENTRO - CARLOS PALMA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 108,
+  "fields": {
+    "barrio": 21,
+    "cod": 5,
+    "denominacion": "COSTANERA"
+  }
+},
+{
+  "model": "electoral.manzana",
+  "pk": 109,
+  "fields": {
+    "barrio": 23,
+    "cod": 1,
+    "denominacion": "CERRO MORADO"
+  }
+}
+]

@@ -1,0 +1,82 @@
+{% extends 'skin.html' %}
+{% load static %}
+{% load security_extras %}
+{% load widget_tweaks %}
+{% block section_content %}
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="{% url 'dashboard' %}"><i
+                                        class="fas fa-home"></i> Panel</a></li>
+                                {% block breadcrumb_li %}
+                                    <li class="breadcrumb-item active" aria-current="page"><a
+                                            href="{{ request.session.module.url }}"><i
+                                            class="{{ request.session.module.get_icon }}"></i> {{ request.session.module.name }}
+                                    </a></li>
+                                {% endblock %}
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card {{ dshboard.card }}">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-home"></i>
+                                {{ title }}
+                            </h3>
+                        </div>
+                        <div class="card-body" style="display: block;">
+                            <div class="container-fluid panel-module">
+                                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                    {% for m in request.session.group.id|getmoduletype %}
+                                        <li class="nav-item">
+                                            <a class="nav-link{% if forloop.first %} active{% endif %}"
+                                               data-toggle="tab" href="#tab{{ forloop.counter }}">
+                                                {{ m.name }}
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                                <div class="tab-content">
+                                    <br>
+                                    {% for mt in request.session.group.id|getmoduletype %}
+                                        <div id="tab{{ forloop.counter }}"
+                                             class="tab-pane{% if forloop.first %} active{% endif %}">
+                                            {% for m in mt.get_modules_vertical %}
+                                                <div class="span12">
+                                                    <a class="icon" href="{{ m.url }}">
+                                                        {% if m.image %}
+                                                            <img src="{{ m.get_image }}"
+                                                                 class="img-fluid mx-auto d-block">
+                                                        {% else %}
+                                                            <i class="{{ m.get_icon }} fa-5x"></i>
+                                                        {% endif %}
+                                                        <div class="iconname">
+                                                            <div class="pd">
+                                                                <h4 class="tituloicon">{{ m.name }}</h4>
+                                                                <span class="icondesc">{{ m.description }}</span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

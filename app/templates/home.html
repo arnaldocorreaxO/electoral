@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ title }}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="shortcut icon" href="{{ dshboard.get_image }}"/>
+    <!--CSS-->
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-4.3.1/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/font-awesome-5.11.1/css/all.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.css' %}"/>
+    <!--Javascript-->
+    <script src="{% static 'lib/bootstrap-4.3.1/js/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-4.3.1/js/popper.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-4.3.1/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-4.3.1/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.0.5/js/adminlte.min.js' %}"></script>
+    <!--Template-->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.0.5/css/adminlte.css' %}"/>
+    <!--Styles-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+    <!--Libs-->
+    <script src="{% static 'lib/moment/moment.js' %}"></script>
+    <script src="{% static 'lib/moment/moment-with-locales.js' %}"></script>
+    <script src="{% static 'lib/jquery-confirm-v3.3.4/jquery-confirm.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/jquery-confirm-v3.3.4/jquery-confirm.min.css' %}"/>
+    <script src="{% static 'lib/sweetalert2-9.10.0/sweetalert2.all.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/sweetalert2-9.10.0/sweetalert2.min.css' %}"/>
+    <script src="{% static 'lib/jquery-loading-overlay-1.5.3/loadingoverlay.min.js' %}"></script>
+    <script src="{% static 'js/functions.js' %}"></script>
+    <!--Block head-->
+    {% block head %}{% endblock %}
+</head>
+<!--Block body-->
+{% block body %}
+
+{% endblock %}
+<!--Javascript-->
+<script type="application/javascript">
+
+    var pathname = window.location.pathname;
+
+    $(function () {
+
+        $('.table').on('click', 'img', function () {
+            load_image($(this).attr('src'));
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+</html>
