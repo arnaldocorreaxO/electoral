@@ -154,6 +154,7 @@ class Seccional(models.Model):
 class TipoVoto(models.Model):
     cod = models.CharField(max_length=3,null=False, unique=True)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
+    estado = models.BooleanField(default=True, verbose_name='Estado')
 
     def __str__(self):
         return f"{self.cod} - {self.denominacion}"
@@ -214,6 +215,7 @@ class Elector(models.Model):
     class Meta:
         verbose_name = 'Elector'
         verbose_name_plural = 'Electores'
+        ordering = ['id']
 
 class Padgral(models.Model):
     mesa = models.CharField(max_length=3, blank=True, null=True)

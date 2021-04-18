@@ -1,19 +1,13 @@
+from core.electoral.forms import *
+from core.electoral.models import Elector, Padgral
 from django.contrib import admin
-# Register your models here.
-from .models import Elector
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
-from core.electoral.models import Elector,Padgral
-from core.electoral.forms import *
+# Register your models here.
+from .models import Elector
 
 # ElectorForm = select2_modelform(Elector, attrs={'width': '250px'})
-
-'''PAIS'''
-class PaisAdmin(admin.ModelAdmin):
-    class Meta:
-        model= Pais
-
 
 ''' 
 ====================
@@ -62,7 +56,7 @@ class ElectorAdmin2(ImportExportModelAdmin):
     resource_class = ElectorResources2  
     form = ElectorForm2 
     readonly_fields = ('ci','nombre','apellido','edad')   
-    list_display =['ci','nombre','apellido','telefono','barrio','manzana','nro_casa','edad']
+    list_display =['ci','nombre','apellido','telefono','get_cod_tipo_voto','barrio','manzana','nro_casa','edad']
     # list_editable =['telefono','barrio','manzana','nro_casa'] #Consume muchos recursos (tarda mucho la consulta)
     list_filter =['ciudad','seccional','barrio','manzana','tipo_voto']
     search_fields =['ci','nombre','apellido']
@@ -73,6 +67,11 @@ class ElectorAdmin2(ImportExportModelAdmin):
     def edad(self,obj):
         return obj.get_edad()
     edad.short_description = 'Edad'
+    
+    def get_cod_tipo_voto(self,obj):
+        return obj.tipo_voto.cod if obj.tipo_voto else None
+
+    get_cod_tipo_voto.short_description = 'Tipo Voto'
 
 ''' 
 ====================
@@ -115,4 +114,4 @@ admin.site.register(Elector, ElectorAdmin)
 admin.site.register(Elector2, ElectorAdmin2)
 admin.site.register(Elector3, ElectorAdmin3)
 admin.site.register(Padgral, PadGralAdmin)
-admin.site.register(Pais, PaisAdmin)
+
