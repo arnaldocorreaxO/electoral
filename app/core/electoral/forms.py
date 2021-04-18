@@ -265,7 +265,7 @@ class ElectorForm(ModelForm):
 class ElectorForm2(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(estado__exact=True)
+        self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(estado__exact=True)
         self.fields['barrio'].widget.attrs['autofocus'] = True
     
     class Meta:
