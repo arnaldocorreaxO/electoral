@@ -90,46 +90,48 @@
     {% else %}
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-3 col-sm-6 col-12">
-                    <div class="info-box">
-                        <span class="info-box-icon bg-info"><i class="fas fa-user-friends"></i></span>
-                        <div class="info-box-content">
-                            <span class="info-box-text">Padrón</span>
-                            <span class="info-box-number">
-                        {{ clients }}
-                    </span>
+                <div class="col-md-3 col-sm-6 col-12">   
+                    <a href="{% url 'elector_list' %}" style="color:rgb(0, 0, 0)">         
+                        <div class="info-box">                        
+                            <span class="info-box-icon bg-info"><i class="fas fa-user-friends" ></i></span>
+                                <div class="info-box-content">
+                                    <span class="info-box-text">Padrón</span>
+                                    <span class="info-box-number">
+                                        {{ elector }}
+                                    </span>
+                                </div>                               
                         </div>
-                    </div>
+                    </a> 
                 </div>
                 <div class="col-md-3 col-sm-6 col-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-success"><i class="fas fa-user-friends"></i></span>
+                        <span class="info-box-icon bg-warning"><i class="fas fa-user-friends"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Contactados</span>
                             <span class="info-box-number">
-                        {{ provider }}
+                        {{ votos_positivos }}
                     </span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-warning"><i class="fas fa-truck-loading"></i></span>
+                        <span class="info-box-icon bg-success"><i class="fas fa-thumbs-up"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Votos a Favor</span>
                             <span class="info-box-number">
-                        {{ category }}
+                        {{ votos_positivos }}
                     </span>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-3 col-sm-6 col-12">
                     <div class="info-box">
-                        <span class="info-box-icon bg-danger"><i class="fas fa-box"></i></span>
+                        <span class="info-box-icon bg-danger"><i class="fas fa-thumbs-down"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Votos en Contra</span>
+                            <span class="info-box-text">Otros Votos</span>
                             <span class="info-box-number">
-                        {{ product }}
+                        {{ votos_negativos }}
                     </span>
                         </div>
                     </div>
@@ -179,17 +181,17 @@
                             <h3 class="card-title"><i class="fas fa-box"></i> Electores por Seccional </h3>
                         </div>
                         <div class="card-body p-0">
-                            <div id="graphstockproducts" style="height: 64vh;"></div>
+                            <div id="graph_electores_seccional" style="height: 64vh;"></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-box"></i> Electores Preferencia </h3>
+                            <h3 class="card-title"><i class="fas fa-box"></i> Preferencia de Votos </h3>
                         </div>
                         <div class="card-body p-0">
-                            <div id="graphstockproducts" style="height: 64vh;"></div>
+                            <div id="graph_preferencia_votos" style="height: 64vh;"></div>
                         </div>
                     </div>
                 </div>
@@ -209,7 +211,8 @@
                 </div>
             </div>
             <script>
-                var graphstockproducts = Highcharts.chart('graphstockproducts', {
+                // GRAFICO ELECTORES POR SECCIONAL
+                var graph_electores_seccional = Highcharts.chart('graph_electores_seccional', {
                     chart: {
                         type: 'pie',
                         options3d: {
@@ -245,17 +248,17 @@
                     },
                 });
 
-                function get_graph_stock_products() {
+                function get_graph_electores_seccional() {
                     $.ajax({
                         url: window.location.pathname,
                         type: 'POST',
                         data: {
-                            'action': 'get_graph_stock_products'
+                            'action': 'get_graph_electores_seccional'
                         },
                         dataType: 'json',
                     }).done(function (request) {
                         if (!request.hasOwnProperty('error')) {
-                            graphstockproducts.addSeries(request);
+                            graph_electores_seccional.addSeries(request);
                             return false;
                         }
                         message_error(request.error);
@@ -265,6 +268,67 @@
 
                     });
                 }
+
+                // GRAFICO PREFERENCIA DE VOTOS
+                var graph_preferencia_votos = Highcharts.chart('graph_preferencia_votos', {
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45,
+                            beta: 0
+                        }
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    accessibility: {
+                        point: {
+                            valueSuffix: '%'
+                        }
+                    },
+                    tooltip: {
+                        pointFormat: 'Total: <b>{point.y:.0f} Unidades</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            depth: 35,
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            }
+                        }
+                    },
+                });
+
+                function get_graph_preferencia_votos() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_preferencia_votos'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            graph_preferencia_votos.addSeries(request);
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
+
+                    });
+                }
+
+
+
 
                 function get_graph_purchase_vs_sale() {
                     $.ajax({
@@ -339,8 +403,9 @@
                 }
 
                 function init() {
-                    get_graph_stock_products();
-                    get_graph_purchase_vs_sale();
+                    get_graph_electores_seccional();
+                    get_graph_preferencia_votos();
+                    // get_graph_purchase_vs_sale();
                 }
 
                 $(function () {
