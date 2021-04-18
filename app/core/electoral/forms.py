@@ -224,6 +224,7 @@ class TipoVotoForm(ModelForm):
 class ElectorForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(estado__exact=True)
         self.fields['ci'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -257,6 +258,7 @@ class ElectorForm(ModelForm):
 class ElectorForm2(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(estado__exact=True)
         self.fields['barrio'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -271,6 +273,4 @@ class ElectorForm2(ModelForm):
             'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
-            # 'barrio': apply_select2(forms.Select),
-            # 'manzana': apply_select2(forms.Select),
         }
