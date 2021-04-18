@@ -21,6 +21,7 @@ class ElectorResource(resources.ModelResource):
 class ElectorAdmin(ImportExportModelAdmin):
     form = ElectorForm
     resource_class = ElectorResource
+    list_per_page = 25
 
 ''' 
 ====================
@@ -56,22 +57,25 @@ class ElectorAdmin2(ImportExportModelAdmin):
     resource_class = ElectorResources2  
     form = ElectorForm2 
     readonly_fields = ('ci','nombre','apellido','edad')   
-    list_display =['ci','nombre','apellido','telefono','get_cod_tipo_voto','barrio','manzana','nro_casa','edad']
+    list_display =['ci','nombre','apellido','telefono','get_cod_tipo_voto','manzana','nro_casa','edad']
     # list_editable =['telefono','barrio','manzana','nro_casa'] #Consume muchos recursos (tarda mucho la consulta)
     list_filter =['ciudad','seccional','barrio','manzana','tipo_voto']
     search_fields =['ci','nombre','apellido']
     list_display_links = ['ci','nombre','apellido']
-    
+    list_per_page = 25
     # ordering = ['seccional','-barrio','manzana','nro_casa']
-    
+
+   
     def edad(self,obj):
         return obj.get_edad()
     edad.short_description = 'Edad'
+    edad.admin_order_field = 'edad'
+    
     
     def get_cod_tipo_voto(self,obj):
         return obj.tipo_voto.cod if obj.tipo_voto else None
-
     get_cod_tipo_voto.short_description = 'Tipo Voto'
+
 
 ''' 
 ====================
@@ -98,12 +102,13 @@ class ElectorAdmin3(ImportExportModelAdmin):
     list_filter =['ciudad','seccional','barrio','manzana','tipo_voto']
     search_fields =['ci','nombre','apellido']
     list_display_links = ['ci','nombre','apellido']
-    
+    list_per_page = 25
     # ordering = ['seccional','-barrio','manzana','nro_casa']
-    
+
     def edad(self,obj):
         return obj.get_edad()
     edad.short_description = 'Edad'
+    edad.admin_order_field = 'edad'
     
 
 ''' 

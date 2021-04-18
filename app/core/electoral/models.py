@@ -81,11 +81,11 @@ class Ciudad(models.Model):
         verbose_name = 'Ciudad'
         verbose_name_plural = 'Ciudades'
         ordering = ['denominacion']
+
 ''' 
 ====================
 ===    BARRIO    ===
 ==================== '''
-
 class Barrio(models.Model):    
     ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
@@ -166,7 +166,7 @@ class TipoVoto(models.Model):
     class Meta:
         verbose_name = 'Tipo Voto'
         verbose_name_plural = 'Tipo de Votos'
-        ordering = ['cod','denominacion']
+        ordering = ['id','denominacion']
 
 
 ''' 
@@ -184,7 +184,7 @@ class Elector(models.Model):
     partido = models.CharField(max_length=250,null=True, blank=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
     fecha_afiliacion = models.DateField(null=True, blank=True)
-    tipo_voto = models.ForeignKey(TipoVoto, on_delete=models.PROTECT,null=True, blank=True)
+    tipo_voto = models.ForeignKey(TipoVoto,related_name="tipo_voto", on_delete=models.PROTECT,null=True, blank=True)
     voto1 = models.CharField(max_length=1,default='N')
     voto2 = models.CharField(max_length=1,default='N')
     voto3 = models.CharField(max_length=1,default='N')
@@ -205,7 +205,7 @@ class Elector(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self,exclude=[''])
-        item['barrio'] =  {'id':'','denominacion':''} if self.barrio is None else self.barrio.toJSON()
+        item['barrio']  =  {'id':'','denominacion':''} if self.barrio is None else self.barrio.toJSON()
         item['manzana'] =  {'id':'','denominacion':''} if self.manzana is None else self.manzana.toJSON()        
         item['fecha_nacimiento'] = self.fecha_nacimiento.strftime('%Y-%m-%d')
         item['fecha_afiliacion'] = self.fecha_afiliacion.strftime('%Y-%m-%d')
@@ -217,6 +217,11 @@ class Elector(models.Model):
         verbose_name_plural = 'Electores'
         ordering = ['id']
 
+
+''' 
+====================
+===   PADGRAL    ===
+==================== '''
 class Padgral(models.Model):
     mesa = models.CharField(max_length=3, blank=True, null=True)
     orden = models.CharField(max_length=5, blank=True, null=True)
