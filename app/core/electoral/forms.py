@@ -226,19 +226,25 @@ class ElectorForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(estado__exact=True)
         self.fields['ci'].widget.attrs['autofocus'] = True
-
+    
+    def set_readonly( self ):
+        for field in self.fields:                
+            self.fields[field].required = False
+            self.fields[field].widget.attrs['disabled'] = 'disabled'
+    
     class Meta:
         model = Elector
-        fields = '__all__'
+        fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
+                  'tipo_voto']
 
         widgets = {
-            'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre'}),
-            'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido'}),
-            'departamento': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
-            'distrito': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
-            'seccional': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
-            'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
-            'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
+            'ci': forms.TextInput(attrs={'placeholder': 'Ingrese Cedula','readonly':'readonly'}),
+            'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre','readonly':'readonly'}),
+            'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido','readonly':'readonly'}),
+            'ciudad': forms.Select(attrs={'class': 'form-control select2',}),
+            'barrio': forms.Select(attrs={'class': 'form-control select2', }),
+            'manzana': forms.Select(attrs={'class': 'form-control select2', }),
+            'tipo_voto': forms.Select(attrs={'class': 'form-control select2', }),
         }
 
     def save(self, commit=True):
@@ -251,6 +257,7 @@ class ElectorForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
 ''' 
 ====================
 ===   ELECTOR2    ===
@@ -258,9 +265,9 @@ class ElectorForm(ModelForm):
 class ElectorForm2(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(estado__exact=True)
+        # self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(estado__exact=True)
         self.fields['barrio'].widget.attrs['autofocus'] = True
-
+    
     class Meta:
         model = Elector
         fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
@@ -274,3 +281,7 @@ class ElectorForm2(ModelForm):
             'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
         }
+    
+    
+
+
