@@ -86,6 +86,33 @@ class SeccionalForm(ModelForm):
 
 ''' 
 ====================
+===    PAIS    ===
+==================== '''
+class PaisForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['denominacion'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Pais
+        fields = '__all__'
+        widgets = {
+            'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una Ciudad'}),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        try:
+            if self.is_valid():
+                super().save()
+            else:
+                data['error'] = self.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+''' 
+====================
 ===    CIUDAD    ===
 ==================== '''
 class CiudadForm(ModelForm):
@@ -163,6 +190,32 @@ class ManzanaForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+'''        
+====================
+===  TIPO VOTO   ===
+==================== '''
+class TipoVotoForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['cod'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = TipoVoto
+        fields = '__all__'
+        widgets = {
+            'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una TipoVoto'}),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        try:
+            if self.is_valid():
+                super().save()
+            else:
+                data['error'] = self.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
 
 ''' 
 ====================
@@ -208,13 +261,17 @@ class ElectorForm2(ModelForm):
 
     class Meta:
         model = Elector
-        fields = ['ci','nombre','apellido','barrio','manzana','nro_casa','telefono',]
+        fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
+                  'tipo_voto']
+
         
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre'}),
             'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido'}),
+            'ciudad': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
+            'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             # 'barrio': apply_select2(forms.Select),
             # 'manzana': apply_select2(forms.Select),
         }

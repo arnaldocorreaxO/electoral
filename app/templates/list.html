@@ -34,7 +34,29 @@
                 {% block content_list %}
                     <!--Block content list before-->
                     {% block content_list_before %}
-                        <br>
+                        <!-- <br> -->
+                    {% endblock %}
+                  
+                    {% block box_header %}
+                        <div>
+                        <!--Block box footer buttons-->
+                        {% block box_header_buttons %}
+                            {% if create_url %}
+                            <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                                <i class="fas fa-plus"></i> Nuevo Registro
+                            </a>
+                            {% endif %}
+                        <!--Block box footer add buttons-->
+                            {% block box_header_add_button %}{% endblock %}
+                            <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                                <i class="fas fa-sync-alt"></i> Actualizar
+                            </a>
+                        {% endblock %}
+                        </div>
+                    {% endblock %}
+                    <!--Block box footer after-->
+                    {% block box_header_after %}
+                            <br>
                     {% endblock %}
                     <!--Table-->
                     <table width="100%" class="table table-bordered table-striped" id="data">
@@ -58,15 +80,15 @@
                 <!--Block box footer buttons-->
                 {% block box_footer_buttons %}
                     {% if create_url %}
-                        <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                        <!-- <a href="{{ create_url }}" class="btn btn-primary btn-flat">
                             <i class="fas fa-plus"></i> Nuevo Registro
-                        </a>
+                        </a> -->
                     {% endif %}
                     <!--Block box footer add buttons-->
                     {% block box_footer_add_button %}{% endblock %}
-                    <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                    <!-- <a href="{{ list_url }}" class="btn btn-success btn-flat">
                         <i class="fas fa-sync-alt"></i> Actualizar
-                    </a>
+                    </a> -->
                 {% endblock %}
             </div>
         {% endblock %}

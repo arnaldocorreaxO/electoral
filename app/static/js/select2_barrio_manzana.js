@@ -30,7 +30,7 @@ $(function () {
         $.ajax({
             headers: { "X-CSRFToken": token.val() },            
             // url: window.location.pathname,
-            url: '/electoral/padron/elector/add/',
+            url: '/electoral/elector/add/',
             type: 'POST',
             data: {
                 'action': 'search_manzana_id',
