@@ -26,8 +26,7 @@ class ModuleListView(PermissionMixin, TemplateView):
             if action == 'search':
                 data = []
                 for a in Module.objects.all():
-                    data.append(a.toJSON())
-                    print('hola')
+                    data.append(a.toJSON())                    
             else:
                 data['error'] = 'No ha ingresado una opción'
         except Exception as e:
