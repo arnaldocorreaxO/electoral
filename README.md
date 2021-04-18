@@ -1,2 +1,0 @@
-# electoral
-Sistema Electoral
