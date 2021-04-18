@@ -251,6 +251,11 @@ class ElectorForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+class CategoryChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return "Tipo Voto: {}".format(obj.denominacion)
+
 ''' 
 ====================
 ===   ELECTOR2    ===
@@ -258,9 +263,9 @@ class ElectorForm(ModelForm):
 class ElectorForm2(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(estado__exact=True)
+        # self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(estado__exact=True)
         self.fields['barrio'].widget.attrs['autofocus'] = True
-
+    
     class Meta:
         model = Elector
         fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
@@ -274,3 +279,7 @@ class ElectorForm2(ModelForm):
             'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
             'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
         }
+    
+    
+
+

@@ -22,6 +22,12 @@ class ElectorAdmin(ImportExportModelAdmin):
     form = ElectorForm
     resource_class = ElectorResource
     list_per_page = 25
+    
+    '''Filtrar solo los tipos de votos activos'''
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'tipo_voto':
+            kwargs["queryset"] = TipoVoto.objects.filter(estado__exact=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 ''' 
 ====================
@@ -76,6 +82,12 @@ class ElectorAdmin2(ImportExportModelAdmin):
         return obj.tipo_voto.cod if obj.tipo_voto else None
     get_cod_tipo_voto.short_description = 'Tipo Voto'
 
+    '''Filtrar solo los tipos de votos activos'''
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'tipo_voto':
+            kwargs["queryset"] = TipoVoto.objects.filter(estado__exact=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
 
 ''' 
 ====================
@@ -109,6 +121,12 @@ class ElectorAdmin3(ImportExportModelAdmin):
         return obj.get_edad()
     edad.short_description = 'Edad'
     edad.admin_order_field = 'edad'
+    
+    '''Filtrar solo los tipos de votos activos'''
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == 'tipo_voto':
+            kwargs["queryset"] = TipoVoto.objects.filter(estado__exact=True)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
     
 
 ''' 
