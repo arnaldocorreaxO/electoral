@@ -36,7 +36,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         data = {}
         try:
             action = request.POST['action']
-            if action == 'get_graph_stock_products':
+            if action == 'get_graph_electores_seccional':
                 info = []
                 # for i in Product.objects.order_by('-id')[0:10]:
                 #     info.append([i.name, i.stock])
@@ -47,6 +47,22 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 
                 data = {
                     'name': 'Stock de Productos',
+                    'type': 'pie',
+                    'colorByPoint': True,
+                    'data': info,
+                }
+            elif action == 'get_graph_preferencia_votos':
+                info = []
+                # for i in Product.objects.order_by('-id')[0:10]:
+                #     info.append([i.name, i.stock])
+                for i in Elector.objects.values('tipo_voto__denominacion') \
+                        .annotate(tot_votos=Count(True)) \
+                        .order_by('-tot_votos'):
+                        info.append([i['tipo_voto__denominacion'] if i['tipo_voto__denominacion'] else 'SIN PREFERENCIA',
+                                     i['tot_votos']])
+               
+                data = {
+                    'name': 'Preferencia de Votos',
                     'type': 'pie',
                     'colorByPoint': True,
                     'data': info,
@@ -76,9 +92,9 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Panel de administración'
         context['company'] = Company.objects.first()
-        context['clients'] = Client.objects.all().count()
-        context['provider'] = Provider.objects.all().count()
-        context['category'] = Category.objects.filter().count()
+        context['elector'] = Elector.objects.all().count()
+        context['votos_positivos'] = Elector.objects.filter(tipo_voto__exact=6).count()
+        context['votos_negativos'] = Elector.objects.exclude(tipo_voto__cod__in=[6,'A','E','F']).count()
         context['product'] = Product.objects.all().count()
         context['sale'] = Sale.objects.filter().order_by('-id')[0:10]
         return context
