@@ -56,6 +56,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 # for i in Product.objects.order_by('-id')[0:10]:
                 #     info.append([i.name, i.stock])
                 for i in Elector.objects.values('tipo_voto__denominacion') \
+                        .exclude(tipo_voto__cod__in=['F','E'])\
                         .annotate(tot_votos=Count(True)) \
                         .order_by('-tot_votos'):
                         info.append([i['tipo_voto__denominacion'] if i['tipo_voto__denominacion'] else 'SIN PREFERENCIA',
