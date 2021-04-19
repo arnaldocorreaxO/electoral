@@ -197,13 +197,23 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Rango de Edades Elector</h3>
+                            <h3 class="card-title"><i class="fas fa-box"></i> Rango Edades Elector </h3>
                         </div>
                         <div class="card-body p-0">
-                            <div class="container-fluid p-3" id="graphrangoedades">
+                            <div id="graph_rango_edades_pie" style="height: 64vh;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Comparativo Edades Elector</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="container-fluid p-3" id="graph_rango_edades">
                             </div>
                         </div>
                     </div>
@@ -325,6 +335,63 @@
 
                     });
                 }
+                // GRAFICO RANGO DE EDADES PIE
+                var graph_rango_edades_pie = Highcharts.chart('graph_rango_edades_pie', {
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45,
+                            beta: 0
+                        }
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    accessibility: {
+                        point: {
+                            valueSuffix: '%'
+                        }
+                    },
+                    tooltip: {
+                        pointFormat: 'Total: <b>{point.y:.0f} Unidades</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            depth: 35,
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            }
+                        }
+                    },
+                });
+
+                function get_graph_rango_edades_pie() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_rango_edades_pie'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            graph_rango_edades_pie.addSeries(request);
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
+
+                    });
+                }
 
 
 
@@ -339,7 +406,7 @@
                         dataType: 'json',
                     }).done(function (request) {
                         if (!request.hasOwnProperty('error')) {
-                            Highcharts.chart('graphrangoedades', {
+                            Highcharts.chart('graph_rango_edades', {
                                 chart: {
                                     type: 'column'
                                 },
@@ -404,6 +471,7 @@
                 function init() {
                     get_graph_electores_seccional();
                     get_graph_preferencia_votos();
+                    get_graph_rango_edades_pie();
                     get_graph_rango_edades();
                 }
 

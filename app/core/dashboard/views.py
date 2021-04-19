@@ -48,7 +48,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                         info.append([i['seccional__denominacion'],i['tot_electores']])
                 
                 data = {
-                    'name': 'Stock de Productos',
+                    'name': 'Electores por Seccional',
                     'type': 'pie',
                     'colorByPoint': True,
                     'data': info,
@@ -70,16 +70,35 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     'colorByPoint': True,
                     'data': info,
                 }
+
+            elif action == 'get_graph_rango_edades_pie':
+                info = []
+                data = []
+                # Todas las edades de los Electores
+                for i in rango_edad[1:]:
+                    hoy = datetime.now()
+                    anho_ini = (hoy - relativedelta(years=i[1])).year
+                    anho_fin = (hoy - relativedelta(years=i[0])).year
+
+                    cant = Elector.objects.filter(fecha_nacimiento__year__range=[anho_ini,anho_fin])\
+                            .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                    info.append([i[2],cant])
+               
+                data = {
+                    'name': 'Pie Rango Edades',
+                    'type': 'pie',
+                    'colorByPoint': True,
+                    'data': info,
+                }
             elif action == 'get_graph_rango_edades':
                 data = []
-                year = datetime.now().year
                 rows = []
                 # Todas las edades de los Electores
                 for i in rango_edad[1:]:
                     hoy = datetime.now()
                     anho_ini = (hoy - relativedelta(years=i[1])).year
                     anho_fin = (hoy - relativedelta(years=i[0])).year
-                    print(anho_ini,'-',anho_fin)
+                    # print(anho_ini,'-',anho_fin)
                     result = Elector.objects.filter(fecha_nacimiento__year__range=[anho_ini,anho_fin])\
                                             .aggregate(cant=Coalesce(Count(True), 0))['cant']
                     rows.append(float(result))
@@ -90,7 +109,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     hoy = datetime.now()
                     anho_ini = (hoy - relativedelta(years=i[1])).year
                     anho_fin = (hoy - relativedelta(years=i[0])).year
-                    print(anho_ini,'-',anho_fin)
+                    # print(anho_ini,'-',anho_fin)
                     result = Elector.objects.filter(fecha_nacimiento__year__range=[anho_ini,anho_fin])\
                                             .exclude(barrio_id__exact=0)\
                                             .exclude(barrio__isnull=True)\
