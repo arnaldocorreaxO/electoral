@@ -93,6 +93,9 @@ class Barrio(models.Model):
     def __str__(self):
         return self.denominacion
     
+    def fullname(self):
+        return f"({self.pk}) - {self.denominacion}" 
+    
     def toJSON(self):
         item = model_to_dict(self)
         return item
@@ -113,11 +116,15 @@ class Manzana(models.Model):
     def __str__(self):
         return f"{self.barrio} - {self.denominacion}"
     
+    def fullname(self):
+        return f"({self.barrio.pk} / {self.cod}) - {self.denominacion}"
+
     def toJSON(self):
         item = model_to_dict(self)
         return item
-    def full_name(self):
-        return f"({self.id}) - {self.denominacion}"
+        
+    # def full_name(self):
+    #     return f"({self.id}) - {self.denominacion}"
 
 
     class Meta:
@@ -205,12 +212,15 @@ class Elector(models.Model):
     
     def toJSON(self):
         item = model_to_dict(self,exclude=[''])
-        item['barrio']  =  {'id':'','denominacion':''} if self.barrio is None else self.barrio.toJSON()
-        item['manzana'] =  {'id':'','denominacion':''} if self.manzana is None else self.manzana.toJSON()        
+        item['barrio']  =  self.barrio.toJSON() if self.barrio  else {'id':'','denominacion':''}
+        item['manzana'] =  self.barrio.toJSON() if self.manzana else {'id':'','denominacion':''}
+        item['barrio_fullname']  =  self.barrio.fullname() if self.barrio else None
+        item['manzana_fullname'] =  self.manzana.fullname() if self.manzana else None
         item['fecha_nacimiento'] = self.fecha_nacimiento.strftime('%Y-%m-%d')
-        item['fecha_afiliacion'] = self.fecha_afiliacion.strftime('%Y-%m-%d')
+        item['fecha_afiliacion'] = self.fecha_afiliacion.strftime('%Y-%m-%d')        
         item['edad'] = self.get_edad()
         return item
+
 
     class Meta:
         verbose_name = 'Elector'

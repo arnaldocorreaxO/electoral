@@ -40,8 +40,8 @@ function generateReport(all) {
             data: parameters,
             dataSrc: ''
         },
-        order: [[0, 'asc'],[1, 'asc'],[5,'asc']],
-        paging: false,
+        order: [[0, 'asc'],[1, 'asc'],[6,'asc']],
+        paging: true,
         ordering: true,
         searching: false,
         dom: 'Bfrtip',
@@ -114,29 +114,30 @@ function generateReport(all) {
             }
         ],
         columns: [
-            {data: "barrio.denominacion"},
-            {data: "manzana.denominacion"},
+            {data: "barrio_fullname"},
+            {data: "manzana_fullname"},
             {data: "ci"},
             {data: "nombre"},
             {data: "apellido"},
+            {data: "edad"},
             {data: "nro_casa"},
         ],
         columnDefs: [
-            {
-                targets: [-4],
-                class: 'text-center',
-                render: function (data, type, row) {
-                    return data;
-                }
-            },
-            {
-                targets: [-1],
-                class: 'text-center',
-                render: function (data, type, row) {
-                    return data;
-                    // return '$' + parseFloat(data).toFixed(2);
-                }
-            }
+            // {
+            //     targets: [-4],
+            //     class: 'text-center',
+            //     render: function (data, type, row) {
+            //         return data;
+            //     }
+            // },
+            // {
+            //     targets: [-1],
+            //     class: 'text-center',
+            //     render: function (data, type, row) {
+            //         return data;
+            //         // return '$' + parseFloat(data).toFixed(2);
+            //     }
+            // }
         ],
         rowCallback: function (row, data, index) {
 
@@ -150,7 +151,7 @@ function generateReport(all) {
             endRender: function ( rows, group ) {
             return '<b>'+group +'</b> ('+rows.count()+')';
             },
-            dataSrc: ["barrio.denominacion","manzana.denominacion"]
+            dataSrc: ["barrio_fullname","manzana_fullname"]
         },
         columnDefs: [ {
             targets: [ 0, 1 ],

@@ -196,20 +196,19 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="row">
+            <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Compras y Ventas del
-                                año {{ currentdate.year }}</h3>
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Rango de Edades Elector</h3>
                         </div>
                         <div class="card-body p-0">
-                            <div class="container-fluid p-3" id="graphpurchasevssale">
+                            <div class="container-fluid p-3" id="graphrangoedades">
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
             <script>
                 // GRAFICO ELECTORES POR SECCIONAL
                 var graph_electores_seccional = Highcharts.chart('graph_electores_seccional', {
@@ -330,17 +329,17 @@
 
 
 
-                function get_graph_purchase_vs_sale() {
+                function get_graph_rango_edades() {
                     $.ajax({
                         url: window.location.pathname,
                         type: 'POST',
                         data: {
-                            'action': 'get_graph_purchase_vs_sale'
+                            'action': 'get_graph_rango_edades'
                         },
                         dataType: 'json',
                     }).done(function (request) {
                         if (!request.hasOwnProperty('error')) {
-                            Highcharts.chart('graphpurchasevssale', {
+                            Highcharts.chart('graphrangoedades', {
                                 chart: {
                                     type: 'column'
                                 },
@@ -355,31 +354,31 @@
                                 },
                                 xAxis: {
                                     categories: [
-                                        'Enero',
-                                        'Febrero',
-                                        'Marzo',
-                                        'Abril',
-                                        'Mayo',
-                                        'Junio',
-                                        'Julio',
-                                        'Agosto',
-                                        'Septiembre',
-                                        'Octubre',
-                                        'Noviembre',
-                                        'Diciembre'
+                                    '15 a 25',
+                                    '26 a 30',
+                                    '31 a 35',
+                                    '36 a 40',
+                                    '41 a 45',
+                                    '46 a 50',
+                                    '51 a 55',
+                                    '56 a 60',
+                                    '61 a 65',
+                                    '66 a 70',
+                                    '71 a 75',
+                                    '75 y más'
                                     ],
                                     crosshair: true
                                 },
                                 yAxis: {
                                     min: 0,
                                     title: {
-                                        text: 'Valores $'
+                                        text: 'Cantidad Electores'
                                     }
                                 },
                                 tooltip: {
                                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                                        '<td style="padding:0"><b>${point.y:.2f}</b></td></tr>',
+                                        '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
                                     footerFormat: '</table>',
                                     shared: true,
                                     useHTML: true
@@ -405,7 +404,7 @@
                 function init() {
                     get_graph_electores_seccional();
                     get_graph_preferencia_votos();
-                    // get_graph_purchase_vs_sale();
+                    get_graph_rango_edades();
                 }
 
                 $(function () {
