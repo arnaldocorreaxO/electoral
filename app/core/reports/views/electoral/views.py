@@ -76,7 +76,8 @@ class Rpt002ReportView(ModuleMixin, FormView):
                 data = []
                 start_date = request.POST['start_date']
                 end_date = request.POST['end_date']
-                search = Elector.objects.filter(barrio__exact=1)
+                # search = Elector.objects.filter(barrio__exact=1)
+                search = Elector.objects.all().order_by('seccional','barrio','manzana')
                 if len(start_date) and len(end_date):
                     pass
                     # search = search.filter(date_joined__range=[start_date, end_date])

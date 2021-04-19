@@ -1,4 +1,5 @@
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum,Count
@@ -9,10 +10,11 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, requires_csrf_token
 from django.views.generic import TemplateView
 
-from core.reports.choices import months
+from core.reports.choices import months,rango_edad
 from core.pos.models import Product, Sale, Client, Provider, Category, Purchase, Company
 from core.electoral.models import Elector, Seccional
 from core.security.models import Dashboard
+
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -68,21 +70,34 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     'colorByPoint': True,
                     'data': info,
                 }
-            elif action == 'get_graph_purchase_vs_sale':
+            elif action == 'get_graph_rango_edades':
                 data = []
                 year = datetime.now().year
                 rows = []
-                for i in months[1:]:
-                    result = Sale.objects.filter(date_joined__month=i[0], date_joined__year=year).aggregate(
-                        resp=Coalesce(Sum('total'), 0.00))['resp']
+                # Todas las edades de los Electores
+                for i in rango_edad[1:]:
+                    hoy = datetime.now()
+                    anho_ini = (hoy - relativedelta(years=i[1])).year
+                    anho_fin = (hoy - relativedelta(years=i[0])).year
+                    print(anho_ini,'-',anho_fin)
+                    result = Elector.objects.filter(fecha_nacimiento__year__range=[anho_ini,anho_fin])\
+                                            .aggregate(cant=Coalesce(Count(True), 0))['cant']
                     rows.append(float(result))
-                data.append({'name': 'Ventas', 'data': rows})
+                data.append({'name': 'Total', 'data': rows})
                 rows = []
-                for i in months[1:]:
-                    result = Purchase.objects.filter(date_joined__month=i[0], date_joined__year=year).aggregate(
-                        resp=Coalesce(Sum('subtotal'), 0.00))['resp']
+                # Solo Electores Identificados
+                for i in rango_edad[1:]:
+                    hoy = datetime.now()
+                    anho_ini = (hoy - relativedelta(years=i[1])).year
+                    anho_fin = (hoy - relativedelta(years=i[0])).year
+                    print(anho_ini,'-',anho_fin)
+                    result = Elector.objects.filter(fecha_nacimiento__year__range=[anho_ini,anho_fin])\
+                                            .exclude(barrio_id__exact=0)\
+                                            .exclude(barrio__isnull=True)\
+                                            .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                    
                     rows.append(float(result))
-                data.append({'name': 'Compras', 'data': rows})
+                data.append({'name': 'Identificados', 'data': rows})
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
