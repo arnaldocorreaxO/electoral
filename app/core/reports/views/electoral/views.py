@@ -32,12 +32,6 @@ class Rpt001ReportView(ModuleMixin, FormView):
                         .annotate(cant_manzana=Count(True)) \
                         .order_by('barrio__cod',
                                   'manzana__cod')
-                # if len(start_date) and len(end_date):
-                #     pass
-                #     # search = search.filter(date_joined__range=[start_date, end_date])
-                # for i in search:
-                #     data.append(i.toJSON())
-                # print(qs.query)
                 for i in qs:
                     item = {'barrio':f"({i['barrio__id']}) - {i['barrio__denominacion']}" ,\
                            'manzana':f"({i['barrio__id']} / {i['manzana__cod']}) - {i['manzana__denominacion']}",\
@@ -77,7 +71,7 @@ class Rpt002ReportView(ModuleMixin, FormView):
                 start_date = request.POST['start_date']
                 end_date = request.POST['end_date']
                 # search = Elector.objects.filter(barrio__exact=1)
-                search = Elector.objects.all().order_by('seccional','barrio','manzana')
+                search = Elector.objects.all().order_by('seccional_id','barrio','manzana')
                 if len(start_date) and len(end_date):
                     pass
                     # search = search.filter(date_joined__range=[start_date, end_date])
