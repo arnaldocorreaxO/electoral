@@ -116,7 +116,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                                             .aggregate(cant=Coalesce(Count(True), 0))['cant']
                     #
                     rows.append(float(result))
-                data.append({'name': 'Identificados2', 'data': rows})
+                data.append({'name': 'Identificados', 'data': rows})
             else:
                 data['error'] = 'Ha ocurrido un error'
         except Exception as e:
