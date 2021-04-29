@@ -115,10 +115,10 @@ function getData(all) {
         //     }
         // ],
         columns: [
-            {data: "position"},
+            // {data: "position"},
             {data: "ci"},
-            {data: "apellido"},
-            {data: "nombre"},
+            {data: "apellido" + ', ' +"nombre"},
+            // {data: "nombre"},
             // {data: "barrio.denominacion"},
             // {data: "manzana.denominacion"},
             // {data: "nro_casa"},
