@@ -111,7 +111,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 data.append({'name': 'Margen', 'data': rows})
 
                 rows = []
-                cant_diferencia = float(cant_pasoxpc - cant_margen)
+                cant_diferencia = float(cant_pasoxpc - abs(cant_margen))
                 rows.append(float(cant_diferencia))
                 data.append({'name': 'Diferencia', 'data': rows})
 
