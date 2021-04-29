@@ -282,6 +282,51 @@ class ElectorForm2(ModelForm):
             'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 250px;'}),
         }
     
+''' 
+====================
+===   SHEARCH    ===
+==================== '''
+class ShearchForm(forms.Form):
+    term = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control',
+        'autocomplete': 'off'
+    }))
+
+
+''' 
+====================
+=== CARGA DIA D  ===
+==================== '''
+class CargaDiaDForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)        
+        self.set_readonly()
     
+    def set_readonly( self ):
+        for field in self.fields:                
+            self.fields[field].required = False
+            self.fields[field].widget.attrs['readonly'] = 'readonly'
+        
+    class Meta:
+        model = Elector
+        fields = ['ci','nombre','apellido','pasoxmv','pasoxpc']
+        # widgets = {
+        #     'ci': forms.TextInput(attrs={'placeholder': 'Ingrese Cedula','readonly':'readonly'}),
+        #     'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre','readonly':'readonly'}),
+        #     'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido','readonly':'readonly'}),
+        #     'ciudad': forms.Select(attrs={'class': 'form-control select2',}),
+        #     'barrio': forms.Select(attrs={'class': 'form-control select2', }),
+        #     'manzana': forms.Select(attrs={'class': 'form-control select2', }),
+        #     'tipo_voto': forms.Select(attrs={'class': 'form-control select2', }),
+        # }
 
-
+    def save(self, commit=True):
+        data = {}
+        try:
+            if self.is_valid():
+                super().save()
+            else:
+                data['error'] = self.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data

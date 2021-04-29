@@ -71,6 +71,50 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     'data': info,
                 }
 
+            elif action == 'get_graph_dia_d':
+                info = []
+                # for i in Product.objects.order_by('-id')[0:10]:
+                #     info.append([i.name, i.stock])
+                cant_pc =  Elector.objects.filter(pasoxpc__exact='S')\
+                                          .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                info.append(['PUESTO CONTROL',cant_pc])
+
+                cant_mv =  Elector.objects.filter(pasoxmv__exact='S')\
+                                          .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                info.append(['LOCAL VOTACION',cant_mv])
+               
+                data = {
+                    'name': 'Grafico Dia D',
+                    'type': 'pie',
+                    'colorByPoint': True,
+                    'data': info,
+                }   
+
+            elif action == 'get_graph_dia_d_bar':
+                data = []
+
+                rows = []
+                cant_pasoxpc =  Elector.objects.filter(pasoxpc__exact='S')\
+                                         .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                rows.append(float(cant_pasoxpc))
+                data.append({'name': 'Puesto de Control', 'data': rows})
+                
+                rows = []
+                cant_pasoxmv =  Elector.objects.filter(pasoxmv__exact='S')\
+                                         .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                rows.append(float(cant_pasoxmv))
+                data.append({'name': 'Local de Votacion', 'data': rows})
+                
+                rows = []
+                cant_margen = float(cant_pasoxmv - cant_pasoxpc)
+                rows.append(float(cant_margen))
+                data.append({'name': 'Margen', 'data': rows})
+
+                rows = []
+                cant_diferencia = float(cant_pasoxpc - cant_margen)
+                rows.append(float(cant_diferencia))
+                data.append({'name': 'Diferencia', 'data': rows})
+
             elif action == 'get_graph_rango_edades_pie':
                 info = []
                 data = []
