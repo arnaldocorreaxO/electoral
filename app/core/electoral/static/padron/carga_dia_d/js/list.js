@@ -117,7 +117,7 @@ function getData(all) {
         columns: [
             // {data: "position"},
             {data: "ci"},
-            {data: "apellido" + ', ' +"nombre"},
+            {data: "fullname"},
             // {data: "nombre"},
             // {data: "barrio.denominacion"},
             // {data: "manzana.denominacion"},

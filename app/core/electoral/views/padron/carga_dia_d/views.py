@@ -41,9 +41,10 @@ class CargaDiaDListView(PermissionMixin, FormView):
                             Q(ci=term1) | Q(apellido__icontains=term) | Q(nombre__icontains=term)).order_by('apellido','nombre')[0:10]:
                         item = p.toJSON()
                         item['position'] = position
+                        item['fullname'] = f"{item['apellido']}, {item['nombre']}"
                         data.append(item)
                         position += 1
-                    print(data)
+                    # print(data)
             else:
                 data['error'] = 'No ha ingresado una opción'
         except Exception as e:
