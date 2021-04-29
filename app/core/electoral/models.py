@@ -197,6 +197,8 @@ class Elector(models.Model):
     voto3 = models.CharField(max_length=1,default='N')
     voto4 = models.CharField(max_length=1,default='N')
     voto5 = models.CharField(max_length=1,default='N')    
+    pasoxpc = models.CharField(max_length=1,default='N')    
+    pasoxmv = models.CharField(max_length=1,default='N')    
     ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT,null=True,blank=True) 
     barrio = models.ForeignKey(Barrio, on_delete=models.PROTECT,null=True,blank=True) 
     manzana = models.ForeignKey(Manzana, on_delete=models.PROTECT,null=True,blank=True) 

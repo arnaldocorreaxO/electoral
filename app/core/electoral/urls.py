@@ -7,6 +7,7 @@ from core.electoral.views.padron.barrio.views import *
 from core.electoral.views.padron.manzana.views import *
 from core.electoral.views.padron.tipo_voto.views import *
 from core.electoral.views.padron.elector.views import *
+from core.electoral.views.padron.carga_dia_d.views import *
 from django.urls import path
 
 
@@ -57,5 +58,10 @@ urlpatterns = [
     path('elector/add/', ElectorCreateView.as_view(), name='elector_create'),
     path('elector/update/<int:pk>/', ElectorUpdateView.as_view(), name='elector_update'),
     path('elector/delete/<int:pk>/', ElectorDeleteView.as_view(), name='elector_delete'),
+    #Carga de Votos
+    path('carga_dia_d', CargaDiaDListView.as_view(), name='carga_dia_d_list'),
+    path('carga_dia_d/add/', CargaDiaDCreateView.as_view(), name='carga_dia_d_create'),
+    path('carga_dia_d/update/<int:pk>/', CargaDiaDUpdateView.as_view(), name='carga_dia_d_update'),
+    path('carga_dia_d/delete/<int:pk>/', CargaDiaDDeleteView.as_view(), name='carga_dia_d_delete'),
 
    ]

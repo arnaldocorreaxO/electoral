@@ -8,6 +8,7 @@
 __pycache__/
 local_settings.py
 db.sqlite3
+db - copia.sqlite3
 db2.sqlite3
 db3.sqlite3
 db.sqlite3-journal

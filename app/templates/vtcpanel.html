@@ -137,44 +137,30 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <!-- <div class="col-md-6">
+            <div class="row">               
+                <div class="col-md-6">
                     <div class="card">
-                        <div class="card-header border-transparent">
-                            <h3 class="card-title"><i class="fas fa-shopping-cart"></i> Las últimas 10 Ventas</h3>
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-box"></i> Control Día D </h3>
                         </div>
                         <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table m-0">
-                                    <thead>
-                                    <tr>
-                                        <th>Nro</th>
-                                        <th>Cliente</th>
-                                        <th>Fecha de registro</th>
-                                        <th>Subtotal</th>
-                                        <th>Dscto</th>
-                                        <th>Iva</th>
-                                        <th>Total</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for v in sale %}
-                                        <tr>
-                                            <td>{{ v.id }}</td>
-                                            <td>{{ v.client.user.get_full_name }}</td>
-                                            <td>{{ v.date_joined|date:'c' }}</td>
-                                            <td>${{ v.subtotal }}</td>
-                                            <td>${{ v.total_dscto }}</td>
-                                            <td>${{ v.total_iva }}</td>
-                                            <td>${{ v.total }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+                            <div id="graph_dia_d" style="height: 64vh;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D </h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="container-fluid p-3" id="graph_dia_d_bar">
                             </div>
                         </div>
                     </div>
-                </div> -->
+                </div>
+            </div>
+            <div class="row">               
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
@@ -196,6 +182,7 @@
                     </div>
                 </div>
             </div>
+            
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">
@@ -220,6 +207,64 @@
                 </div>
             </div>
             <script>
+                // GRAFICO CONTROL DIA D
+                var graph_dia_d = Highcharts.chart('graph_dia_d', {
+                    chart: {
+                        type: 'pie',
+                        options3d: {
+                            enabled: true,
+                            alpha: 45,
+                            beta: 0
+                        }
+                    },
+                    exporting: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ''
+                    },
+                    accessibility: {
+                        point: {
+                            valueSuffix: '%'
+                        }
+                    },
+                    tooltip: {
+                        pointFormat: 'Total: <b>{point.y:.0f} Unidades</b>'
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            depth: 35,
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+                            }
+                        }
+                    },
+                });
+
+                function get_graph_dia_d() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_dia_d'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            graph_dia_d.addSeries(request);
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
+
+                    });
+                }
+
                 // GRAFICO ELECTORES POR SECCIONAL
                 var graph_electores_seccional = Highcharts.chart('graph_electores_seccional', {
                     chart: {
@@ -335,6 +380,8 @@
 
                     });
                 }
+                
+
                 // GRAFICO RANGO DE EDADES PIE
                 var graph_rango_edades_pie = Highcharts.chart('graph_rango_edades_pie', {
                     chart: {
@@ -393,9 +440,68 @@
                     });
                 }
 
+                function get_graph_dia_d_bar() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_dia_d_bar'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            Highcharts.chart('graph_dia_d_bar', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                exporting: {
+                                    enabled: false
+                                },
+                                xAxis: {
+                                    categories: [
+                                    'CONTROL'                                 
+                                    ],
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    // min: 0,
+                                    title: {
+                                        text: 'Cantidad Electores'
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0
+                                    }
+                                },
+                                series: request
+                            });
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
 
+                    });
+                }
 
-
+                //GRAFICO BARRA RANGO DE EDADES
                 function get_graph_rango_edades() {
                     $.ajax({
                         url: window.location.pathname,
@@ -469,6 +575,8 @@
                 }
 
                 function init() {
+                    get_graph_dia_d();
+                    get_graph_dia_d_bar();
                     get_graph_electores_seccional();
                     get_graph_preferencia_votos();
                     get_graph_rango_edades_pie();
