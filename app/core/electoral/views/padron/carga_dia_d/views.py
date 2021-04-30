@@ -1,5 +1,7 @@
+from django.db import transaction
 from django.db.models.functions import Concat
 from django.db.models.expressions import Value
+from django.views.generic.base import TemplateView
 from core.electoral.models import Manzana
 from datetime import date, datetime
 from core.reports.forms import ReportForm
@@ -14,7 +16,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormView
 
 from core.electoral.forms import Elector, CargaDiaDForm, ShearchForm
-from core.security.mixins import PermissionMixin
+from core.security.mixins import ModuleMixin, PermissionMixin
 
 
 class CargaDiaDListView(PermissionMixin, FormView):
@@ -153,7 +155,7 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
             if action == 'edit':
                 elector = self.object
                 # elector.pasoxmv = 'S'
-                elector.pasoxpc = 'S'
+                elector.pasoxmv = 'S'
                 # data = self.get_form().save()
                 elector.save()
             elif action == 'edit_pc':
@@ -203,4 +205,47 @@ class CargaDiaDDeleteView(PermissionMixin, DeleteView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Notificación de eliminación'
         context['list_url'] = self.success_url
+        return context
+
+
+
+class CargaElectorDiaDView(ModuleMixin, TemplateView):
+    template_name = 'padron/carga_dia_d/carga_dia_d_elector.html'
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        data = {}
+        action = request.POST['action']
+        try:
+            if action == 'search_elector':
+                data = []
+                ids = json.loads(request.POST['ids'])
+                term = request.POST['term']
+                search = Elector.objects.exclude(id__in=ids).order_by('apellido','nombre')
+                if len(term):
+                    search = search.filter(apellido__icontains=term)
+                    search = search[0:10]
+                for i in search:
+                    item = i.toJSON()
+                    item['value'] = '{} / {}'.format(i.nombre, i.apellido)
+                    data.append(item)
+            elif action == 'create':
+                with transaction.atomic():
+                    productsjson = json.loads(request.POST['products'])
+                    for p in productsjson:
+                        product = Elector.objects.get(pk=p['id'])
+                        product.stock = int(p['newstock'])
+                        product.save()
+            else:
+                data['error'] = 'No ha ingresado una opción'
+        except Exception as e:
+            data['error'] = str(e)
+        return HttpResponse(json.dumps(data), content_type='application/json')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Carga Día D Puesto de Control'
         return context
