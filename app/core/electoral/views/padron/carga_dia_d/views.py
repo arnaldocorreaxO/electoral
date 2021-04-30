@@ -1,3 +1,5 @@
+from django.db.models.functions import Concat
+from django.db.models.expressions import Value
 from core.electoral.models import Manzana
 from datetime import date, datetime
 from core.reports.forms import ReportForm
@@ -31,15 +33,26 @@ class CargaDiaDListView(PermissionMixin, FormView):
         try:
             if action == 'search':
                 data = []
-                term = request.POST['term'] 
+                term = request.POST['term']
+                 
                 if len(term):
                     term1 = 0
                     if term.isnumeric():
                         term1 = term
-                    position = 1               
-                    for p in Elector.objects.filter(
-                            Q(ci=term1) | Q(apellido__icontains=term) | Q(nombre__icontains=term)).order_by('apellido','nombre')[0:10]:
-                        item = p.toJSON()
+                    else:
+                        term = '%' + term.replace(' ','%') + '%'
+                    position = 1    
+                    # q = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+                    #                  .filter( Q(ci=term1) | Q(fullname__icontains=term)) \
+                    #                  .extra(where=['ci = %s OR upper(nombre|| " "|| apellido) LIKE upper(%s)'], params=[term1,term]) \
+                    #                  .order_by('fullname')[0:10].query
+                    qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+                                     .extra(where=['ci = %s OR upper(nombre|| " "|| apellido) LIKE upper(%s)'], params=[term1,term]) \
+                                     .order_by('fullname')[0:10]
+                    # print(qs.query)
+
+                    for i in qs:
+                        item = i.toJSON()
                         item['position'] = position
                         item['fullname'] = f"{item['apellido']}, {item['nombre']}"
                         data.append(item)
