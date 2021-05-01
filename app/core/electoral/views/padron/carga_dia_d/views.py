@@ -209,7 +209,7 @@ class CargaDiaDDeleteView(PermissionMixin, DeleteView):
 
 
 
-class CargaElectorDiaDView(ModuleMixin, TemplateView):
+class CargaDiaDElectoView(ModuleMixin, TemplateView):
     template_name = 'padron/carga_dia_d/carga_dia_d_elector.html'
 
     @method_decorator(csrf_exempt)
@@ -224,21 +224,31 @@ class CargaElectorDiaDView(ModuleMixin, TemplateView):
                 data = []
                 ids = json.loads(request.POST['ids'])
                 term = request.POST['term']
-                search = Elector.objects.exclude(id__in=ids).order_by('apellido','nombre')
+                # search = Elector.objects.exclude(id__in=ids).order_by('apellido','nombre')
                 if len(term):
-                    search = search.filter(apellido__icontains=term)
-                    search = search[0:10]
+                    term1 = 0
+                    if term.isnumeric():
+                        term1 = term
+                    else:
+                        term = '%' + term.replace(' ','%') + '%'
+
+                    search = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+                                            .exclude(id__in=ids) \
+                                            .extra(where=['ci = %s OR upper(nombre|| " "|| apellido) LIKE upper(%s)'], params=[term1,term]) \
+                                            .order_by('fullname')[0:10]
+                 
                 for i in search:
                     item = i.toJSON()
-                    item['value'] = '{} / {}'.format(i.nombre, i.apellido)
+                    item['value'] = '{} , {}'.format(i.nombre, i.apellido)
                     data.append(item)
             elif action == 'create':
                 with transaction.atomic():
-                    productsjson = json.loads(request.POST['products'])
-                    for p in productsjson:
-                        product = Elector.objects.get(pk=p['id'])
-                        product.stock = int(p['newstock'])
-                        product.save()
+                    electoresjson = json.loads(request.POST['electores'])
+                    print(electoresjson)
+                    for e in electoresjson:
+                        elector = Elector.objects.get(pk=e['id'])
+                        elector.pasoxpc = 'S'
+                        elector.save()
             else:
                 data['error'] = 'No ha ingresado una opción'
         except Exception as e:
