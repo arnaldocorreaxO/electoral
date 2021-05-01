@@ -60,6 +60,7 @@ urlpatterns = [
     path('elector/delete/<int:pk>/', ElectorDeleteView.as_view(), name='elector_delete'),
     #Carga de Votos
     path('carga_dia_d', CargaDiaDListView.as_view(), name='carga_dia_d_list'),
+    path('carga_dia_d_elector', CargaDiaDElectoView.as_view(), name='carga_dia_d_elector'),
     path('carga_dia_d/add/', CargaDiaDCreateView.as_view(), name='carga_dia_d_create'),
     path('carga_dia_d/update/<int:pk>/', CargaDiaDUpdateView.as_view(), name='carga_dia_d_update'),
     path('carga_dia_d/delete/<int:pk>/', CargaDiaDDeleteView.as_view(), name='carga_dia_d_delete'),

@@ -7,7 +7,7 @@ var electores = {
         elector: []
     },
     add_elector: function (item) {
-        this.details.Elector.push(item);
+        this.details.elector.push(item);
         this.list_elector();
     },
     list_elector: function () {
@@ -35,7 +35,7 @@ var electores = {
                     targets: [-1],
                     class: 'text-center',
                     render: function (data, type, row) {
-                        return '<input type="text" class="form-control input-sm" style="width: 100px;" autocomplete="off" name="newstock" value="' + row.newstock + '">';
+                        return data;
                     }
                 },
                 {
@@ -99,6 +99,7 @@ $(function () {
                 },
                 success: function (data) {
                     response(data);
+                    console.log(data);
                 }
             });
         },
@@ -205,17 +206,17 @@ $(function () {
     electores.list_elector();
 
     $('.btnCreate').on('click', function () {
-        if (electores.details.Elector.length === 0) {
+        if (electores.details.elector.length === 0) {
             message_error('Debe tener al menos un producto en su detalle');
             return false;
         }
         submit_with_ajax('Notificación', '¿Estas seguro de realizar la siguiente acción?', pathname,
             {
                 'action': 'create',
-                'Elector': JSON.stringify(electores.details.elector)
+                'electores': JSON.stringify(electores.details.elector)
             },
             function (request) {
-                location.href = '/dashboard/';
+                location.href = pathname;
             }
         );
     });
