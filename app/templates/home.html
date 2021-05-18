@@ -40,18 +40,18 @@
 
 {% endblock %}
 <!--Javascript-->
-<script type="application/javascript">
+    <script type="application/javascript">
 
-    var pathname = window.location.pathname;
+        var pathname = window.location.pathname;
 
-    $(function () {
+        $(function () {
 
-        $('.table').on('click', 'img', function () {
-            load_image($(this).attr('src'));
+            $('.table').on('click', 'img', function () {
+                load_image($(this).attr('src'));
+            });
+
+            $('[data-toggle="tooltip"]').tooltip();
         });
 
-        $('[data-toggle="tooltip"]').tooltip();
-    });
-
-</script>
+    </script>
 </html>

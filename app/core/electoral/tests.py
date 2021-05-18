@@ -8,7 +8,8 @@ from pyreportjasper import PyReportJasper
 
 # Create your tests here.
 def processing():
-	REPORTS_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)+ "/../"), 'reports')
+	# REPORTS_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__) + "/../"), 'reports')
+	REPORTS_DIR = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'reports')
 	print(REPORTS_DIR)
 	# JDBC_DIR = os.path.join(REPORTS_DIR,'sqlite-jdbc-3.34.0.jar')
 	JDBC_DIR = os.path.join(REPORTS_DIR,'postgresql-42.2.20.jar')
@@ -19,22 +20,22 @@ def processing():
 	output_file = os.path.join(REPORTS_DIR, 'rpt_001')
 	pyreportjasper = PyReportJasper()
 	# conn = {
-	#         'driver': 'sqlite3',
+	#         'driver': 'sqlite3',ja
 	#         'jdbc_driver': 'org.sqlite.JDBC',
-	#         # 'url': 'jdbc:sqlite:'+SQLITE_DIR,
+	#         #'url': 'jdbc:sqlite:'+SQLITE_DIR,
 	#         'jdbc_dir': JDBC_DIR,
 	# 		'database': 'jdbc:sqlite:C:\\Users\\arnaldo\\proyectos\\electoral\\app\\db\\db.sqlite3',
 	# }
 	conn = {
-			'driver': 'postgres',
-			'username': 'postgres',
-			'password': 'ox82',
-			'host': 'localhost',
-			'database': 'electoral',
-			'schema': 'public',
-			'port': '5432',
+			'driver'    : 'postgres',
+			'username'  : 'postgres',
+			'password'  : 'ox82',
+			'host'      : 'localhost',
+			'database'  : 'electoral',
+			'schema'    : 'public',
+			'port'      : '5432',
 			'jdbc_driver':'org.postgresql.Driver',
-			'jdbc_dir': JDBC_DIR
+			'jdbc_dir'  : JDBC_DIR
 	}
 	print(input_file)	
 
