@@ -1,26 +1,26 @@
-{% extends 'list.html' %}
+{% extends 'list2.html' %}
 {% load static %}
 {% block head_list %}
     <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/spanish.js' %}"></script>
     <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.js' %}"></script>
     <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.css' %}"/>
-    <script src="{% static 'padron/carga_dia_d/js/list.js' %}"></script>
+    <script src="{% static 'padron/carga_dia_d/js/list_carga_dia_d_elector_mv.js' %}"></script>
 {% endblock %}
 
 {% block box_header %}{% endblock %}
 
 
 {% block columns %}
-    <!-- <th style="width: 5%;">N°</th> -->
     <th style="width: 5%;">CI</th>
     <th style="width: 15%;">Apellido y Nombre</th>
-    <!-- <th style="width: 15%;">Nombre</th> -->
-    <!-- <th style="width: 10%;">Barrio</th>
-    <th style="width: 10%;">Manzana</th>
-    <th style="width: 10%;">Nro. Casa</th>
-    <th style="width: 10%;">Fecha Nacimiento</th>
-    <th style="width: 10%;">Edad</th> -->
-    <!-- <th style="width: 10%;">Fecha Afiliacion</th> -->
+    <th style="width: 10%;" class="text-center">Opciones</th>
+{% endblock %}
+
+{% block columns2 %}
+    <th style="width: 5%;">Mesa</th>
+    <th style="width: 5%;">Orden</th>
+    <th style="width: 5%;">CI</th>
+    <th style="width: 15%;">Apellido y Nombre</th>    
     <th style="width: 10%;" class="text-center">Opciones</th>
 {% endblock %}
 

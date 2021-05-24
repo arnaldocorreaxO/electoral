@@ -21,7 +21,7 @@ from core.security.mixins import ModuleMixin, PermissionMixin
 
 class CargaDiaDListView(PermissionMixin, FormView):
     # model = Elector
-    template_name = 'padron/carga_dia_d/list.html'
+    template_name = 'padron/carga_dia_d/list_carga_dia_d_elector_mv.html'
     permission_required = 'view_elector'
     form_class = ShearchForm
  
@@ -49,7 +49,7 @@ class CargaDiaDListView(PermissionMixin, FormView):
                     #                  .extra(where=['ci = %s OR upper(nombre|| " "|| apellido) LIKE upper(%s)'], params=[term1,term]) \
                     #                  .order_by('fullname')[0:10].query
                     qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
-                                     .extra(where=['ci = %s OR upper(nombre|| " "|| apellido) LIKE upper(%s)'], params=[term1,term]) \
+                                     .extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
                                      .order_by('fullname')[0:10]
                     # print(qs.query)
 
@@ -60,6 +60,19 @@ class CargaDiaDListView(PermissionMixin, FormView):
                         data.append(item)
                         position += 1
                     # print(data)
+            elif action == 'search_pasoxmv':
+                data = []  
+                position = 1    
+
+                qs = Elector.objects.filter(pasoxmv='S')                    
+
+                for i in qs:
+                    item = i.toJSON()
+                    item['position'] = position
+                    item['fullname'] = f"{item['apellido']}, {item['nombre']}"
+                    data.append(item)
+                    position += 1
+ 
             else:
                 data['error'] = 'No ha ingresado una opción'
         except Exception as e:
@@ -69,7 +82,8 @@ class CargaDiaDListView(PermissionMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['create_url'] = reverse_lazy('elector_create')
-        context['title'] = 'Carga de Votos Electores'
+        context['title'] = 'Carga de Votos Mesa de Votacion'
+        context['title2'] = 'Lista de Electores Mesa de Votación'
         return context
 
 
@@ -207,48 +221,71 @@ class CargaDiaDDeleteView(PermissionMixin, DeleteView):
         context['list_url'] = self.success_url
         return context
 
-
-
-class CargaDiaDElectoView(ModuleMixin, TemplateView):
-    template_name = 'padron/carga_dia_d/carga_dia_d_elector.html'
-
+class CargaDiaDElectorView(PermissionMixin, FormView):
+    # model = Elector
+    template_name = 'padron/carga_dia_d/list_carga_dia_d_elector_pc.html'
+    permission_required = 'view_elector'
+    form_class = ShearchForm
+ 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
+    
     def post(self, request, *args, **kwargs):
         data = {}
         action = request.POST['action']
         try:
             if action == 'search_elector':
                 data = []
-                ids = json.loads(request.POST['ids'])
                 term = request.POST['term']
-                # search = Elector.objects.exclude(id__in=ids).order_by('apellido','nombre')
+                 
                 if len(term):
                     term1 = 0
                     if term.isnumeric():
                         term1 = term
                     else:
                         term = '%' + term.replace(' ','%') + '%'
+                    position = 1    
+                    # q = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+                    #                  .filter( Q(ci=term1) | Q(fullname__icontains=term)) \
+                    #                  .extra(where=['ci = %s OR upper(nombre|| " "|| apellido) LIKE upper(%s)'], params=[term1,term]) \
+                    #                  .order_by('fullname')[0:10].query
+                    qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+                                     .extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
+                                     .order_by('fullname')[0:10]
+                    # print(qs.query)
 
-                    search = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
-                                            .exclude(id__in=ids) \
-                                            .extra(where=['ci = %s OR upper(nombre|| " "|| apellido) LIKE upper(%s)'], params=[term1,term]) \
-                                            .order_by('fullname')[0:10]
-                 
-                for i in search:
+                    for i in qs:
+                        item = i.toJSON()
+                        item['position'] = position
+                        item['fullname'] = f"{item['apellido']}, {item['nombre']}"
+                        item['value'] = '{} , {}'.format(i.nombre, i.apellido)
+                        data.append(item)
+                        position += 1
+                    # print(data)
+            elif action == 'search_pasoxpc':
+                data = []  
+                position = 1    
+
+                qs = Elector.objects.filter(pasoxpc='S')                    
+
+                for i in qs:
                     item = i.toJSON()
-                    item['value'] = '{} , {}'.format(i.nombre, i.apellido)
+                    item['position'] = position
+                    item['fullname'] = f"{item['apellido']}, {item['nombre']}"
                     data.append(item)
-            elif action == 'create':
-                with transaction.atomic():
-                    electoresjson = json.loads(request.POST['electores'])
-                    print(electoresjson)
-                    for e in electoresjson:
-                        elector = Elector.objects.get(pk=e['id'])
-                        elector.pasoxpc = 'S'
-                        elector.save()
+                    position += 1           
+            
+            elif action == 'edit_pasoxpc':                                
+                id = request.POST['id']
+                q = Elector.objects.get(id=id)
+                if q.pasoxpc=='S':
+                    data['error'] = f"{q.nombre}, {q.apellido} ya pasó por PC"
+                else:
+                    q.pasoxpc='S'
+                    q.save()
+
+ 
             else:
                 data['error'] = 'No ha ingresado una opción'
         except Exception as e:
@@ -257,5 +294,57 @@ class CargaDiaDElectoView(ModuleMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Carga Día D Puesto de Control'
+        context['create_url'] = reverse_lazy('elector_create')
+        context['title'] = 'Carga de Votos Mesa de Votacion'
+        context['title2'] = 'Lista de Electores Mesa de Votación'
         return context
+
+# class CargaDiaDElectorView(ModuleMixin, TemplateView):
+#     template_name = 'padron/carga_dia_d/list_carga_dia_d_elector_pc.html'
+
+#     @method_decorator(csrf_exempt)
+#     def dispatch(self, request, *args, **kwargs):
+#         return super().dispatch(request, *args, **kwargs)
+
+#     def post(self, request, *args, **kwargs):
+#         data = {}
+#         action = request.POST['action']
+#         try:
+#             if action == 'search_elector':
+#                 data = []
+#                 # ids = json.loads(request.POST['ids'])
+#                 term = request.POST['term']
+#                 # search = Elector.objects.exclude(id__in=ids).order_by('apellido','nombre')
+#                 if len(term):
+#                     term1 = 0
+#                     if term.isnumeric():
+#                         term1 = term
+#                     else:
+#                         term = '%' + term.replace(' ','%') + '%'
+
+#                     search = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+#                                             .extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
+#                                             .order_by('fullname')[0:10]
+                 
+#                 for i in search:
+#                     item = i.toJSON()
+#                     item['value'] = '{} , {}'.format(i.nombre, i.apellido)
+#                     data.append(item)
+#             elif action == 'create':
+#                 with transaction.atomic():
+#                     electoresjson = json.loads(request.POST['electores'])
+#                     print(electoresjson)
+#                     for e in electoresjson:
+#                         elector = Elector.objects.get(pk=e['id'])
+#                         elector.pasoxpc = 'S'
+#                         elector.save()
+#             else:
+#                 data['error'] = 'No ha ingresado una opción'
+#         except Exception as e:
+#             data['error'] = str(e)
+#         return HttpResponse(json.dumps(data), content_type='application/json')
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = 'Carga Día D Puesto de Control'
+#         return context

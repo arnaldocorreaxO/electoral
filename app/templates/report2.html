@@ -14,8 +14,8 @@
     <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
     <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
-    <!--Block head form-->
-    {% block head_form %}{% endblock %}
+    <!--Block head report-->
+    {% block head_report %}{% endblock %}
 {% endblock %}
 
 {% block content %}
@@ -24,8 +24,8 @@
         <div class="card {{ dshboard.card }}">
             <div class="card-header">
                 <h3 class="card-title">
-                    {% if action == 'add' %}
-                        <i class="fas fa-plus"></i>
+                    {% if action == 'report' %}
+                        <i class="fas fa-chart-bar"></i>
                     {% else %}
                         <i class="fas fa-edit"></i>
                     {% endif %}
@@ -54,7 +54,7 @@
                 <div class="card-footer">
                     {% block buttons %}
                         <button type="submit" class="btn btn-primary btn-flat">
-                            <i class="fas fa-save"></i> Guardar registro
+                            <i class="fas fa-save"></i> Visualizar
                         </button>
                         <a href="{{ list_url }}" class="btn btn-danger btn-flat">
                             <i class="fas fa-times"></i> Cancelar

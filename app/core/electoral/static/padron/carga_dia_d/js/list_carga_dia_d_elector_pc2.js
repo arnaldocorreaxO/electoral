@@ -27,8 +27,8 @@ var electores = {
                 {data: "ci"},
                 {data: "nombre"},
                 {data: "apellido"},
-                {data: "id"},
-                {data: "id"},
+                {data: "mesa"},
+                {data: "orden"},
             ],
             columnDefs: [
                 {
@@ -221,3 +221,31 @@ $(function () {
         );
     });
 })
+
+
+function addElector() {
+    var parameters = {
+        'action': 'edit_pasoxpc',
+        'term' : input_term.val(),
+    };
+    $.ajax({
+        url: pathname,
+        data: parameters,
+        method: 'POST',
+        // dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function (request) {
+            console.log(request);
+            
+            if (!request.hasOwnProperty('error')) {
+                location.href = fv.form.getAttribute('data-url');
+                return false;
+            }
+            message_error(request.error);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            message_error(errorThrown + ' ' + textStatus);
+        }
+    });
+}

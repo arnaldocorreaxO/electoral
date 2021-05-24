@@ -1,0 +1,155 @@
+{% extends 'skin.html' %}
+{% load static %}
+{% block head_body %}
+    <!-- DATATABLES -->
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/> 
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+    <script src="{% static 'lib/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script> 
+    <!-- PLUGIN BUTTONS -->
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/css/buttons.bootstrap.min.css' %}"/>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/dataTables.buttons.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/jszip-2.5.0/jszip.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/pdfmake-0.1.36/pdfmake.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/pdfmake-0.1.36/vfs_fonts.js' %}" type="text/javascript"></script>
+    <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/buttons.html5.min.js' %}" type="text/javascript"></script>
+
+    <!--Block head list-->
+    {% block head_list %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class="card {{ dshboard.card }}">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-search"></i>
+                {{ title }}
+            </h3>
+        </div>
+        <div class="card-body" style="display: block;">
+            <div class="container-fluid">
+                <!--Block content list-->
+                {% block content_list %}
+                    <!--Block content list before-->
+                    {% block content_list_before %}
+                        <!-- <br> -->
+                    {% endblock %}
+                  
+                    {% block box_header %}
+                        <div>
+                        <!--Block box footer buttons-->
+                        {% block box_header_buttons %}
+                            {% if create_url %}
+                            <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                                <i class="fas fa-plus"></i> Nuevo Registro
+                            </a>
+                            {% endif %}
+                        <!--Block box footer add buttons-->
+                            {% block box_header_add_button %}{% endblock %}
+                            <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                                <i class="fas fa-sync-alt"></i> Actualizar
+                            </a>
+                        {% endblock %}
+                        </div>
+                    {% endblock %}
+                    <!--Block box footer after-->
+                    {% block box_header_after %}
+                            <br>
+                    {% endblock %}
+                    <!--Table-->
+                    <table width="100%" class="table table-bordered table-striped" id="data">
+                        <thead>
+                        <tr>
+                            <!--Columns-->
+                            {% block columns %}{% endblock %}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <!--Rows-->
+                        {% block rows %}{% endblock %}
+                        </tbody>
+                    </table>
+               
+                {% endblock %}
+            </div>
+        </div>
+        <!--Block box footer-->
+        {% block box_footer %}
+            <div class="card-footer">
+                <!--Block box footer buttons-->
+                {% block box_footer_buttons %}
+                    {% if create_url %}
+                        <!-- <a href="{{ create_url }}" class="btn btn-primary btn-flat">
+                            <i class="fas fa-plus"></i> Nuevo Registro
+                        </a> -->
+                    {% endif %}
+                    <!--Block box footer add buttons-->
+                    {% block box_footer_add_button %}{% endblock %}
+                    <!-- <a href="{{ list_url }}" class="btn btn-success btn-flat">
+                        <i class="fas fa-sync-alt"></i> Actualizar
+                    </a> -->
+                {% endblock %}
+            </div>
+        {% endblock %}
+        <!--Block box footer after-->
+        {% block box_footer_after %}{% endblock %}
+    </div>
+    {% block javascript_list %}
+    
+        <script type="application/javascript">
+
+            var table;
+            $(function () {
+                table = $('#data').DataTable({
+                    responsive: true,
+                    autoWidth: false,
+                    destroy: true,
+                    deferRender: true,
+                    initComplete: function (settings, json) {
+
+                    }
+                });
+
+                $('.table')
+                    .on('draw', function () {
+                        $('[data-toggle="tooltip"]').tooltip();
+                    })
+                    .on('click', 'img', function () {
+                        var src = $(this).attr('src');
+                        load_image(src);
+                    });
+            });
+        </script>
+    {% endblock %}
+
+
+    <br>
+
+    <div class="card {{ dshboard.card }}">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-search"></i>
+                {{ title2 }}
+            </h3>
+        </div>
+        <div class="card-body" style="display: block;">
+            <div class="container-fluid">
+        <!--Table-->
+        <table width="100%" class="table table-bordered table-striped" id="data2">
+            <thead>
+            <tr>
+                <!--Columns-->
+                {% block columns2 %}{% endblock %}
+            </tr>
+            </thead>
+            <tbody>
+            <!--Rows-->
+            {% block rows2 %}{% endblock %}
+            </tbody>
+        </table>
+        <div class="card-footer"></div>
+    </div>
+
+{% endblock %}

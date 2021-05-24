@@ -19,13 +19,7 @@ def processing():
 	input_file = os.path.join(REPORTS_DIR, 'rpt_001.jrxml')
 	output_file = os.path.join(REPORTS_DIR, 'rpt_001')
 	pyreportjasper = PyReportJasper()
-	# conn = {
-	#         'driver': 'sqlite3',ja
-	#         'jdbc_driver': 'org.sqlite.JDBC',
-	#         #'url': 'jdbc:sqlite:'+SQLITE_DIR,
-	#         'jdbc_dir': JDBC_DIR,
-	# 		'database': 'jdbc:sqlite:C:\\Users\\arnaldo\\proyectos\\electoral\\app\\db\\db.sqlite3',
-	# }
+
 	conn = {
 			'driver'    : 'postgres',
 			'username'  : 'postgres',

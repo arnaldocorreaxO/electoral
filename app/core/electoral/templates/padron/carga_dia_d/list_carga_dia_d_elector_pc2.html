@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
     <link rel="stylesheet" href="{% static 'lib/bootstrap-touchspin-v4.2.5/css/jquery.bootstrap-touchspin.css' %}"/>
     <script src="{% static 'lib/bootstrap-touchspin-v4.2.5/js/jquery.bootstrap-touchspin.js' %}"></script>
-    <script src="{% static 'padron/carga_dia_d/js/carga_dia_d_elector.js' %}"></script>
+    <script src="{% static 'padron/carga_dia_d/js/list_carga_dia_d_elector_pc.js' %}"></script>
 {% endblock %}
 
 
@@ -24,7 +24,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="form-group">
-                            <label>Búsqueda de productos:</label>
+                            <label>Buscar por Cédula o Nombre y Apellido</label>
                             <div class="input-group input-group-search">
                                 <input type="text" class="form-control" autocomplete="off" name="searchElector"
                                        placeholder="Ingrese el nombre de un producto">
@@ -70,34 +70,5 @@
             </a>
         </div>
     </div>
-    <div id="myModalSearchElector" class="modal fade" role="dialog">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <b><i class="fa fa-search"></i> Búsqueda de productos</b>
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <table width="100%" class="table table-bordered display nowrap" id="tblSearchElector">
-                            <thead>
-                            <tr>
-                                <th style="width: 25%;">Nombre</th>
-                                <th style="width: 25%;">Categoría</th>
-                                <th style="width: 25%;">Stock</th>
-                                <th style="width: 25%;">Agregar</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 {% endblock %}

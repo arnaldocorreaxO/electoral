@@ -168,10 +168,30 @@ WHERE numero_ced = electoral_elector.ci)
 
 
 
-SELECT * FROM electoral_elector 
-ORDER BY barrio_id, manzana_id 
+SELECT pasoxpc, COUNT(pasoxpc), pasoxmv, COUNT(pasoxmv) FROM electoral_elector 
+WHERE pasoxpc = 'S' OR pasoxmv = 'S'
+GROUP BY 1,3
+
 
 
 SELECT * FROM security_module
 
 
+SELECT "electoral_elector"."id", "electoral_elector"."departamento_id",
+"electoral_elector"."distrito_id", "electoral_elector"."seccional_id",
+"electoral_elector"."ci", "electoral_elector"."apellido", 
+"electoral_elector"."nombre", "electoral_elector"."direccion",
+"electoral_elector"."partido", "electoral_elector"."fecha_nacimiento", 
+"electoral_elector"."fecha_afiliacion", "electoral_elector"."tipo_voto_id",
+"electoral_elector"."voto1", "electoral_elector"."voto2",
+"electoral_elector"."voto3", "electoral_elector"."voto4",
+"electoral_elector"."voto5", "electoral_elector"."pasoxpc",
+"electoral_elector"."pasoxmv", "electoral_elector"."ciudad_id",
+"electoral_elector"."barrio_id", "electoral_elector"."manzana_id", 
+"electoral_elector"."nro_casa", 
+"electoral_elector"."telefono",
+ COALESCE("electoral_elector"."nombre", "") || COALESCE(COALESCE(" " ," " ) || COALESCE("electoral_elector"."apellido","" ),"" ) AS "fullname" 
+ FROM "electoral_elector" 
+ WHERE ("electoral_elector"."ci" = 0 
+ OR COALESCE("electoral_elector"."nombre","" ) || COALESCE(COALESCE(" " ," " ) || COALESCE("electoral_elector"."apellido","" ),"" ) 
+ LIKE '%ARNALDO%CORREA%' ESCAPE '\') ORDER BY "fullname" ASC LIMIT 10

@@ -1,3 +1,5 @@
+from django.contrib.admin.options import ModelAdmin
+from django.db.models.base import Model
 from core.electoral.forms import *
 from core.electoral.models import Elector, Padgral
 from django.contrib import admin
@@ -6,7 +8,7 @@ from import_export.admin import ImportExportModelAdmin
 
 # Register your models here.
 from .models import Elector
-
+from core.base.models import *
 # ElectorForm = select2_modelform(Elector, attrs={'width': '250px'})
 
 ''' 
@@ -16,10 +18,10 @@ from .models import Elector
 class ElectorResource(resources.ModelResource):
     class Meta:
         model = Elector
-        fields = '__all__'
+        
 
 class ElectorAdmin(ImportExportModelAdmin):
-    form = ElectorForm
+    # form = ElectorForm
     resource_class = ElectorResource
     list_per_page = 25
     
@@ -133,8 +135,10 @@ class ElectorAdmin3(ImportExportModelAdmin):
 =======================
 === REGISTRAR ADMIN ===
 ======================= '''
+admin.site.register(LocalVotacion, ModelAdmin)
 admin.site.register(Elector, ElectorAdmin)
 admin.site.register(Elector2, ElectorAdmin2)
 admin.site.register(Elector3, ElectorAdmin3)
 admin.site.register(Padgral, PadGralAdmin)
+
 
