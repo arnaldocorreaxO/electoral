@@ -1,3 +1,11 @@
+// $(function () {
+
+//     $('.select2').select2({
+//         theme: "bootstrap4",
+//         language: 'es'
+//     });
+// });
+
 function message(text) {
     $.LoadingOverlay("show", {
         image: "",
@@ -76,6 +84,27 @@ function message_error(message) {
         }, null, message);
     } else {
         alert_sweetalert('error', 'Error', message, function () {
+
+        }, null, "");
+    }
+}
+
+function message_warning(message) {
+    var type = typeof (message) === "object";
+    if (typeof (message) === "object") {
+        var errors = '<ul style="list-style: square; text-align: left;">';
+        $.each(message, function (index, item) {
+            errors += '<li><b style="text-transform:capitalize;">' + index + "</b>.- " + item + '</li>';
+        });
+        errors += '</ul>';
+        message = errors;
+    }
+    if (type) {
+        alert_sweetalert('warning', 'Atención!', "", function () {
+
+        }, null, message);
+    } else {
+        alert_sweetalert('warning', 'Atención!', message, function () {
 
         }, null, "");
     }

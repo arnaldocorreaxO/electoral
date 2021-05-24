@@ -21,7 +21,7 @@ class ManzanaListView(PermissionMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['create_url'] = reverse_lazy('manzana_create')
-        context['title'] = 'Listado de Manzanes'
+        context['title'] = 'Listado de Manzanas'
         return context
 
 
@@ -65,7 +65,7 @@ class ManzanaCreateView(PermissionMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['list_url'] = self.success_url
-        context['title'] = 'Nuevo registro de un Manzana'
+        context['title'] = 'Nuevo registro de Manzana'
         context['action'] = 'add'
         return context
 
@@ -112,7 +112,7 @@ class ManzanaUpdateView(PermissionMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['list_url'] = self.success_url
-        context['title'] = 'Edición de un Manzana'
+        context['title'] = 'Edición de Manzana'
         context['action'] = 'edit'
         return context
 

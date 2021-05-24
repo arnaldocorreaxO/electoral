@@ -1,5 +1,7 @@
+from core.base.models import Reporte
 import json
 from django.db.models.aggregates import Count
+from core.reports.jasperbase import JasperReportBase
 
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
@@ -7,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView
 
 from core.electoral.models import Barrio, Elector, Manzana
-from core.reports.forms import ReportForm
+from core.reports.forms import ReportForm, ReportFormElector001
 from core.security.mixins import ModuleMixin
 
 '''Reporte de Barrios y Manzanas con Codigo'''
@@ -53,10 +55,17 @@ class Rpt001ReportView(ModuleMixin, FormView):
 
 
 
+
+class RptElectoral001Config(JasperReportBase):
+    report_name  = 'rpt_electoral001'
+    
+    
+
+
 '''Electores por Barrios y Manzanas'''
 class Rpt002ReportView(ModuleMixin, FormView):
     template_name = 'electoral/reports/rpt002.html'
-    form_class = ReportForm
+    form_class = ReportFormElector001
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -66,17 +75,19 @@ class Rpt002ReportView(ModuleMixin, FormView):
         action = request.POST['action']
         data = {}
         try:
-            if action == 'search_report':
+            if action == 'report':
                 data = []
-                start_date = request.POST['start_date']
-                end_date = request.POST['end_date']
-                # search = Elector.objects.filter(barrio__exact=1)
-                search = Elector.objects.all().order_by('seccional_id','barrio','manzana')
-                if len(start_date) and len(end_date):
-                    pass
-                    # search = search.filter(date_joined__range=[start_date, end_date])
-                for i in search:
-                    data.append(i.toJSON())
+                barrio = int(request.POST['barrio']) if request.POST['barrio'] else None
+                manzana = int(request.POST['manzana']) if request.POST['manzana'] else None
+                         
+                report = RptElectoral001Config()     
+                report.report_title = report_title = Reporte.objects.filter(nombre_reporte=report.report_name).first().titulo_reporte                        
+                report.params['P_BARRIO_ID']= barrio
+                report.params['P_MANZANA_ID']= manzana 
+                
+                return report.render_to_response()
+               
+
             else:
                 data['error'] = 'No ha ingresado una opción'
         except Exception as e:
@@ -86,4 +97,5 @@ class Rpt002ReportView(ModuleMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Reporte de Elector por Barrios y Manzanas'
+        context['action'] = 'report'
         return context

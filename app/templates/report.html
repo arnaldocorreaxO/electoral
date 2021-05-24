@@ -1,6 +1,7 @@
 {% extends 'list.html' %}
 {% load static %}
 {% block head_list %}
+    <!-- Datatables Libs -->
     <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/css/buttons.bootstrap.min.css' %}"/>
     <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/dataTables.buttons.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/jszip-2.5.0/jszip.min.js' %}" type="text/javascript"></script>
@@ -8,9 +9,15 @@
     <script src="{% static 'lib/datatables-1.10.20/plugins/pdfmake-0.1.36/vfs_fonts.js' %}" type="text/javascript"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/buttons.html5.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/buttons.print.min.js' %}" type="text/javascript"></script>
+    <!-- DateRangerPicker Libs -->
     <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/spanish.js' %}"></script>
     <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.js' %}"></script>
     <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.css' %}"/>
+    <!-- Select2 Libs -->
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
     <!--Block head report-->
     {% block head_report %}{% endblock %}
 {% endblock %}

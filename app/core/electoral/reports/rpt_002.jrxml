@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rpt_001" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ba0f302e-7940-4e06-a588-1bee7ec99b04">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SQLITE_ELECTORAL"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
+	<parameter name="P_BARRIO_ID" class="java.lang.Long">
+		<parameterDescription><![CDATA[BARRIO]]></parameterDescription>
+	</parameter>
+	<parameter name="P_MANZANA_COD" class="java.lang.Long"/>
+	<parameter name="P_TITULO1" class="java.lang.String"/>
+	<parameter name="P_TITULO2" class="java.lang.String"/>
+	<parameter name="P_REPORTE" class="java.lang.String"/>
+	<parameter name="P_RUTA" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT   
+e.departamento_id AS cod_departamento, 
+d.denominacion 	AS departamento,
+t.cod 				AS cod_distrito, 
+t.denominacion 	AS distrito,
+s.cod					AS cod_seccional, 
+s.denominacion		AS seccional,
+e.ci 					AS ci,
+e.apellido 			AS apellido,
+e.nombre 			AS nombre,
+b.denominacion||' - '||b.id||'/'||
+m.cod||' - '||m.denominacion as barrio_manzana,
+e.tipo_voto_id AS tipo_voto,
+e.nro_casa	
+FROM   	  electoral_elector e 
+INNER JOIN electoral_departamento d ON e.departamento_id = d.id
+INNER JOIN electoral_distrito t 		ON e.distrito_id 		= t.id 
+INNER JOIN electoral_seccional s 	ON e.seccional_id 	= s.id
+LEFT  JOIN electoral_barrio b 		ON e.barrio_id 		= b.id
+LEFT  JOIN electoral_manzana m 		ON e.manzana_id 		= m.id 
+WHERE 1=1
+AND (b.id = $P{P_BARRIO_ID} OR $P{P_BARRIO_ID} IS NULL)
+AND (m.cod = $P{P_MANZANA_COD}OR $P{P_MANZANA_COD} IS NULL)
+ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]>
+	</queryString>
+	<field name="cod_departamento" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="cod_departamento"/>
+		<property name="com.jaspersoft.studio.field.label" value="cod_departamento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_elector"/>
+	</field>
+	<field name="departamento" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="departamento"/>
+		<property name="com.jaspersoft.studio.field.label" value="departamento"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_departamento"/>
+	</field>
+	<field name="cod_distrito" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="cod_distrito"/>
+		<property name="com.jaspersoft.studio.field.label" value="cod_distrito"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_distrito"/>
+	</field>
+	<field name="distrito" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="distrito"/>
+		<property name="com.jaspersoft.studio.field.label" value="distrito"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_distrito"/>
+	</field>
+	<field name="cod_seccional" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="cod_seccional"/>
+		<property name="com.jaspersoft.studio.field.label" value="cod_seccional"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_seccional"/>
+	</field>
+	<field name="seccional" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="seccional"/>
+		<property name="com.jaspersoft.studio.field.label" value="seccional"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_seccional"/>
+	</field>
+	<field name="ci" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="ci"/>
+		<property name="com.jaspersoft.studio.field.label" value="ci"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_elector"/>
+	</field>
+	<field name="apellido" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="apellido"/>
+		<property name="com.jaspersoft.studio.field.label" value="apellido"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_elector"/>
+	</field>
+	<field name="nombre" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="nombre"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombre"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_elector"/>
+	</field>
+	<field name="barrio_manzana" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="barrio_manzana"/>
+		<property name="com.jaspersoft.studio.field.label" value="barrio_manzana"/>
+	</field>
+	<field name="tipo_voto" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="tipo_voto"/>
+		<property name="com.jaspersoft.studio.field.label" value="tipo_voto"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_elector"/>
+	</field>
+	<field name="nro_casa" class="java.lang.Object">
+		<property name="com.jaspersoft.studio.field.name" value="nro_casa"/>
+		<property name="com.jaspersoft.studio.field.label" value="nro_casa"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_elector"/>
+	</field>
+	<group name="Group1" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{barrio_manzana}]]></groupExpression>
+		<groupHeader>
+			<band height="45">
+				<textField>
+					<reportElement x="50" y="0" width="510" height="20" uuid="61aaf6ed-f0ad-4981-bdda-aa4654c952f5"/>
+					<box>
+						<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+						<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="12" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{barrio_manzana}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="24" width="70" height="21" uuid="f4ebc135-81f3-4f52-9f7d-8a17af71e947">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b58a7b6a-dba4-4586-aeaa-5ecfd971d7e6"/>
+					</reportElement>
+					<box leftPadding="2">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[CI]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="70" y="24" width="150" height="21" uuid="af317a60-b6ac-4105-b4c0-c965a23d72d0">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="67fe75bb-e1db-46f1-9b0e-a023a3a2f183"/>
+					</reportElement>
+					<box leftPadding="2">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[APELLIDO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="220" y="24" width="160" height="21" uuid="9d1b8135-6269-4e34-b682-26104fdf0eec">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d0efd009-f36d-455f-9303-7008c4d0924c"/>
+					</reportElement>
+					<box leftPadding="2">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[NOMBRE]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="399" y="24" width="160" height="21" uuid="b0309166-0ea0-4cc7-8c7b-de60c744b286">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d0efd009-f36d-455f-9303-7008c4d0924c"/>
+					</reportElement>
+					<box leftPadding="5">
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[OBSERVACIONES]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="73">
+			<textField>
+				<reportElement x="50" y="2" width="510" height="18" uuid="c90e11db-aa81-4780-b751-a4d623570501"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{P_TITULO1}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="20" width="510" height="20" uuid="fa40376d-3b58-4e17-bec4-485484e2aae1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{P_TITULO2}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="40" width="510" height="20" uuid="84bbd460-3007-4467-9a0c-2e10b951c0bf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{P_REPORTE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<textField textAdjust="StretchHeight" pattern="#,##0">
+				<reportElement stretchType="ElementGroupHeight" x="0" y="0" width="70" height="24" uuid="1c01bebb-c90a-41cd-bd2a-511946d6d8fa">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b58a7b6a-dba4-4586-aeaa-5ecfd971d7e6"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ci}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="ElementGroupHeight" x="70" y="0" width="150" height="24" uuid="7aa747d4-5412-4c4a-8c87-bd038afe8997">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="67fe75bb-e1db-46f1-9b0e-a023a3a2f183"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{apellido}]]></textFieldExpression>
+			</textField>
+			<textField textAdjust="StretchHeight">
+				<reportElement stretchType="ElementGroupHeight" x="220" y="0" width="160" height="24" uuid="3b107d11-3458-432d-89b3-8dd900db5100">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d0efd009-f36d-455f-9303-7008c4d0924c"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement stretchType="ElementGroupHeight" x="399" y="0" width="160" height="24" uuid="946efa1d-db5b-413e-b2f8-4ff4d3518459">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d0efd009-f36d-455f-9303-7008c4d0924c"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement stretchType="ElementGroupHeight" x="380" y="0" width="19" height="24" uuid="18d59380-c539-4139-af6a-c3cf423b799e"/>
+				<box padding="1">
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{nro_casa}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="29" splitType="Stretch">
+			<textField>
+				<reportElement x="80" y="10" width="200" height="19" uuid="275a3616-58ed-4958-9b99-f3d77a862f28"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pág. " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Group" evaluationGroup="Group1">
+				<reportElement x="280" y="10" width="200" height="19" uuid="f5c1ac6e-b1b6-4ca7-81b8-5984e8581551"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
