@@ -171,7 +171,7 @@ class LocalVotacion(models.Model):
         return item
 
     class Meta:
-        db_table = 'local_votacion'
+        # db_table = 'local_votacion'
         verbose_name = 'Local Votacion'
         verbose_name_plural = 'Locales de Votacion'
         ordering = ['ciudad','denominacion']
