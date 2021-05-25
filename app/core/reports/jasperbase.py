@@ -12,6 +12,7 @@ class JasperReportBase():
 	report_title= ''
 	filename 	= ''
 	params = {}
+	# La disposicion de las barras del path es diferente para Linux '{report_dir}/{report_name}.jrxml'
 	def __init__(self):
 		self.input_file = '{report_dir}\\{report_name}.jrxml'.format(report_dir=settings.REPORTS_DIR,report_name=self.report_name)		
 		self.output_file = '{report_dir}\\{report_name}'.format(report_dir=settings.REPORTS_DIR,report_name=self.report_name)			
