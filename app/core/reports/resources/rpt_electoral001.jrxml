@@ -218,7 +218,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 						<rightPen lineWidth="1.0"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="9" isBold="true"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[PC]]></text>
 				</staticText>
