@@ -207,7 +207,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 					<box>
 						<pen lineWidth="1.0"/>
 					</box>
-					<imageExpression><![CDATA[$P{P_RUTA}+ "\\house.png"]]></imageExpression>
+					<imageExpression><![CDATA[$P{P_RUTA}+ "house.png"]]></imageExpression>
 				</image>
 				<staticText>
 					<reportElement x="361" y="24" width="18" height="21" uuid="dbeb95f8-1fbc-47be-99bf-a40c2cc29ef3"/>
@@ -279,7 +279,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 			</textField>
 			<image onErrorType="Icon">
 				<reportElement x="0" y="0" width="60" height="70" uuid="b0312ba4-0922-41f9-bd0c-e8c99988ccd3"/>
-				<imageExpression><![CDATA[$P{P_RUTA} +  "\\logo_empresa.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{P_RUTA} +  "logo_empresa.png"]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="50" y="37" width="510" height="20" uuid="26d8dbb7-c737-4b0c-847b-9a98f244562e"/>
