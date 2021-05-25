@@ -4,3 +4,4 @@
 env/* 
 *.directory 
 */.directory
+app/core/reports/jasperbase.py
