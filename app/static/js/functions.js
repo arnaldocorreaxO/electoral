@@ -101,13 +101,13 @@ function message_warning(message) {
         message = errors;
     }
     if (type) {
-        alert_sweetalert('warning', 'Atención!', "", function () {
+        alert_sweetalert('warning', 'Atención!', "X", function () {
 
         }, null, message);
     } else {
-        alert_sweetalert('warning', 'Atención!', message, function () {
+        alert_sweetalert('warning', 'Atención!', "X", function () {
 
-        }, null, "");
+        }, null, message);
     }
 }
 
