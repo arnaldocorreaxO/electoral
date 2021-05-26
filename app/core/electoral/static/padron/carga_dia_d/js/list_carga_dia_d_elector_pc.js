@@ -103,7 +103,6 @@ function addElector(id) {
             message_warning(request.error);
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            // console.log('ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR')
             message_error(errorThrown + ' ' + textStatus);
         }
     });
