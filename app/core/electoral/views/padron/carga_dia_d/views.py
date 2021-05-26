@@ -331,7 +331,13 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
                 id = request.POST['id']
                 elector = Elector.objects.get(id=id)
                 if elector.pasoxpc=='S':
-                    data['error'] = f"{elector.nombre}, {elector.apellido} ya pasó por PC"
+                    info = f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b> <br>" 
+                    info +=  f"CI: <b> {elector.ci} </b> <br>"
+                    info += f"{elector.nombre}, {elector.apellido} <br>"
+                    info += '<b> VOTA EN </b>  <br> ' 
+                    info += f"{elector.local_votacion} <br> <br>"                    
+                    info += '<b> YA PASÓ POR PC </b> <br>'              
+                    data['error'] = info
                 else:
                     elector.pasoxpc='S'
                     elector.save()
@@ -339,8 +345,7 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
                     info += f"{elector.nombre}, {elector.apellido} <br>"
                     info += '<b> VOTA EN </b>  <br> ' 
                     info += f"{elector.local_votacion} <br> <br>"
-                    info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"
-                
+                    info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"                
                     data['info'] = info
                     
 
