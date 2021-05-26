@@ -340,7 +340,7 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
                     info += '<b> VOTA EN </b>  <br> ' 
                     info += f"{elector.local_votacion} <br> <br>"
                     info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"
-                    print(info)
+                
                     data['info'] = info
                     
 

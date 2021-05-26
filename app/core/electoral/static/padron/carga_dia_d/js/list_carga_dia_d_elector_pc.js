@@ -93,7 +93,7 @@ function addElector(id) {
 
         },
         success: function (request) {
-            console.log(request);
+            // console.log(request);
             getData() ;
             
             if (!request.hasOwnProperty('error')) {
@@ -141,7 +141,7 @@ $(function () {
             event.preventDefault();
             $(this).blur();
             addElector(ui.item.id)
-            console.log(ui.item);
+            // console.log(ui.item);
             $(this).val('').focus();
         }
     });
