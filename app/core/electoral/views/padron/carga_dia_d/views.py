@@ -1,3 +1,4 @@
+import math
 from django.db import transaction
 from django.db.models.functions import Concat
 from django.db.models.expressions import Value
@@ -44,10 +45,6 @@ class CargaDiaDListView(PermissionMixin, FormView):
                     else:
                         term = '%' + term.replace(' ','%') + '%'
                     position = 1    
-                    # q = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
-                    #                  .filter( Q(ci=term1) | Q(fullname__icontains=term)) \
-                    #                  .extra(where=['ci = %s OR upper(nombre|| " "|| apellido) LIKE upper(%s)'], params=[term1,term]) \
-                    #                  .order_by('fullname')[0:10].query
                     qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
                                      .extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
                                      .order_by('fullname')[0:10]
@@ -61,17 +58,45 @@ class CargaDiaDListView(PermissionMixin, FormView):
                         position += 1
                     # print(data)
             elif action == 'search_pasoxmv':
-                data = []  
-                position = 1    
+                data = []          
+                _start = request.POST['start']
+                _length = request.POST['length']
+                _search = request.POST['search[value]']
 
-                qs = Elector.objects.filter(pasoxmv='S')                    
+                # print(request.POST)    
+                _where = "'' = %s"
+                if len(_search):
+                    if _search.isnumeric():
+                        _where = " ci = %s"
+                    else:
+                        _search = '%' + _search.replace(' ','%') + '%'
+                        _where = " upper(nombre||' '|| apellido) LIKE upper(%s)"  
+                
+                qs = Elector.objects.filter(pasoxmv='S')\
+                                    .extra(where=[_where], params=[_search]) 
+                total = qs.count()   
 
+                if _start and _length:
+                    start = int(_start)
+                    length = int(_length)
+                    page = math.ceil(start / length) + 1
+                    per_page = length 
+
+                    qs = qs[start:start + length]                    
+                
                 for i in qs:
                     item = i.toJSON()
-                    item['position'] = position
+                    # item['position'] = position
                     item['fullname'] = f"{item['apellido']}, {item['nombre']}"
                     data.append(item)
-                    position += 1
+                    # position += 1   
+                data = {'data': data,
+                        'page': page,  # [opcional]
+                        'per_page': per_page,  # [opcional]
+                        'recordsTotal': total,
+                        'recordsFiltered': total, }
+               
+                # return JsonResponse(data,safe=False)
  
             else:
                 data['error'] = 'No ha ingresado una opción'
@@ -264,28 +289,55 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
                         position += 1
                     # print(data)
             elif action == 'search_pasoxpc':
-                data = []  
-                position = 1    
+                data = []          
+                _start = request.POST['start']
+                _length = request.POST['length']
+                _search = request.POST['search[value]']
 
-                qs = Elector.objects.filter(pasoxpc='S')                    
+                # print(request.POST)    
+                _where = "'' = %s"
+                if len(_search):
+                    if _search.isnumeric():
+                        _where = " ci = %s"
+                    else:
+                        _search = '%' + _search.replace(' ','%') + '%'
+                        _where = " upper(nombre||' '|| apellido) LIKE upper(%s)"  
+                
+                qs = Elector.objects.filter(pasoxpc='S')\
+                                    .extra(where=[_where], params=[_search]) 
+                total = qs.count()   
 
+                if _start and _length:
+                    start = int(_start)
+                    length = int(_length)
+                    page = math.ceil(start / length) + 1
+                    per_page = length 
+
+                    qs = qs[start:start + length]                    
+                
                 for i in qs:
                     item = i.toJSON()
-                    item['position'] = position
+                    # item['position'] = position
                     item['fullname'] = f"{item['apellido']}, {item['nombre']}"
                     data.append(item)
-                    position += 1           
+                    # position += 1   
+                data = {'data': data,
+                        'page': page,  # [opcional]
+                        'per_page': per_page,  # [opcional]
+                        'recordsTotal': total,
+                        'recordsFiltered': total, }
+               
+                # return JsonResponse(data,safe=False)
             
             elif action == 'edit_pasoxpc':                                
                 id = request.POST['id']
-                q = Elector.objects.get(id=id)
-                if q.pasoxpc=='S':
-                    data['error'] = f"{q.nombre}, {q.apellido} ya pasó por PC"
+                elector = Elector.objects.get(id=id)
+                if elector.pasoxpc=='S':
+                    data['error'] = f"{elector.nombre}, {elector.apellido} ya pasó por PC"
                 else:
-                    q.pasoxpc='S'
-                    q.save()
+                    elector.pasoxpc='S'
+                    elector.save()
 
- 
             else:
                 data['error'] = 'No ha ingresado una opción'
         except Exception as e:
@@ -295,8 +347,7 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['create_url'] = reverse_lazy('elector_create')
-        context['title'] = 'Carga de Votos Mesa de Votacion'
-        context['title2'] = 'Lista de Electores Mesa de Votación'
+        context['title'] = 'Carga de Electores Puesto de Control'
         return context
 
 # class CargaDiaDElectorView(ModuleMixin, TemplateView):

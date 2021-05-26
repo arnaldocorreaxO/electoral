@@ -34,7 +34,6 @@ function getData(all) {
         autoWidth: false,
         destroy: true,
         deferRender: true,
-        // serverSide: true,
         ajax: {
             url: pathname,
             type: 'POST',
@@ -89,12 +88,13 @@ function getData2(all) {
         autoWidth: false,
         destroy: true,
         deferRender: true,
-        // serverSide: true,
+        processing: true,
+        serverSide: true,
         ajax: {
             url: pathname,
             type: 'POST',
             data: parameters,
-            dataSrc: ""
+            // dataSrc: ""
         },
         order: [[0, 'asc']],
         paging: true,
@@ -146,7 +146,7 @@ $(function () {
     $('.drp-buttons').hide();
 
     initTable();
-    getData(false);
+    // getData(false);
     getData2(false);
 
     $('.btnSearch').on('click', function () {
