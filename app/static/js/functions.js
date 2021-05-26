@@ -127,9 +127,9 @@ function message_info(message) {
 
         }, null, message);
     } else {
-        alert_sweetalert('success', 'OK!', "", function () {
+        alert_sweetalert('success', 'OK!', message, function () {
 
-        }, null, message);
+        }, null, "");
     }
 }
 
