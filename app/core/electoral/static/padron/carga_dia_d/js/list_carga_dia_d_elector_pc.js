@@ -64,7 +64,7 @@ function getData(all) {
                 render: function (data, type, row) {
                     var buttons = '';
                     // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
-                    buttons += '<a href="/electoral/carga_dia_d/delete/' + row.id + '/" data-toggle="tooltip" title="Deshacer registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
+                    buttons += '<a href="/electoral/carga_dia_d/update/' + row.id + '/edit_pc/N/" data-toggle="tooltip" title="Deshacer registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
                     // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
                     return buttons;
                 }
@@ -97,13 +97,13 @@ function addElector(id) {
             getData() ;
             
             if (!request.hasOwnProperty('error')) {
-                // location.href = fv.form.getAttribute('data-url');
+                message_info(request.info);
                 return false;
             }
             message_warning(request.error);
         },
         error: function (jqXHR, textStatus, errorThrown) {
-            console.log('ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR')
+            // console.log('ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR')
             message_error(errorThrown + ' ' + textStatus);
         }
     });
