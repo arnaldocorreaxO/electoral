@@ -54,6 +54,7 @@ function loading_message(text) {
 }
 
 function alert_sweetalert(type, title, message, callback, timer, html) {
+    
     Swal.fire({
         icon: type,
         title: title,
@@ -107,6 +108,28 @@ function message_warning(message) {
         alert_sweetalert('warning', 'Atención!', message, function () {
 
         }, null, "");
+    }
+}
+
+function message_info(message) {
+    var type = typeof (message) === "object";
+    if (typeof (message) === "object") {
+        var errors = '<ul style="list-style: square; text-align: left;">';
+        $.each(message, function (index, item) {
+            errors += '<li><b style="text-transform:capitalize;">' + index + "</b>.- " + item + '</li>';
+        });
+        errors += '</ul>';
+        message = errors;
+       
+    }
+    if (type) {
+        alert_sweetalert('success', 'OK', "", function () {
+
+        }, null, message);
+    } else {
+        alert_sweetalert('success', 'OK!', "", function () {
+
+        }, null, message);
     }
 }
 

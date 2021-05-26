@@ -166,12 +166,16 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
     model = Elector
     template_name = 'padron/carga_dia_d/create.html'
     form_class = CargaDiaDForm
-    success_url = reverse_lazy('carga_dia_d_list')
+    success_url = reverse_lazy('carga_dia_d_list_mv')    
     permission_required = 'change_elector'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
+        self.opcion = kwargs['opcion']
+        self.valor  = kwargs['valor']
+        if self.opcion =='edit_pc':
+            self.success_url = reverse_lazy('carga_dia_d_list_pc')
         return super().dispatch(request, *args, **kwargs)
 
     def validate_data(self):
@@ -193,14 +197,10 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
         try:
             if action == 'edit':
                 elector = self.object
-                # elector.pasoxmv = 'S'
-                elector.pasoxmv = 'S'
-                # data = self.get_form().save()
-                elector.save()
-            elif action == 'edit_pc':
-                elector = self.object
-                elector.pasoxpc = 'S'
-                # data = self.get_form().save()
+                if self.opcion == 'edit_pc':
+                    elector.pasoxpc = self.valor
+                elif self.opcion == 'edit_mv':
+                    elector.pasoxmv = self.valor
                 elector.save()
             elif action == 'validate_data':
                 return self.validate_data()
@@ -215,9 +215,10 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
         return HttpResponse(json.dumps(data), content_type='application/json')
 
     def get_context_data(self, **kwargs):
+     
         context = super().get_context_data()
         context['list_url'] = self.success_url
-        context['title'] = 'Carga Día D - Veedor'
+        context['title'] = 'Carga Día D - Elector'
         context['action'] = 'edit'
         return context
 
@@ -271,10 +272,7 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
                     else:
                         term = '%' + term.replace(' ','%') + '%'
                     position = 1    
-                    # q = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
-                    #                  .filter( Q(ci=term1) | Q(fullname__icontains=term)) \
-                    #                  .extra(where=['ci = %s OR upper(nombre|| " "|| apellido) LIKE upper(%s)'], params=[term1,term]) \
-                    #                  .order_by('fullname')[0:10].query
+                    
                     qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
                                      .extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
                                      .order_by('fullname')[0:10]
@@ -337,6 +335,14 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
                 else:
                     elector.pasoxpc='S'
                     elector.save()
+                    info = f"CI: <b> {elector.ci} </b> <br>"
+                    info += f"{elector.nombre}, {elector.apellido} <br>"
+                    info += '<b> VOTA EN </b>  <br> ' 
+                    info += f"{elector.local_votacion} <br> <br>"
+                    info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"
+                    print(info)
+                    data['info'] = info
+                    
 
             else:
                 data['error'] = 'No ha ingresado una opción'
