@@ -1,4 +1,4 @@
-
+import math
 from core.reports.jasperbase import JasperReportBase
 from core.electoral.models import Manzana
 from datetime import date, datetime
@@ -32,26 +32,56 @@ class ElectorListView(PermissionMixin, FormView):
 		try:
 			if action == 'search':
 				data = []
-				today = date.today()
 				start_date = request.POST['start_date']
 				end_date = request.POST['end_date']
-				search = Elector.objects.filter().order_by('apellido','nombre')
+
+				_start = request.POST['start']
+				_length = request.POST['length']
+				_search = request.POST['search[value]']
+
+				# print(request.POST)
+				_where = "'' = %s"
+				if len(_search):
+					if _search.isnumeric():
+						_where = " ci = %s"
+					else:
+						_search = '%' + _search.replace(' ', '%') + '%'
+						_where = " upper(nombre||' '|| apellido) LIKE upper(%s)"
+						# _where += " OR upper(barrio||' '|| manzana) LIKE upper(%s)"
+						# _where += " OR upper(edad) LIKE upper(%s)"
+				print(_where)
+				qs = Elector.objects.filter()\
+									.extra(where=[_where], params=[_search])
+
 				if len(start_date) and len(end_date):
 					# search = search.filter(fecha_nacimiento__range=[start_date, end_date])
 					# print(today.month)
 					start_date = datetime.strptime(start_date, '%Y-%m-%d')
-					search = search.filter(fecha_nacimiento__month=start_date.month,
-										   fecha_nacimiento__day__exact=start_date.day )
+					qs = qs.filter(fecha_nacimiento__month=start_date.month,
+								   fecha_nacimiento__day__exact=start_date.day)
+
+				total = qs.count()
+
+				if _start and _length:
+					start = int(_start)
+					length = int(_length)
+					page = math.ceil(start / length) + 1
+					per_page = length
+
+					qs = qs[start:start + length]
+
 				position = 1
-				for i in search:                    
+				for i in qs:
 					item = i.toJSON()
 					item['position'] = position
 					data.append(item)
 					position += 1
-			# elif action == 'search_detproducts':
-			#     data = []
-			#     for det in SaleDetail.objects.filter(sale_id=request.POST['id']):
-			#         data.append(det.toJSON())
+
+				data = {'data': data,
+						'page': page,  # [opcional]
+						'per_page': per_page,  # [opcional]
+						'recordsTotal': total,
+						'recordsFiltered': total, }
 			else:
 				data['error'] = 'No ha ingresado una opción'
 		except Exception as e:

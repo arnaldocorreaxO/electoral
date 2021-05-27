@@ -11,17 +11,19 @@
 
 
 {% block columns %}
-    <th style="width: 5%;">CI</th>
-    <th style="width: 15%;">Apellido y Nombre</th>
-    <th style="width: 10%;" class="text-center">Opciones</th>
+<th style="width: 5%;">Mesa</th>
+<th style="width: 5%;">Orden</th>
+<th style="width: 10%;">CI</th>
+<th style="width: 75%;">Apellido y Nombre</th>    
+<th style="width: 5%;" class="text-center">Opciones</th>
 {% endblock %}
 
 {% block columns2 %}
     <th style="width: 5%;">Mesa</th>
     <th style="width: 5%;">Orden</th>
     <th style="width: 5%;">CI</th>
-    <th style="width: 15%;">Apellido y Nombre</th>    
-    <th style="width: 10%;" class="text-center">Opciones</th>
+    <th style="width: 75%;">Apellido y Nombre</th>    
+    <th style="width: 5%;" class="text-center">Opciones</th>
 {% endblock %}
 
 {% block javascript_list %}
@@ -30,7 +32,7 @@
 
 {% block content_list_before %}
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-6">
             <div class="form-group">
                 <label>Buscar por Cédula o Nombre y Apellido </label>
                 <div class="input-group mb-3">
@@ -38,13 +40,32 @@
                     <div class="input-group-append">
                         <button class="btn btn-success btnSearch" type="submit">
                             <i class="fas fa-search"></i> Buscar
-                        </button>
-                        <!-- <button class="btn btn-warning btnSearchAll" type="button">
-                            <i class="fas fa-calendar-check"></i> Ver todas
-                        </button> -->
+                        </button>    
                     </div>
                 </div>
-            </div>
+            </div>    
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Mesa</label>
+                <div class="input-group mb-3">
+                    {{ form.mesa }}
+                    <div class="input-group-append">
+                        <button class="btn btn-primary dropdown-toggle" type="button"
+                                data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false"><i class="fas fa-tasks"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;">
+                            <a class="dropdown-item btnSearchMesa"><i class="fas fa-sync"></i>
+                                Filtrar por Mesa</a>
+                            <a class="dropdown-item btnSearchAllMesa"><i class="fas fa-times"></i>
+                                Todas las Mesas</a>
+                            <!-- <a class="dropdown-item btnRemoveAllElector"><i
+                                    class="fas fa-trash-alt"></i> Borrar todo</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>    
         </div>
     </div>
     <hr>
