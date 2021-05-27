@@ -7,6 +7,9 @@ class ReportForm(forms.Form):
         'autocomplete': 'off'
     }))
 
+    mesa = forms.ChoiceField(choices=[
+    (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa').extra(select={'int_mesa':'CAST(mesa AS INTEGER)'}).distinct().order_by('int_mesa')])
+
 
 class ReportFormElector001(forms.ModelForm):
     class Meta:

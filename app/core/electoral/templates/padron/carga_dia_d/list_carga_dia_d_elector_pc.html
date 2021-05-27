@@ -13,9 +13,9 @@
 {% block columns %}
     <th style="width: 5%;">Mesa</th>
     <th style="width: 5%;">Orden</th>
-    <th style="width: 5%;">CI</th>
-    <th style="width: 15%;">Apellido y Nombre</th>    
-    <th style="width: 10%;" class="text-center">Opciones</th>
+    <th style="width: 10%;">CI</th>
+    <th style="width: 75%;">Apellido y Nombre</th>    
+    <th style="width: 5%;" class="text-center">Opciones</th>
 {% endblock %}
 
 {% block javascript_list %}
@@ -30,25 +30,25 @@
                         <label>Buscar por Cédula o Nombre y Apellido</label>
                         <div class="input-group input-group-search">
                             <input type="text" class="form-control" autocomplete="off" name="searchElector"
-                                   placeholder="Ingrese el nombre de un producto">
+                                   placeholder="Ingrese Numero de Cédula o Nombre y/o Apellido">
                             <div class="input-group-append">
                                 <button class="btn btn-primary dropdown-toggle" type="button"
                                         data-toggle="dropdown" aria-haspopup="true"
                                         aria-expanded="false"><i class="fas fa-tasks"></i>
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" style="cursor: pointer;">
-                                    <a class="dropdown-item btnSearchElector"><i class="fas fa-search"></i>
-                                        Buscar Elector</a>
+                                    <a class="dropdown-item btnSearchElector"><i class="fas fa-sync"></i>
+                                        Recargar Lista</a>
                                     <a class="dropdown-item btnClearElector"><i class="fas fa-times"></i>
                                         Limpiar búsqueda</a>
-                                    <a class="dropdown-item btnRemoveAllElector"><i
-                                            class="fas fa-trash-alt"></i> Borrar todo</a>
+                                    <!-- <a class="dropdown-item btnRemoveAllElector"><i
+                                            class="fas fa-trash-alt"></i> Borrar todo</a> -->
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>                 
                 </div>
-            </div>
+            </div>     
 
-</div>
+
 {% endblock %}

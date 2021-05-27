@@ -59,12 +59,13 @@ class CargaDiaDListView(PermissionMixin, FormView):
                     # print(data)
             elif action == 'search_pasoxmv':
                 data = []          
+                mesa = request.POST['mesa']
                 _start = request.POST['start']
                 _length = request.POST['length']
                 _search = request.POST['search[value]']
 
-                # print(request.POST)    
-                _where = "'' = %s"
+                _where = " '' = %s"           
+
                 if len(_search):
                     if _search.isnumeric():
                         _where = " ci = %s"
@@ -72,8 +73,13 @@ class CargaDiaDListView(PermissionMixin, FormView):
                         _search = '%' + _search.replace(' ','%') + '%'
                         _where = " upper(nombre||' '|| apellido) LIKE upper(%s)"  
                 
+                if len(mesa):
+                    _where += f" AND mesa = '{mesa}'"                
+              
                 qs = Elector.objects.filter(pasoxmv='S')\
                                     .extra(where=[_where], params=[_search]) 
+
+                # print(qs.query)
                 total = qs.count()   
 
                 if _start and _length:
@@ -331,12 +337,12 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
                 id = request.POST['id']
                 elector = Elector.objects.get(id=id)
                 if elector.pasoxpc=='S':
-                    info = f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b> <br>" 
-                    info +=  f"CI: <b> {elector.ci} </b> <br>"
+                    info =  f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b> <br>" 
+                    info += f"CI: <b> {elector.ci} </b> <br>"
                     info += f"{elector.nombre}, {elector.apellido} <br>"
                     info += '<b> VOTA EN </b>  <br> ' 
                     info += f"{elector.local_votacion} <br> <br>"                    
-                    info += '<b> YA PASÓ POR PC </b> <br>'              
+                    info += '<b>=====> YA PASÓ POR PC <===== </b> <br>'              
                     data['error'] = info
                 else:
                     elector.pasoxpc='S'

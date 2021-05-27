@@ -22,77 +22,7 @@
 {% endblock %}
 
 {% block javascript_list %}
-    <div class="modal fade" id="myModalDetails" role="dialog">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><b><i class="fa fa-search"></i> Detalle de la venta</b>
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#home">
-                                    Datos de la factura
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#menu1">
-                                    Productos
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane container-fluid active" id="home">
-                                <br>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <table width="100%"
-                                               class="table table-bordered table-striped" id="tblInvoice">
-                                            <thead>
-                                            <tr>
-                                                <th>Nombre</th>
-                                                <th>Descripción</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane container-fluid fade" id="menu1">
-                                <br>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <table width="100%"
-                                               class="table table-bordered table-striped display nowrap" id="tblDetails">
-                                            <thead>
-                                            <tr>
-                                                <th style="width: 25%;">Producto</th>
-                                                <th style="width: 15%;">Categoría</th>
-                                                <th style="width: 10%;">Precio Unitario</th>
-                                                <th style="width: 10%;">Cantidad</th>
-                                                <th style="width: 10%;">Subtotal</th>
-                                                <th style="width: 10%;">Dscto</th>
-                                                <th style="width: 10%;">Total Dscto</th>
-                                                <th style="width: 10%;">Total</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody></tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
 {% endblock %}
 
 {% block content_list_before %}

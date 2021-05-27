@@ -162,12 +162,10 @@ $(function () {
     getData(false);
 
 
-    // $('.btnSearch').on('click', function () {
-    //     addElector();
-    //     // getData2(false);
-    // });
-
-    // $('.btnSearchAll').on('click', function () {
-    //     getData(true);
-    // });
+    $('.btnClearElector').on('click', function () {
+        input_searchElector.val('').focus();
+    });
+    $('.btnSearchElector').on('click', function () {
+        getData(false);
+    });
 });

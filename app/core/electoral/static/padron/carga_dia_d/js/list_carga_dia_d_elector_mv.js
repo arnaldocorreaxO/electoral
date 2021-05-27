@@ -46,6 +46,8 @@ function getData(all) {
         searching: false,    
         info:     false   ,
         columns: [
+            {data: "mesa"},
+            {data: "orden"},
             {data: "ci"},
             {data: "fullname"},          
             {data: "id"},
@@ -58,7 +60,7 @@ function getData(all) {
                 render: function (data, type, row) {
                     var buttons = '';
                     // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
-                    buttons += '<a href="/electoral/carga_dia_d/update/' + row.id + '/edit_mv/S/" data-toggle="tooltip" title="Editar registro" class="btn btn-dark btn-flat"><i class="fas fa-plus"></i></a>';
+                    buttons += '<a href="/electoral/carga_dia_d/update/' + row.id + '/edit_mv/S/" data-toggle="tooltip" title="Editar registro" class="btn btn-dark btn-lg btn-flat"><i class="fas fa-plus"></i></a>';
                     // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
                     return buttons;
                 }
@@ -76,10 +78,18 @@ function getData(all) {
 
 
 function getData2(all) {
+
+    var mesa = $('select[name="mesa"]').val();   
+
     var parameters = {
         'action': 'search_pasoxmv',
+        'mesa': mesa
 
     };
+
+    if (all) {
+        parameters['mesa'] = '';        
+    }
 
 
     tblData = $('#data2').DataTable({
@@ -146,15 +156,23 @@ $(function () {
     $('.drp-buttons').hide();
 
     initTable();
-    // getData(false);
     getData2(false);
 
     $('.btnSearch').on('click', function () {
         getData(false);
-        // getData2(false);
     });
 
-    $('.btnSearchAll').on('click', function () {
-        getData(true);
+    $('.btnSearchMesa').on('click', function () {
+        getData2(false);
     });
+
+    $('.btnSearchAllMesa').on('click', function () {
+        getData2(true);
+    });
+
+    $('select[name="mesa"]').on('change', function () {
+        getData2(false);
+        
+    });
+   
 });

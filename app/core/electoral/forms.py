@@ -287,10 +287,14 @@ class ElectorForm2(ModelForm):
 ===   SHEARCH    ===
 ==================== '''
 class ShearchForm(forms.Form):
-    term = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'autocomplete': 'off'
-    }))
+    term = forms.CharField()
+    mesa = forms.ChoiceField(choices=[
+    (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')\
+                                                            .extra(select={'int_mesa':'CAST(mesa AS INTEGER)'})\
+                                                            .distinct().order_by('int_mesa')])
+    term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
+    mesa.widget.attrs.update({'class': 'form-control select2'})
+    
 
 
 ''' 
