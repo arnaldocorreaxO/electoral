@@ -78,9 +78,11 @@ function getData(all) {
 
 
 function getData2(all) {
+      
+    var mesa = localStorage.getItem("local_mesa");
 
-    var mesa = $('select[name="mesa"]').val();   
-
+    $('select[name="mesa"]').val(mesa);
+    
     var parameters = {
         'action': 'search_pasoxmv',
         'mesa': mesa
@@ -170,7 +172,8 @@ $(function () {
         getData2(true);
     });
 
-    $('select[name="mesa"]').on('change', function () {
+    $('select[name="mesa"]').on('change', function () {        
+        localStorage.setItem("local_mesa", $(this).val());;
         getData2(false);
         
     });
