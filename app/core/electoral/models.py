@@ -243,8 +243,8 @@ class Elector(models.Model):
         item['manzana'] =  self.manzana.toJSON() if self.manzana else {'id':'','denominacion':''}
         item['barrio_fullname']  =  self.barrio.fullname() if self.barrio else None
         item['manzana_fullname'] =  self.manzana.fullname() if self.manzana else None
-        item['fecha_nacimiento'] = self.fecha_nacimiento.strftime('%Y-%m-%d')
-        item['fecha_afiliacion'] = self.fecha_afiliacion.strftime('%Y-%m-%d')        
+        item['fecha_nacimiento'] = self.fecha_nacimiento.strftime('%d/%m/%Y')
+        item['fecha_afiliacion'] = self.fecha_afiliacion.strftime('%d/%m/%Y')        
         item['edad'] = self.get_edad()
         return item
 
