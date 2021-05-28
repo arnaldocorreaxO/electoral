@@ -9,6 +9,8 @@ function initTable() {
         autoWidth: false,
         destroy: true,
         deferRender: true,
+        processing: true,
+        serverSide: true,
     });
 
     $.each(tblData.settings()[0].aoColumns, function (key, value) {
