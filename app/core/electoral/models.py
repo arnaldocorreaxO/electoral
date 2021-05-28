@@ -1,4 +1,5 @@
 # from core.utils import calculate_age
+from core.base.models import ModeloBase
 from django.db import models
 from django.forms import model_to_dict
 from core.electoral.utils import calculate_age
@@ -202,7 +203,7 @@ class TipoVoto(models.Model):
 ====================
 ===   ELECTOR    ===
 ==================== '''
-class Elector(models.Model):    
+class Elector(ModeloBase):    
     departamento = models.ForeignKey(Departamento, on_delete=models.PROTECT,null=True, blank=True)
     distrito = models.ForeignKey(Distrito, on_delete=models.PROTECT,null=True, blank=True)
     seccional = models.ForeignKey(Seccional, on_delete=models.PROTECT,null=True, blank=True)
