@@ -40,7 +40,7 @@ class JasperReportBase():
 			params es una variable local de get_params()
 			self.params es un atributo de la clase 
 			aca unimos los dos diccionarios con dict
-		"""
+		"""	
 		params = {  'P_TITULO1': settings.REPORT_TITULO1,
                     'P_TITULO2': settings.REPORT_TITULO2,
                     'P_TITULO3': settings.REPORT_TITULO3,
