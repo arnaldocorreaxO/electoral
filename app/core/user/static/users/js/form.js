@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             min: 2,
                         },
                         regexp: {
-                            regexp: /^([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\']+[\s])+([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])+?$/i,
-                            message: 'Debe ingresar sus dos nombres y solo utilizando caracteres alfabéticos'
+                            regexp: /^([A-Za-zÁÉÍÓÚñáéíóúÑ])+?$/i,
+                            message: 'Debe ingresar su nombres y solo utilizando caracteres alfabéticos'
                         },
                     }
                 },
@@ -37,8 +37,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             min: 2,
                         },
                         regexp: {
-                            regexp: /^([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\']+[\s])+([A-Za-zÁÉÍÓÚñáéíóúÑ]{0}?[A-Za-zÁÉÍÓÚñáéíóúÑ\'])+?$/i,
-                            message: 'Debe ingresar sus dos apellidos y solo utilizando caracteres alfabéticos'
+                            regexp: /^([A-Za-zÁÉÍÓÚñáéíóúÑ])+?$/i,
+                            message: 'Debe ingresar su apellido y solo utilizando caracteres alfabéticos'
                         },
                     }
                 },
