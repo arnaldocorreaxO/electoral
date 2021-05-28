@@ -2,26 +2,26 @@ var tblData;
 var input_daterange;
 var columns = [];
 
-function initTable() {
+// function initTable() {
     
-    tblData = $('#data').DataTable({
-        responsive: true,
-        autoWidth: false,
-        destroy: true,
-        // deferRender: true,
-        // processing: true,
-        // serverSide: true,
-    });
+//     tblData = $('#data').DataTable({
+//         responsive: true,
+//         autoWidth: false,
+//         destroy: true,
+//         // deferRender: true,
+//         // processing: true,
+//         // serverSide: true,
+//     });
 
-    $.each(tblData.settings()[0].aoColumns, function (key, value) {
-        columns.push(value.sWidthOrig);
-    });
+//     $.each(tblData.settings()[0].aoColumns, function (key, value) {
+//         columns.push(value.sWidthOrig);
+//     });
 
-    $('#data tbody tr').each(function (idx) {
-        $(this).children("td:eq(0)").html(idx + 1);
-        console.log(idx+1);
-    });
-}
+//     $('#data tbody tr').each(function (idx) {
+//         $(this).children("td:eq(0)").html(idx + 1);
+//         console.log(idx+1);
+//     });
+// }
 
 function getData(all) {
     var parameters = {
@@ -162,8 +162,6 @@ $(function () {
     current_date = new moment().format('YYYY-MM-DD');
     input_daterange = $('input[name="date_range"]');
 
-    
-
     input_daterange
         .daterangepicker({
             language: 'auto',
@@ -178,7 +176,7 @@ $(function () {
 
     $('.drp-buttons').hide();
 
-    initTable();
+    // initTable();
     getData(false);
 
     $('.btnSearch').on('click', function () {
