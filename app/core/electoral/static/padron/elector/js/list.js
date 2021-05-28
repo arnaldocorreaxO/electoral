@@ -171,13 +171,13 @@ $(function () {
             }
         })
         .on('apply.daterangepicker', function (ev, picker) {
-            getData(false);
+            getData(true);
         });
 
     $('.drp-buttons').hide();
 
     // initTable();
-    getData(false);
+    // getData(false);
 
     $('.btnSearch').on('click', function () {
         getData(false);
