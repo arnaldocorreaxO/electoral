@@ -152,6 +152,11 @@ function getData(all) {
 
 $(function () {
 
+    var link_add = document.querySelector('a[href="/electoral/elector/add/"]');
+    var link_upd = document.querySelector('a[href=""]');
+    link_add.style.display = 'none';
+    link_upd.style.display = 'none';
+
     current_date = new moment().format('YYYY-MM-DD');
     input_daterange = $('input[name="date_range"]');
 
