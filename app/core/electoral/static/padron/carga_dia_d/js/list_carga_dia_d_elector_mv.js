@@ -46,7 +46,7 @@ function getData(all) {
         searching: false,    
         info:     false   ,
         columns: [
-            {data: "mesa"},
+            // {data: "mesa"},
             // {data: "orden"},
             {data: "ci"},
             {data: "fullname"},          
