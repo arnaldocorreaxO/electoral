@@ -8,7 +8,7 @@ from core.electoral.utils import calculate_age
 ====================
 ===    PAIS      ===
 ==================== '''
-class Pais(models.Model):
+class Pais(ModeloBase):
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
 
     def __str__(self):
@@ -26,7 +26,7 @@ class Pais(models.Model):
 ====================
 === DEPARTAMENTO ===
 ==================== '''
-class Departamento(models.Model):
+class Departamento(ModeloBase):
     pais = models.ForeignKey(Pais, on_delete=models.PROTECT)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
 
@@ -45,7 +45,7 @@ class Departamento(models.Model):
 ====================
 === DISTRITO     ===
 ==================== '''
-class Distrito(models.Model):
+class Distrito(ModeloBase):
     departamento = models.ForeignKey(Departamento, on_delete=models.PROTECT)
     cod = models.IntegerField(null=False, unique=True)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
@@ -66,7 +66,7 @@ class Distrito(models.Model):
 ====================
 ===    CIUDAD    ===
 ==================== '''
-class Ciudad(models.Model):
+class Ciudad(ModeloBase):
     pais = models.ForeignKey(Pais, on_delete=models.PROTECT)
     distrito = models.ForeignKey(Distrito, on_delete=models.PROTECT,null=True,blank=True)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
@@ -87,7 +87,7 @@ class Ciudad(models.Model):
 ====================
 ===    BARRIO    ===
 ==================== '''
-class Barrio(models.Model):    
+class Barrio(ModeloBase):    
     ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
 
@@ -109,7 +109,7 @@ class Barrio(models.Model):
 ====================
 ===   MANZANA    ===
 ==================== '''
-class Manzana(models.Model): 
+class Manzana(ModeloBase): 
     barrio = models.ForeignKey(Barrio, on_delete=models.PROTECT)   
     cod = models.IntegerField()
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
@@ -138,7 +138,7 @@ class Manzana(models.Model):
 ====================
 ===  SECCIONAL   ===
 ==================== '''
-class Seccional(models.Model):
+class Seccional(ModeloBase):
     distrito = models.ForeignKey(Distrito, on_delete=models.PROTECT)
     cod = models.IntegerField(null=False, unique=True)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
@@ -160,7 +160,7 @@ class Seccional(models.Model):
 =========================
 ===  LOCAL VOTACION   ===
 ========================= '''
-class LocalVotacion(models.Model):
+class LocalVotacion(ModeloBase):
     ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
 
@@ -181,7 +181,7 @@ class LocalVotacion(models.Model):
 ====================
 === TIPO DE VOTO ===
 ==================== '''
-class TipoVoto(models.Model):
+class TipoVoto(ModeloBase):
     cod = models.CharField(max_length=3,null=False, unique=True)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
     estado = models.BooleanField(default=True, verbose_name='Estado')
