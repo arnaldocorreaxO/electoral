@@ -177,7 +177,7 @@ $(function () {
     $('.drp-buttons').hide();
 
     // initTable();
-    getData(false);
+    getData(true);
 
     $('.btnSearch').on('click', function () {
         getData(false);
