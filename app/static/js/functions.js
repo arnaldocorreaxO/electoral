@@ -184,58 +184,6 @@ function submit_formdata_with_ajax_form(fv) {
         }
     });
 }
-function submit_formdata_with_ajax_form2(fv) {
-    var form = fv.form;
-    var submitButton = fv.form.querySelector('[type="submit"]');
-    var parameters = new FormData($(form)[0]);
-    $.confirm({
-        // type: 'blue',
-        theme: 'material',
-        title: 'Confirmación',
-        icon: 'fas fa-info-circle',
-        content: '¿Esta seguro de realizar la siguiente acción?',
-        columnClass: 'small',
-        typeAnimated: true,
-        cancelButtonClass: 'btn-primary',
-        draggable: true,
-        dragWindowBorder: false,
-        buttons: {
-            info: {
-                text: "Si",
-                btnClass: 'btn-primary',
-                action: function () {
-                    $.ajax({
-                        url: pathname,
-                        data: parameters,
-                        method: 'POST',
-                        dataType: 'json',
-                        processData: false,
-                        contentType: false,
-                        success: function (request) {
-                            console.log(request);
-                            if (!request.hasOwnProperty('error')) {
-                                // location.href = fv.form.getAttribute('data-url');
-                                getData2();
-                                return false;
-                            }
-                            message_error(request.error);
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            message_error(errorThrown + ' ' + textStatus);
-                        }
-                    });
-                }
-            },
-            danger: {
-                text: "No",
-                btnClass: 'btn-red',
-                action: function () {
-                    submitButton.removeAttribute('disabled');
-                }
-            },
-        }
-    });
-}
 
 function submit_with_ajax(title, content, url, parameters, callback) {
     $.confirm({
