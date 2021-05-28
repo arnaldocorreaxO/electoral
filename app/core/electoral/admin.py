@@ -49,10 +49,10 @@ class PadGralAdmin(ImportExportModelAdmin):
 ===   ELECTOR2    ===
 ==================== '''
 #Registrar el mismo modelo varias veces hay que hacer un proxy
-class Elector2(Elector):
+class Elector2(Elector):    
     class Meta:
         verbose_name = 'Electores Barrio Manzana'
-        verbose_name_plural = 'Electores Barrio Manzanas'
+        verbose_name_plural = 'Electores Barrios Manzanas'
         proxy = True
 
 class ElectorResources2(resources.ModelResource):
