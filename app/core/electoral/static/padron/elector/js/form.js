@@ -63,6 +63,6 @@ document.addEventListener('DOMContentLoaded', function (e) {
             }
         })
         .on('core.form.valid', function () {
-            submit_formdata_with_ajax_form(fv);
+            submit_formdata_with_ajax_form2(fv);
         });
 });
