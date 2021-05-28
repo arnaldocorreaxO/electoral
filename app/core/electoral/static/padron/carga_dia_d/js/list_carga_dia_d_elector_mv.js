@@ -47,7 +47,7 @@ function getData(all) {
         info:     false   ,
         columns: [
             {data: "mesa"},
-            {data: "orden"},
+            // {data: "orden"},
             {data: "ci"},
             {data: "fullname"},          
             {data: "id"},
