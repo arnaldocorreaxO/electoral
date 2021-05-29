@@ -31,13 +31,13 @@ class Rpt001ReportView(ModuleMixin, FormView):
                 end_date = request.POST['end_date']
                 qs = Elector.objects.values('barrio__id','barrio__denominacion','manzana__cod','manzana__denominacion',) \
                         .extra(select = {'barrio__cod': 'CAST (electoral_elector.barrio_id AS INTEGER)'})\
-                        .annotate(cant_manzana=Count(True)) \
+                        .annotate(cant_elector=Count(True)) \
                         .order_by('barrio__cod',
                                   'manzana__cod')
                 for i in qs:
                     item = {'barrio':f"({i['barrio__id']}) - {i['barrio__denominacion']}" ,\
                            'manzana':f"({i['barrio__id']} / {i['manzana__cod']}) - {i['manzana__denominacion']}",\
-                           'cant_manzana': i['cant_manzana']
+                           'cant_elector': i['cant_elector']
                            }
                     data.append(item)
                 print(data)

@@ -12,15 +12,18 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.views.generic.edit import FormView
 
-from core.electoral.forms import Elector, ElectorForm
+from core.electoral.forms import Elector, ElectorForm, ShearchForm
 from core.security.mixins import PermissionMixin
 
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 class ElectorListView(PermissionMixin, FormView):
 	# model = Elector
 	template_name = 'padron/elector/list.html'
 	permission_required = 'view_elector'
-	form_class = ReportForm
+	form_class = ShearchForm
  
 	@method_decorator(csrf_exempt)
 	def dispatch(self, request, *args, **kwargs):
@@ -32,14 +35,21 @@ class ElectorListView(PermissionMixin, FormView):
 		try:
 			if action == 'search':
 				data = []
+				term = request.POST['term']
 				start_date = request.POST['start_date']
 				end_date = request.POST['end_date']
+				ciudad = request.POST['ciudad']
+				seccional = request.POST['seccional']
+				barrio = request.POST['barrio']
+				manzana = request.POST['manzana']
 
 				_start = request.POST['start']
 				_length = request.POST['length']
 				_search = request.POST['search[value]']
 
-				# print(request.POST)
+				if len(term):
+					_search = term
+
 				_where = "'' = %s"
 				if len(_search):
 					if _search.isnumeric():
@@ -49,7 +59,16 @@ class ElectorListView(PermissionMixin, FormView):
 						_where = " upper(nombre||' '|| apellido) LIKE upper(%s)"
 						# _where += " OR upper(barrio||' '|| manzana) LIKE upper(%s)"
 						# _where += " OR upper(edad) LIKE upper(%s)"
-				print(_where)
+				
+				if len(ciudad):
+					_where += f" AND ciudad_id = '{ciudad}'"
+				if len(seccional):
+					_where += f" AND seccional_id = '{seccional}'"
+				if len(barrio):
+					_where += f" AND barrio_id = '{barrio}'"
+				if len(manzana):
+					_where += f" AND manzana_id = '{manzana}'"
+				
 				qs = Elector.objects.filter()\
 									.extra(where=[_where], params=[_search])
 
@@ -70,7 +89,7 @@ class ElectorListView(PermissionMixin, FormView):
 
 					qs = qs[start:start + length]
 
-				position = 1
+				position = start + 1
 				for i in qs:
 					item = i.toJSON()
 					item['position'] = position
@@ -149,7 +168,7 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
 	model = Elector
 	template_name = 'padron/elector/create.html'
 	form_class = ElectorForm
-	success_url = reverse_lazy('elector_list')
+	success_url = reverse_lazy('elector_list')	
 	permission_required = 'change_elector'
 
 	@method_decorator(csrf_exempt)
@@ -170,6 +189,7 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
 			pass
 		return JsonResponse(data)
 
+
 	def post(self, request, *args, **kwargs):
 		data = {}
 		action = request.POST['action']
@@ -187,6 +207,24 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
 		except Exception as e:
 			data['error'] = str(e)
 		return HttpResponse(json.dumps(data), content_type='application/json')
+	
+	# Este usamos para el modal 
+	def get(self, request, *args, **kwargs):
+		data = {}				
+		try:
+			pk = kwargs['pk']
+			elector = get_object_or_404(Elector, pk=pk)
+			form = ElectorForm(instance=elector)
+			context = self.get_context_data()
+			context['form'] = form
+			# self.template_name = 'form_modal.html'
+			context['action_url'] = reverse_lazy('elector_update', kwargs={'pk': pk})
+			data['html_form'] = render_to_string(self.template_name, context, request=request)					
+		except Exception as e:
+			data['error'] = str(e)
+		print(data['html_form'])
+		return HttpResponse(json.dumps(data), content_type='application/json')
+		#return  JsonResponse(data)
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data()

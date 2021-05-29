@@ -116,7 +116,7 @@ function generateReport(all) {
         columns: [
             {data: "barrio"},
             {data: "manzana"},
-            {data: "cant_manzana"},
+            {data: "cant_elector"},
         ],
         columnDefs: [
            {
@@ -150,7 +150,7 @@ function generateReport(all) {
             endRender: function ( rows, group ) {
                 var cantElectorxBarrio = rows
                     .data()
-                    .pluck('cant_manzana')
+                    .pluck('cant_elector')
                     .reduce( function (a, b) {
                         return a + b*1;
                         

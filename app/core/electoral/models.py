@@ -242,6 +242,7 @@ class Elector(ModeloBase):
         item = model_to_dict(self,exclude=[''])
         item['barrio']  =  self.barrio.toJSON() if self.barrio  else {'id':'','denominacion':''}
         item['manzana'] =  self.manzana.toJSON() if self.manzana else {'id':'','denominacion':''}
+        item['tipo_voto'] =  self.tipo_voto.toJSON() if self.tipo_voto else {'id':'','cod':''}
         item['barrio_fullname']  =  self.barrio.fullname() if self.barrio else None
         item['manzana_fullname'] =  self.manzana.fullname() if self.manzana else None
         item['fecha_nacimiento'] = self.fecha_nacimiento.strftime('%d/%m/%Y')
