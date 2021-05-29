@@ -61,16 +61,17 @@ class ElectorListView(PermissionMixin, FormView):
 						# _where += " OR upper(edad) LIKE upper(%s)"
 				
 				if len(ciudad):
-					_where += f" AND ciudad_id = '{ciudad}'"
+					_where += f" AND electoral_elector.ciudad_id = '{ciudad}'"
 				if len(seccional):
-					_where += f" AND seccional_id = '{seccional}'"
+					_where += f" AND electoral_elector.seccional_id = '{seccional}'"
 				if len(barrio):
-					_where += f" AND barrio_id = '{barrio}'"
+					_where += f" AND electoral_elector.barrio_id = '{barrio}'"
 				if len(manzana):
-					_where += f" AND manzana_id = '{manzana}'"
+					_where += f" AND electoral_elector.manzana_id = '{manzana}'"
 				
 				qs = Elector.objects.filter()\
-									.extra(where=[_where], params=[_search])
+									.extra(where=[_where], params=[_search])\
+									.order_by('seccional','barrio','manzana','nro_casa')
 
 				if len(start_date) and len(end_date):
 					# search = search.filter(fecha_nacimiento__range=[start_date, end_date])
@@ -222,7 +223,7 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
 			data['html_form'] = render_to_string(self.template_name, context, request=request)					
 		except Exception as e:
 			data['error'] = str(e)
-		print(data['html_form'])
+		# print(data['html_form'])
 		return HttpResponse(json.dumps(data), content_type='application/json')
 		#return  JsonResponse(data)
 
