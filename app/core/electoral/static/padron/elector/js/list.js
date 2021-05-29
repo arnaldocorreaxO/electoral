@@ -2,32 +2,39 @@ var tblData;
 var input_daterange;
 var columns = [];
 
-// function initTable() {
+function initTable() {
     
-//     tblData = $('#data').DataTable({
-//         responsive: true,
-//         autoWidth: false,
-//         destroy: true,
-//         // deferRender: true,
-//         // processing: true,
-//         // serverSide: true,
-//     });
+    tblData = $('#data').DataTable({
+        responsive: true,
+        autoWidth: false,
+        destroy: true,
+        // deferRender: true,
+        // processing: true,
+        // serverSide: true,
+    });
 
-//     $.each(tblData.settings()[0].aoColumns, function (key, value) {
-//         columns.push(value.sWidthOrig);
-//     });
+    $.each(tblData.settings()[0].aoColumns, function (key, value) {
+        columns.push(value.sWidthOrig);
+    });
 
-//     $('#data tbody tr').each(function (idx) {
-//         $(this).children("td:eq(0)").html(idx + 1);
-//         console.log(idx+1);
-//     });
-// }
+    $('#data tbody tr').each(function (idx) {
+        $(this).children("td:eq(0)").html(idx + 1);
+        console.log(idx+1);
+    });
+}
 
 function getData(all) {
+
     var parameters = {
         'action': 'search',
+        'term': input_term.val(),
         'start_date': input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD'),
         'end_date': input_daterange.data('daterangepicker').endDate.format('YYYY-MM-DD'),
+        'ciudad': select_ciudad.val(),
+        'seccional': select_seccional.val(),
+        'barrio': select_barrio.val(),
+        'manzana': select_manzana.val(),
+        
     };
 
     if (all) {
@@ -121,11 +128,11 @@ function getData(all) {
             {data: "ci"},
             {data: "apellido"},
             {data: "nombre"},
+            {data: "tipo_voto.cod"},
             {data: "barrio.denominacion"},
             {data: "manzana.denominacion"},
             {data: "nro_casa"},
-            {data: "fecha_nacimiento"},
-            // {data: "fecha_afiliacion"},
+            {data: "fecha_nacimiento"},         
             {data: "edad"},
             {data: "id"},
         ],
@@ -137,8 +144,10 @@ function getData(all) {
                 render: function (data, type, row) {
                     var buttons = '';
                     // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
-                    buttons += '<a href="/electoral/elector/update/' + row.id + '/" data-toggle="tooltip" title="Editar registro" class="btn btn-warning btn-xs btn-flat"><i class="fas fa-edit"></i></a>';
-                    buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
+                    // buttons += '<a href="/electoral/elector/update/' + row.id + '/" data-toggle="tooltip" title="Editar registro" class="btn btn-warning  btn-flat"><i class="fas fa-edit"></i></a>';
+                    // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
+                    buttons += '<button type="button" class="btn btn-warning btn-sm js-update" data-url="/electoral/elector/update/' + row.id + '/"><span class="glyphicon glyphicon-pencil"></span> Edit</button>'
+ 
                     return buttons;
                 }
             },
@@ -152,15 +161,22 @@ function getData(all) {
     });
 }
 
-$(function () {
+// INIT LOAD
+$(function () {  
 
     var link_add = document.querySelector('a[href="/electoral/elector/add/"]');
     var link_upd = document.querySelector('a[href=""]');
     link_add.style.display = 'none';
     link_upd.style.display = 'none';
 
+    input_term = $('input[name="term"]');
     current_date = new moment().format('YYYY-MM-DD');
-    input_daterange = $('input[name="date_range"]');
+    input_daterange = $('input[name="date_range"]');    
+    select_ciudad = $('select[name="ciudad"]');
+    select_seccional = $('select[name="seccional"]');
+    select_barrio = $('select[name="barrio"]');
+    select_manzana = $('select[name="manzana"]');
+
 
     input_daterange
         .daterangepicker({
@@ -176,7 +192,7 @@ $(function () {
 
     $('.drp-buttons').hide();
 
-    // initTable();
+    initTable();
     getData(true);
 
     $('.btnSearch').on('click', function () {
@@ -186,4 +202,101 @@ $(function () {
     $('.btnSearchAll').on('click', function () {
         getData(true);
     });
+
+    // BTN DEFAULT 
+    input_term.keypress(function(e){
+        if(e.keyCode==13)
+        $('.btnSearchAll').click();
+      });
+
+
+    // Agregamos una linea vacia a los select
+    
+    select_ciudad.append($("<option>", {
+        value: '',
+        text: 'Todas'
+      }));
+    
+    select_seccional.append($("<option>", {
+        value: '',
+        text: 'Todas'
+      }));
+    
+    select_barrio.append($("<option>", {
+        value: '',
+        text: 'Todos'
+      }));
+    
+    select_manzana.append($("<option>", {
+        value: '',
+        text: 'Todas'
+      }));
+
+
+     select_ciudad.val("").change();
+     select_seccional.val("").change();
+     select_barrio.val("").change();
+     select_manzana.val("").change();
+
 });
+
+
+
+// VENTANAS MODAL 
+$(function () {
+
+    /* Functions */
+  
+    var loadForm = function () {
+      var btn = $(this);
+      $.ajax({
+        url: btn.attr("data-url"),
+        type: 'get',
+        dataType: 'json',
+        beforeSend: function () {
+            console.log('BEFOREEEEEEEEEEEEEEEEEEEEEEEE')
+            $("#modal-elector").modal("show");
+        },
+        success: function (data) {    
+            console.log('SUCEEEEEEEEEEEEEEEEEEEEEEEEESS')        
+            $("#modal-elector .modal-content").html(data.html_form);
+        }
+      });
+    };
+  
+    var saveForm = function () {
+        alert('SAVE');
+      var form = $(this);
+      $.ajax({
+        url: form.attr("action"),
+        data: form.serialize(),
+        type: form.attr("method"),
+        dataType: 'json',
+          success: function (request) {
+              console.log(request);
+              if (!request.hasOwnProperty('error')) {
+                  getData(true);
+                  $("#modal-elector").modal("hide")
+                  return false;
+              }
+              message_error(request.error);
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+              message_error(errorThrown + ' ' + textStatus);
+          }
+      });
+      return false;
+    };
+  
+  
+    /* Binding */
+  
+    // // Create book
+    // $(".js-create-elector").click(loadForm);
+    // $("#modal-elector").on("submit", ".js-elector-create-form", saveForm);
+  
+    // Update Elector
+    $("#data").on("click", ".js-update", loadForm);
+    $("#modal-elector").on("submit", ".js-update-form", saveForm);
+  
+  });

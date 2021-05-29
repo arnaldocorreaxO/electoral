@@ -24,6 +24,7 @@ class ElectorAdmin(ImportExportModelAdmin):
     # form = ElectorForm
     resource_class = ElectorResource
     list_per_page = 25
+    list_filter =['ciudad','seccional','barrio','manzana','tipo_voto']
     
     '''Filtrar solo los tipos de votos activos'''
     def formfield_for_foreignkey(self, db_field, request, **kwargs):

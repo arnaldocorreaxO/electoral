@@ -287,13 +287,35 @@ class ElectorForm2(ModelForm):
 ===   SHEARCH    ===
 ==================== '''
 class ShearchForm(forms.Form):
+    # Rango de fechas 
+    date_range = forms.CharField()
+    # Termino de busqueda 
     term = forms.CharField()
+    # Mesas
     mesa = forms.ChoiceField(choices=[
     (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')\
                                                             .extra(select={'int_mesa':'CAST(mesa AS INTEGER)'})\
                                                             .distinct().order_by('int_mesa')])
+    # Ciudades
+    ciudad = forms.ChoiceField(choices=[
+    (item.id, item.denominacion) for item in Ciudad.objects.all().order_by('denominacion')])
+    # Seccionales
+    seccional = forms.ChoiceField(choices=[
+    (item.id, item.denominacion) for item in Seccional.objects.all().order_by('denominacion')])
+    # Barrios
+    barrio = forms.ChoiceField(choices=[
+    (item.id, item.denominacion) for item in Barrio.objects.all().order_by('denominacion')])
+    # Ciudades
+    manzana = forms.ChoiceField(choices=[
+    (item.id, item.fullname) for item in Manzana.objects.all().order_by('denominacion')])
+
+    date_range.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     mesa.widget.attrs.update({'class': 'form-control select2'})
+    ciudad.widget.attrs.update({'class': 'form-control select2'})
+    seccional.widget.attrs.update({'class': 'form-control select2'})
+    barrio.widget.attrs.update({'class': 'form-control select2'})
+    manzana.widget.attrs.update({'class': 'form-control select2'})
     
 
 

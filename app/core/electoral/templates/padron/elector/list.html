@@ -1,10 +1,11 @@
 {% extends 'list.html' %}
 {% load static %}
 {% block head_list %}
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.css' %}" />
     <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/spanish.js' %}"></script>
     <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.css' %}"/>
     <script src="{% static 'padron/elector/js/list.js' %}"></script>
+    <script src="{% static '/js/select2_barrio_manzana.js' %}"></script>
 {% endblock %}
 
 {% block columns %}
@@ -12,9 +13,10 @@
     <th style="width: 5%;">CI</th>
     <th style="width: 15%;">Apellido</th>
     <th style="width: 15%;">Nombre</th>
+    <th style="width: 5%;">Tipo Voto</th>
     <th style="width: 10%;">Barrio</th>
     <th style="width: 10%;">Manzana</th>
-    <th style="width: 10%;">Nro. Casa</th>
+    <th style="width: 5%;">Nro. Casa</th>
     <th style="width: 10%;">Fecha Nacimiento</th>
     <th style="width: 10%;">Edad</th>
     <!-- <th style="width: 10%;">Fecha Afiliacion</th> -->
@@ -26,18 +28,71 @@
 {% endblock %}
 
 {% block content_list_before %}
+
+
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Por Ciudad:</label>
+                <div class="input-group mb-3">
+                    {{ form.ciudad }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Por Seccional:</label>
+                <div class="input-group mb-3">
+                    {{ form.seccional }}
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Por Barrio:</label>
+                <div class="input-group mb-3">
+                    {{ form.barrio }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Por Manzana:</label>
+                <div class="input-group mb-3">
+                    {{ form.manzana }}
+                </div>
+            </div>
+        </div>
+    </div>
+  
+
+    <div class="row">
+        <div class="col-lg-6">
             <div class="form-group">
                 <label>Rangos de fechas:</label>
                 <div class="input-group mb-3">
                     {{ form.date_range }}
                     <div class="input-group-append">
                         <button class="btn btn-success btnSearch" type="button">
-                            <i class="fas fa-calendar-check"></i> Buscar por rangos
+                            <i class="fas fa-calendar-check"></i> Cumpleaños del día
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="form-group">
+                <label>Buscar por Cedula y/o Nombre y Apellido </label>
+                <div class="input-group mb-3">
+                    {{ form.term }}
+                    <div class="input-group-append">
                         <button class="btn btn-warning btnSearchAll" type="button">
-                            <i class="fas fa-calendar-check"></i> Ver todas
+                            <i class="fas fa-calendar-check"></i> Filtrar
                         </button>
                     </div>
                 </div>
@@ -45,4 +100,14 @@
         </div>
     </div>
     <hr>
+{% endblock %}
+
+{% block content_modals %}
+<!-- THE MODAL WE WILL BE USING -->
+<div class="modal fade" id="modal-elector">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+    </div>
+<div
 {% endblock %}
