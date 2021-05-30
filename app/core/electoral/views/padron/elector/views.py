@@ -72,7 +72,7 @@ class ElectorListView(PermissionMixin, FormView):
 				
 				qs = Elector.objects.filter()\
 									.extra(where=[_where], params=[_search])\
-									.order_by('seccional','barrio','manzana','nro_casa')
+									.order_by('barrio','manzana','nro_casa')
 
 				if len(start_date) and len(end_date):
 					start_date = datetime.strptime(start_date, '%Y-%m-%d')
