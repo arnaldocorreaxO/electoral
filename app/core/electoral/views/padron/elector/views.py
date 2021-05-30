@@ -32,6 +32,7 @@ class ElectorListView(PermissionMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		data = {}
 		action = request.POST['action']
+		print(request.POST)
 		try:
 			if action == 'search':
 				data = []
@@ -46,9 +47,29 @@ class ElectorListView(PermissionMixin, FormView):
 				_start = request.POST['start']
 				_length = request.POST['length']
 				_search = request.POST['search[value]']
-				# _start = 1
-				# _length = 5271
-				# _search = ''				
+								
+				_order = ['barrio','manzana','nro_casa']
+				
+				if 'order[0][column]' in request.POST:					
+					_column = request.POST['order[0][column]']
+					if (_column!='0'):
+				 		_order = [request.POST[f'columns[{_column}][data]'].split(".")[0],]
+				if 'order[0][dir]' in request.POST:
+					_dir = request.POST['order[0][dir]']
+					if (_dir=='desc'):
+						_order[0] = f"-{_order[0]}"
+						# print(_order)
+						
+				if 'order[1][column]' in request.POST:					
+					_column1 = request.POST['order[1][column]']
+					if (_column1!='0'):
+				 		_order.append(request.POST[f'columns[{_column1}][data]'].split(".")[0])
+				if 'order[1][dir]' in request.POST:
+					_dir = request.POST['order[1][dir]']
+					if (_dir=='desc'):
+						_order[1] = f"-{_order[1]}"
+				
+				# print(_order)
 
 				if len(term):
 					_search = term
@@ -72,7 +93,7 @@ class ElectorListView(PermissionMixin, FormView):
 				
 				qs = Elector.objects.filter()\
 									.extra(where=[_where], params=[_search])\
-									.order_by('barrio','manzana','nro_casa')
+									.order_by(*_order)
 
 				if len(start_date) and len(end_date):
 					start_date = datetime.strptime(start_date, '%Y-%m-%d')
