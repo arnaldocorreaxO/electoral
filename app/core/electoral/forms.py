@@ -245,8 +245,14 @@ class ElectorForm(ModelForm):
             'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
             'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
             'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
-            'local_votacion': forms.Select(attrs={'class': 'form-control select2','style': 'width: 100%;','disabled':'disabled' }),
-            'seccional': forms.Select(attrs={'class': 'form-control select2','style': 'width: 100%;', 'disabled':'disabled' }),
+            'local_votacion': forms.Select(attrs={'class': 'form-control select2',
+                                                  'style': 'width: 100%;',
+                                                  'disabled':'disabled',
+                                                  'selected' : 'selected'}),
+            'seccional': forms.Select(attrs={'class': 'form-control select2',
+                                            'style': 'width: 100%;',
+                                            'disabled':'disabled',
+                                            'selected' : 'selected' }),
             
         }
 

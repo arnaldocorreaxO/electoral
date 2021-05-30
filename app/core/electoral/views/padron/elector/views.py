@@ -32,7 +32,7 @@ class ElectorListView(PermissionMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		data = {}
 		action = request.POST['action']
-		print(request.POST)
+		# print(request.POST)
 		try:
 			if action == 'search':
 				data = []
@@ -59,7 +59,7 @@ class ElectorListView(PermissionMixin, FormView):
 					if (_dir=='desc'):
 						_order[0] = f"-{_order[0]}"
 						# print(_order)
-						
+
 				if 'order[1][column]' in request.POST:					
 					_column1 = request.POST['order[1][column]']
 					if (_column1!='0'):
@@ -243,7 +243,7 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
 			data['html_form'] = render_to_string(self.template_name, context, request=request)					
 		except Exception as e:
 			data['error'] = str(e)
-		# print(data['html_form'])
+		print(data['html_form'])
 		return HttpResponse(json.dumps(data), content_type='application/json')
 		#return  JsonResponse(data)
 
