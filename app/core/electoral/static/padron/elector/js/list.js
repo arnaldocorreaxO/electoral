@@ -195,13 +195,13 @@ $(function () {
             }
         })
         .on('apply.daterangepicker', function (ev, picker) {
-            getData(true);
+            getData('filter');
         });
 
     $('.drp-buttons').hide();
 
     initTable();
-    getData(true);
+    getData('filter');
 
     $('.btnSearch').on('click', function () {
         getData('bday');
@@ -277,27 +277,36 @@ $(function () {
     };
   
     var saveForm = function () {
-        // alert('SAVE');
-      var form = $(this);
-      $.ajax({
-        url: form.attr("action"),
-        data: form.serialize(),
-        type: form.attr("method"),
-        dataType: 'json',
-          success: function (request) {
-              console.log(request);
-              if (!request.hasOwnProperty('error')) {
-                  getData(true);
-                  $("#modal-elector").modal("hide")
-                  return false;
-              }
-              message_error(request.error);
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-              message_error(errorThrown + ' ' + textStatus);
-          }
-      });
-      return false;
+        // Habilitamos antes de submit
+        var select_seccional = $('#frmForm #id_seccional')
+        var select_local_votacion = $('#frmForm #id_local_votacion')
+        select_seccional.prop("disabled", false);
+        select_local_votacion.prop("disabled", false);
+
+
+        var form = $(this);
+        
+            $.ajax({
+                url: form.attr("action"),
+                data: form.serialize(),
+                type: form.attr("method"),
+                dataType: 'json',
+                success: function (request) {
+                    console.log(request);
+                    if (!request.hasOwnProperty('error')) {
+                        getData('filter');
+                        $("#modal-elector").modal("hide")
+                        select_seccional.prop("disabled", true);
+                        select_local_votacion.prop("disabled", true);
+                        return false;
+                    }
+                    message_error(request.error);
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    message_error(errorThrown + ' ' + textStatus);
+                }
+            });
+        return false;
     };
   
   
