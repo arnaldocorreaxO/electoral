@@ -235,16 +235,19 @@ class ElectorForm(ModelForm):
     class Meta:
         model = Elector
         fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
-                  'tipo_voto']
+                  'tipo_voto','local_votacion','seccional']
 
         widgets = {
             'ci': forms.TextInput(attrs={'placeholder': 'Ingrese Cedula','readonly':'readonly'}),
             'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre','readonly':'readonly'}),
             'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido','readonly':'readonly'}),
-            'ciudad': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 240px;'}),
-            'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 240px;' }),
-            'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 240px;' }),
-            'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 240px;' }),
+            'ciudad': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;'}),
+            'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
+            'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
+            'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
+            'local_votacion': forms.Select(attrs={'class': 'form-control select2','style': 'width: 100%;','disabled':'disabled' }),
+            'seccional': forms.Select(attrs={'class': 'form-control select2','style': 'width: 100%;', 'disabled':'disabled' }),
+            
         }
 
     def save(self, commit=True):

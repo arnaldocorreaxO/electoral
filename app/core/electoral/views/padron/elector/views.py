@@ -46,6 +46,9 @@ class ElectorListView(PermissionMixin, FormView):
 				_start = request.POST['start']
 				_length = request.POST['length']
 				_search = request.POST['search[value]']
+				# _start = 1
+				# _length = 5271
+				# _search = ''				
 
 				if len(term):
 					_search = term
@@ -57,8 +60,6 @@ class ElectorListView(PermissionMixin, FormView):
 					else:
 						_search = '%' + _search.replace(' ', '%') + '%'
 						_where = " upper(nombre||' '|| apellido) LIKE upper(%s)"
-						# _where += " OR upper(barrio||' '|| manzana) LIKE upper(%s)"
-						# _where += " OR upper(edad) LIKE upper(%s)"
 				
 				if len(ciudad):
 					_where += f" AND electoral_elector.ciudad_id = '{ciudad}'"
@@ -74,8 +75,6 @@ class ElectorListView(PermissionMixin, FormView):
 									.order_by('seccional','barrio','manzana','nro_casa')
 
 				if len(start_date) and len(end_date):
-					# search = search.filter(fecha_nacimiento__range=[start_date, end_date])
-					# print(today.month)
 					start_date = datetime.strptime(start_date, '%Y-%m-%d')
 					qs = qs.filter(fecha_nacimiento__month=start_date.month,
 								   fecha_nacimiento__day__exact=start_date.day)

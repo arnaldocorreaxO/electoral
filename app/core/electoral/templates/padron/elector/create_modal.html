@@ -59,6 +59,20 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{% render_field form.local_votacion.label %}:</label>
+                                {% render_field form.local_votacion|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>{% render_field form.seccional.label %}:</label>
+                                {% render_field form.seccional|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>                        
+                    </div>
 
                     <div class="row">
                         <div class="col-md-4">
