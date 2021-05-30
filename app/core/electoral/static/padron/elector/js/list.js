@@ -24,12 +24,19 @@ function initTable() {
 }
 
 function getData(all) {
+    if (all=='all'){
+        input_term.val("");
+        select_ciudad.val("").change();
+        select_seccional.val("").change();
+        select_barrio.val("").change();
+        select_manzana.val("").change();
+    }
 
     var parameters = {
         'action': 'search',
-        'term': input_term.val(),
         'start_date': input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD'),
         'end_date': input_daterange.data('daterangepicker').endDate.format('YYYY-MM-DD'),
+        'term': input_term.val(),
         'ciudad': select_ciudad.val(),
         'seccional': select_seccional.val(),
         'barrio': select_barrio.val(),
@@ -37,11 +44,12 @@ function getData(all) {
         
     };
 
-    if (all) {
+    if (all!='bday') {
         parameters['start_date'] = '';
         parameters['end_date'] = '';
     }
 
+    
     tblData = $('#data').DataTable({
         
         responsive: true,
@@ -196,17 +204,21 @@ $(function () {
     getData(true);
 
     $('.btnSearch').on('click', function () {
-        getData(false);
+        getData('bday');
+    });
+
+    $('.btnFilter').on('click', function () {
+        getData('filter');
     });
 
     $('.btnSearchAll').on('click', function () {
-        getData(true);
+        getData('all');
     });
 
     // BTN DEFAULT 
     input_term.keypress(function(e){
         if(e.keyCode==13)
-        $('.btnSearchAll').click();
+        $('.btnFilter').click();
       });
 
 
@@ -254,11 +266,11 @@ $(function () {
         type: 'get',
         dataType: 'json',
         beforeSend: function () {
-            console.log('BEFOREEEEEEEEEEEEEEEEEEEEEEEE')
+            // console.log('BEFOREEEEEEEEEEEEEEEEEEEEEEEE')
             $("#modal-elector").modal("show");
         },
         success: function (data) {    
-            console.log('SUCEEEEEEEEEEEEEEEEEEEEEEEEESS')        
+            // console.log('SUCEEEEEEEEEEEEEEEEEEEEEEEEESS')        
             $("#modal-elector .modal-content").html(data.html_form);
         }
       });

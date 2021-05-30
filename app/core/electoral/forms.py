@@ -290,6 +290,9 @@ class ElectorForm2(ModelForm):
 ===   SHEARCH    ===
 ==================== '''
 class ShearchForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)        
+        self.fields['term'].widget.attrs['autofocus'] = True
     # Rango de fechas 
     date_range = forms.CharField()
     # Termino de busqueda 
