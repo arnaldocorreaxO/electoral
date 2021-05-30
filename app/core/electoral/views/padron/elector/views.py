@@ -218,7 +218,7 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
 			form = ElectorForm(instance=elector)
 			context = self.get_context_data()
 			context['form'] = form
-			# self.template_name = 'form_modal.html'
+			self.template_name = 'padron/elector/create_modal.html'
 			context['action_url'] = reverse_lazy('elector_update', kwargs={'pk': pk})
 			data['html_form'] = render_to_string(self.template_name, context, request=request)					
 		except Exception as e:

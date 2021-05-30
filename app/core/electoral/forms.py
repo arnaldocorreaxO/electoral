@@ -241,10 +241,10 @@ class ElectorForm(ModelForm):
             'ci': forms.TextInput(attrs={'placeholder': 'Ingrese Cedula','readonly':'readonly'}),
             'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre','readonly':'readonly'}),
             'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido','readonly':'readonly'}),
-            'ciudad': forms.Select(attrs={'class': 'form-control select2',}),
-            'barrio': forms.Select(attrs={'class': 'form-control select2', }),
-            'manzana': forms.Select(attrs={'class': 'form-control select2', }),
-            'tipo_voto': forms.Select(attrs={'class': 'form-control select2', }),
+            'ciudad': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 240px;'}),
+            'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 240px;' }),
+            'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 240px;' }),
+            'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 240px;' }),
         }
 
     def save(self, commit=True):

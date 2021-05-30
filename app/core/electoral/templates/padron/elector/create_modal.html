@@ -1,0 +1,119 @@
+<!-- {#% extends 'list.html' %} -->
+{% load widget_tweaks %}
+{% load security_extras %}
+{% load static %}
+{% block head_list %}
+    <!--Formvalidation Libs-->
+    <link rel="stylesheet" href="{% static 'lib/formvalidation-dist-v1.7.0/dist/css/formValidation.min.css' %}">
+    <script src="{% static 'lib/formvalidation-dist-v1.7.0/es6-shim.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-dist-v1.7.0/dist/js/FormValidation.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-dist-v1.7.0/dist/js/plugins/Bootstrap.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-dist-v1.7.0/dist/js/locales/es_ES.min.js' %}"></script>
+    <!-- Select2 Libs
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}"> -->
+    <!--Block head form-->
+    {% block head_form %}
+        <script src="{% static '/js/select2_barrio_manzana.js' %}"></script>
+    {% endblock %}
+{% endblock %}
+
+{% block content %}
+    <form class="js-update-form" method="post" action="{{action_url}}" enctype="multipart/form-data" id="frmForm"
+          data-url="{{ list_url }}">
+        <div class="card {{ dshboard.card }}">
+            <div class="card-header">
+                <h3 class="card-title">
+                    {% if action == 'add' %}
+                        <i class="fas fa-plus"></i>
+                    {% else %}
+                        <i class="fas fa-edit"></i>
+                    {% endif %}
+                    {{ title }}
+                </h3>
+            </div>
+            <div class="card-body" style="display: block;">
+                <div class="container-fluid">
+                    <input type="hidden" name="action" id="action" value="{{ action }}">
+                    {% csrf_token %}
+                    {# Forms Visible #}
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label>{% render_field form.ci.label %}:</label>
+                                {% render_field form.ci|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>{% render_field form.nombre.label %}:</label>
+                                {% render_field form.nombre|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>{% render_field form.apellido.label %}:</label>
+                                {% render_field form.apellido|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% render_field form.ciudad.label %}:</label>
+                                {% render_field form.ciudad|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% render_field form.barrio.label %}:</label>
+                                {% render_field form.barrio|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% render_field form.manzana.label %}:</label>
+                                {% render_field form.manzana|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% render_field form.nro_casa.label %}:</label>
+                                {% render_field form.nro_casa|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% render_field form.telefono.label %}:</label>
+                                {% render_field form.telefono|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label>{% render_field form.tipo_voto.label %}:</label>
+                                {% render_field form.tipo_voto|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                    </div>
+
+            </div>
+            {% block box_footer %}
+                <div class="card-footer">
+                    {% block buttons %}
+                        <button type="submit" class="btn btn-secondary btn-flat">
+                            <i class="fas fa-save"></i> Guardar registro
+                        </button>
+                        <button type="button" class="btn btn-danger btn-flat" data-dismiss="modal"> 
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+    </form>
+{% endblock %}
