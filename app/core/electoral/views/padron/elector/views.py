@@ -54,12 +54,12 @@ class ElectorListView(PermissionMixin, FormView):
 					_column = request.POST['order[0][column]']
 					if (_column!='0'):
 				 		_order = [request.POST[f'columns[{_column}][data]'].split(".")[0],]
+
 				if 'order[0][dir]' in request.POST:
 					_dir = request.POST['order[0][dir]']
 					if (_dir=='desc'):
 						_order[0] = f"-{_order[0]}"
 						# print(_order)
-
 				if 'order[1][column]' in request.POST:					
 					_column1 = request.POST['order[1][column]']
 					if (_column1!='0'):
@@ -131,7 +131,7 @@ class ElectorListView(PermissionMixin, FormView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['create_url'] = reverse_lazy('elector_create')
-		context['title'] = 'Listado de electores'
+		context['title'] = 'Listado de Electores'
 		return context
 
 
