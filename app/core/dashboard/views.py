@@ -171,11 +171,14 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Panel de administración'
         context['company'] = Company.objects.first()
-        context['elector'] = Elector.objects.all().count()
-        context['votos_positivos'] = Elector.objects.filter(tipo_voto__exact=6).count()
-        context['votos_negativos'] = Elector.objects.exclude(tipo_voto__cod__in=[6,'A','E','F']).count()
-        context['product'] = Product.objects.all().count()
-        context['sale'] = Sale.objects.filter().order_by('-id')[0:10]
+        context['total_padron'] = Elector.objects.all().count()
+        context['total_contactados'] = Elector.objects.exclude(barrio__id__in=[0])\
+                                                      .exclude(barrio__isnull=True).count()
+        context['votos_positivos'] = Elector.objects.filter(tipo_voto__exact=1).count()
+        context['votos_negativos'] = Elector.objects.exclude(tipo_voto__cod__in=[1,'A','E','F'])\
+                                                    .count()
+        # context['product'] = Product.objects.all().count()
+        # context['sale'] = Sale.objects.filter().order_by('-id')[0:10]
         return context
 
 

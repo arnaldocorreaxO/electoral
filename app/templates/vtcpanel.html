@@ -97,7 +97,7 @@
                                 <div class="info-box-content">
                                     <span class="info-box-text">Padrón</span>
                                     <span class="info-box-number">
-                                        {{ elector }}
+                                        {{ total_padron }}
                                     </span>
                                 </div>                               
                         </div>
@@ -109,7 +109,7 @@
                         <div class="info-box-content">
                             <span class="info-box-text">Contactados</span>
                             <span class="info-box-number">
-                        {{ votos_positivos }}
+                        {{ total_contactados }}
                     </span>
                         </div>
                     </div>
@@ -138,16 +138,7 @@
                 </div>
             </div>
             <div class="row">               
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-box"></i> Control Día D </h3>
-                        </div>
-                        <div class="card-body p-0">
-                            <div id="graph_dia_d" style="height: 64vh;"></div>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
@@ -156,6 +147,16 @@
                         <div class="card-body p-0">
                             <div class="container-fluid p-3" id="graph_dia_d_bar">
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-box"></i> Control Día D </h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div id="graph_dia_d" style="height: 64vh;"></div>
                         </div>
                     </div>
                 </div>
@@ -181,8 +182,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
+            </div>            
             <div class="row">
                 <div class="col-md-6">
                     <div class="card">

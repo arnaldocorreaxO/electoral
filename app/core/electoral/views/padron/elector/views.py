@@ -243,7 +243,7 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
 			data['html_form'] = render_to_string(self.template_name, context, request=request)					
 		except Exception as e:
 			data['error'] = str(e)
-		print(data['html_form'])
+		# print(data['html_form'])
 		return HttpResponse(json.dumps(data), content_type='application/json')
 		#return  JsonResponse(data)
 
