@@ -258,7 +258,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 					<text><![CDATA[ENFERMOS]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="334" y="41" width="40" height="20" uuid="5aa9fc0b-73ca-4fed-8242-f956deb9a9a1"/>
+					<reportElement x="334" y="41" width="46" height="20" uuid="5aa9fc0b-73ca-4fed-8242-f956deb9a9a1"/>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 						<pen lineWidth="1.0"/>
 					</box>
@@ -362,7 +362,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 					<textFieldExpression><![CDATA[$V{V_SUM_L3}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement x="334" y="0" width="40" height="20" uuid="acf1db5a-f28c-468f-abce-c619bc4a3406"/>
+					<reportElement x="334" y="0" width="46" height="20" uuid="acf1db5a-f28c-468f-abce-c619bc4a3406"/>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 						<pen lineWidth="1.0"/>
 					</box>
@@ -614,7 +614,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 				<textFieldExpression><![CDATA[$F{lista_id_4}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="334" y="0" width="40" height="20" uuid="d9813de9-a240-4d63-a2e3-8f77910217c3"/>
+				<reportElement x="334" y="0" width="46" height="20" uuid="d9813de9-a240-4d63-a2e3-8f77910217c3"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<pen lineWidth="1.0"/>
 				</box>
