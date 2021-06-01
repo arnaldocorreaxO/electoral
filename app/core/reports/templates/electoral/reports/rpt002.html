@@ -3,9 +3,35 @@
 {% load security_extras %}
 {% load static %}
 {% block head_report %}
-<!-- <link rel="stylesheet" href="https://cdn.datatables.net/rowgroup/1.1.2/css/rowGroup.dataTables.min.css">
-<script src="https://cdn.datatables.net/rowgroup/1.1.2/js/dataTables.rowGroup.min.js" type="text/javascript"></script>
-<script src="{% static 'electoral/js/rpt002.js' %}" type="text/javascript"></script> -->
 <script src="{% static '/js/select2_barrio_manzana.js' %}"></script>
+{% endblock %}
+
+{% block params_report %}
+<div class="row">
+    <!-- <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Seccional</label>
+            <div class="input-group mb-3">
+                {{ form.seccional }}
+            </div>
+        </div>
+    </div> -->
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Barrio</label>
+            <div class="input-group mb-3">
+                {{ form.barrio }}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Manzana</label>
+            <div class="input-group mb-3">
+                {{ form.manzana }}
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

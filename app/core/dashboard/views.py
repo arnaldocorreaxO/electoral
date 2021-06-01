@@ -172,7 +172,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context['title'] = 'Panel de administración'
         context['company'] = Company.objects.first()
         context['total_padron'] = Elector.objects.all().count()
-        context['total_contactados'] = Elector.objects.exclude(barrio__id__in=[0])\
+        context['total_ubicados'] = Elector.objects.exclude(barrio__id__in=[0])\
                                                       .exclude(barrio__isnull=True).count()
         context['votos_positivos'] = Elector.objects.filter(tipo_voto__exact=1).count()
         context['votos_negativos'] = Elector.objects.exclude(tipo_voto__cod__in=[1,'A','E','F'])\

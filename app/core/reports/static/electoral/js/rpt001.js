@@ -2,6 +2,12 @@ var input_daterange;
 var current_date;
 var tblReport;
 var columns = [];
+var select_seccional;
+var select_barrio;
+var select_manzana;
+
+
+
 
 function initTable() {
     tblReport = $('#tblReport').DataTable({
@@ -20,13 +26,16 @@ function initTable() {
 function generateReport(all) {
     var parameters = {
         'action': 'search_report',
-        'start_date': input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD'),
-        'end_date': input_daterange.data('daterangepicker').endDate.format('YYYY-MM-DD'),
+        'seccional': select_seccional.val(),
+        'barrio': select_barrio.val(),
+        'manzana': select_manzana.val(),
+        // 'start_date': input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD'),
+        // 'end_date': input_daterange.data('daterangepicker').endDate.format('YYYY-MM-DD'),
     };
 
     if (all) {
-        parameters['start_date'] = '';
-        parameters['end_date'] = '';
+        // parameters['start_date'] = '';
+        // parameters['end_date'] = '';
     }
 
     tblReport = $('#tblReport').DataTable({        
@@ -171,6 +180,10 @@ $(function () {
 
     current_date = new moment().format('YYYY-MM-DD');
     input_daterange = $('input[name="date_range"]');
+
+    select_seccional = $('select[name="seccional"]');
+    select_barrio = $('select[name="barrio"]');
+    select_manzana = $('select[name="manzana"]');
 
     input_daterange
         .daterangepicker({
