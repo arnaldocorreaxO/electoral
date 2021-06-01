@@ -1,0 +1,37 @@
+{% extends 'report2.html' %}
+{% load widget_tweaks %}
+{% load security_extras %}
+{% load static %}
+{% block head_report %}
+<script src="{% static '/js/select2_barrio_manzana.js' %}"></script>
+{% endblock %}
+
+{% block params_report %}
+<div class="row">
+    <!-- <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Seccional</label>
+            <div class="input-group mb-3">
+                {#{ form.seccional }}
+            </div>
+        </div>
+    </div> -->
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Local Votacion</label>
+            <div class="input-group mb-3">
+                {{ form.local_votacion }}
+            </div>
+        </div>
+    </div>
+    <!-- <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Manzana</label>
+            <div class="input-group mb-3">
+                {#{ form.manzana }}
+            </div>
+        </div>
+    </div> -->
+</div>
+
+{% endblock %}

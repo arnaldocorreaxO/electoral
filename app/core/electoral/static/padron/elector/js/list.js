@@ -64,7 +64,7 @@ function getData(all) {
             data: parameters,
             // dataSrc: ""
         },
-        order: [[0, 'asc']],
+        order: [[5, 'asc'],[6, 'asc'],[7, 'asc']],
         paging: true,
         ordering: true,
         searching: true,

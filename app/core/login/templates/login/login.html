@@ -17,11 +17,11 @@
                         {% csrf_token %}
                         <input type="hidden" name="next" value="{{ next }}">
                         <div class="form-group">
-                            <label>Username:</label>
+                            <label>Usuario:</label>
                             {{ form.username }}
                         </div>
                         <div class="form-group">
-                            <label>Password:</label>
+                            <label>Contraseña:</label>
                             <div class="input-group my-group">
                                 {{ form.password }}
                                 <div class="input-group-append">

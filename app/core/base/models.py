@@ -69,16 +69,16 @@ class Modulo(ModeloBase):
 		verbose_name_plural = 'modulos'
 
 '''REPORTES'''
-class Reporte(ModeloBase):
-	nombre_reporte = models.CharField(max_length=100,unique=True)
-	titulo_reporte = models.CharField(max_length=100)
-	ruta_reporte = models.CharField(max_length=100,null=True,blank=True)
+# class Reporte(ModeloBase):
+# 	nombre_reporte = models.CharField(max_length=100,unique=True)
+# 	titulo_reporte = models.CharField(max_length=100)
+# 	ruta_reporte = models.CharField(max_length=100,null=True,blank=True)
 	
-	def __str__(self):
-		return f"{self.nombre_reporte} - {self.titulo_reporte}"
+# 	def __str__(self):
+# 		return f"{self.nombre_reporte} - {self.titulo_reporte}"
 
-	class Meta:
-		ordering = ['id', ]
-		db_table = 'base_reporte'
-		verbose_name = 'reporte'
-		verbose_name_plural = 'reportes'
+# 	class Meta:
+# 		ordering = ['id', ]
+# 		db_table = 'base_reporte'
+# 		verbose_name = 'reporte'
+# 		verbose_name_plural = 'reportes'
