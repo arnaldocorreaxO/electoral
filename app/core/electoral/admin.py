@@ -29,7 +29,7 @@ class ElectorAdmin(ImportExportModelAdmin):
     '''Filtrar solo los tipos de votos activos'''
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'tipo_voto':
-            kwargs["queryset"] = TipoVoto.objects.filter(estado__exact=True)
+            kwargs["queryset"] = TipoVoto.objects.filter(activo__exact=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 ''' 
@@ -88,7 +88,7 @@ class ElectorAdmin2(ImportExportModelAdmin):
     '''Filtrar solo los tipos de votos activos'''
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'tipo_voto':
-            kwargs["queryset"] = TipoVoto.objects.filter(estado__exact=True)
+            kwargs["queryset"] = TipoVoto.objects.filter(activo__exact=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
@@ -98,8 +98,8 @@ class ElectorAdmin2(ImportExportModelAdmin):
 ==================== '''
 class Elector3(Elector):
     class Meta:
-        verbose_name = 'Electores Preferencia de Votos'
-        verbose_name_plural = 'Electores Preferencia de Votos'
+        verbose_name = 'Electores Preferencia de Votos y Nro Casa'
+        verbose_name_plural = 'Electores Preferencia de Votos y Nro Casa'
         proxy = True
 
 class ElectorResources3(resources.ModelResource):
@@ -113,7 +113,7 @@ class ElectorAdmin3(ImportExportModelAdmin):
     form = ElectorForm2 
     readonly_fields = ('ci','nombre','apellido','edad')   
     list_display =['ci','nombre','apellido','edad','tipo_voto','manzana','nro_casa']
-    list_editable =['tipo_voto'] #Consume muchos recursos (tarda mucho la consulta)
+    list_editable =['tipo_voto','nro_casa'] #Consume muchos recursos (tarda mucho la consulta)
     list_filter =['ciudad','seccional','barrio','manzana','tipo_voto']
     search_fields =['ci','nombre','apellido']
     list_display_links = ['ci','nombre','apellido']
@@ -128,8 +128,9 @@ class ElectorAdmin3(ImportExportModelAdmin):
     '''Filtrar solo los tipos de votos activos'''
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'tipo_voto':
-            kwargs["queryset"] = TipoVoto.objects.filter(estado__exact=True)
+            kwargs["queryset"] = TipoVoto.objects.filter(activo__exact=True)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
     
 
 ''' 

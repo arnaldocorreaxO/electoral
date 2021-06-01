@@ -45,7 +45,7 @@ function getData(all) {
             data: parameters,
             // dataSrc: "data"
         },
-        order: [[0, 'asc']],
+        order: [[4, 'desc']],
         paging: true,
         ordering: true,
         searching: true,       
@@ -54,6 +54,7 @@ function getData(all) {
             {data: "orden"},
             {data: "ci"},
             {data: "fullname"},          
+            {data: "fec_modificacion"},          
             {data: "id"},
         ],
         columnDefs: [

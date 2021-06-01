@@ -1,4 +1,3 @@
-from core.base.models import Reporte
 from config import settings
 from pyreportjasper import PyReportJasper
 from config import conn
@@ -10,6 +9,7 @@ class JasperReportBase():
 	report_dir	= ''
 	report_name = ''
 	report_title= ''
+	report_url= ''
 	filename 	= ''
 	params = {}
 	

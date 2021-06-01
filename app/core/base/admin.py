@@ -18,4 +18,3 @@ class ModeloAdminBase(admin.ModelAdmin):
 
 admin.site.register(Parametro,ModeloAdminBase)
 admin.site.register(Modulo,ModeloAdminBase)
-admin.site.register(Reporte,ModeloAdminBase)

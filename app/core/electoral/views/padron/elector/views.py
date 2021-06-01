@@ -48,29 +48,25 @@ class ElectorListView(PermissionMixin, FormView):
 				_length = request.POST['length']
 				_search = request.POST['search[value]']
 								
-				_order = ['barrio','manzana','nro_casa']
-				
-				if 'order[0][column]' in request.POST:					
-					_column = request.POST['order[0][column]']
-					if (_column!='0'):
-				 		_order = [request.POST[f'columns[{_column}][data]'].split(".")[0],]
-
-				if 'order[0][dir]' in request.POST:
-					_dir = request.POST['order[0][dir]']
-					if (_dir=='desc'):
-						_order[0] = f"-{_order[0]}"
-						# print(_order)
-				if 'order[1][column]' in request.POST:					
-					_column1 = request.POST['order[1][column]']
-					if (_column1!='0'):
-				 		_order.append(request.POST[f'columns[{_column1}][data]'].split(".")[0])
-				if 'order[1][dir]' in request.POST:
-					_dir = request.POST['order[1][dir]']
-					if (_dir=='desc'):
-						_order[1] = f"-{_order[1]}"
-				
-				# print(_order)
-
+				# _order = ['barrio','manzana','nro_casa'] debe enviarse ya el orden desde el datatable para default
+				_order = []
+				print(request.POST)
+				#range(start, stop, step)
+				for i in range(9): 
+					_column_order = f'order[{i}][column]'
+					print('Column Order:',_column_order)
+					if _column_order in request.POST:					
+						_column_number = request.POST[_column_order]
+						print('Column Number:',_column_number)
+						if _column_number == '9': #Hacemos esto por que en el datatable edad es un campo calculado
+							_order.append('fecha_nacimiento')
+						else:			
+							_order.append(request.POST[f'columns[{_column_number}][data]'].split(".")[0])
+					if f'order[{i}][dir]' in request.POST:
+						_dir = request.POST[f'order[{i}][dir]']
+						if (_dir=='desc'):
+							_order[i] = f"-{_order[i]}"
+				print('Order:', _order)
 				if len(term):
 					_search = term
 

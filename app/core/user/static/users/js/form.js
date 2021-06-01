@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             min: 2,
                         },
                         regexp: {
-                            // regexp: /^([A-Za-zÁÉÍÓÚñáéíóúÑ])+?$/i,
-                            message: 'Debe ingresar su nombres y solo utilizando caracteres alfabéticos'
+                            regexp: /^([A-Z a-zÁÉÍÓÚñáéíóúÑ])+?$/i,
+                            message: 'Debe ingresar su nombre y solo utilizando caracteres alfabéticos'
                         },
                     }
                 },
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                             min: 2,
                         },
                         regexp: {
-                            // regexp: /^([A-Za-zÁÉÍÓÚñáéíóúÑ])+?$/i,
+                            regexp: /^([A-Z a-zÁÉÍÓÚñáéíóúÑ])+?$/i,
                             message: 'Debe ingresar su apellido y solo utilizando caracteres alfabéticos'
                         },
                     }
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
                     validators: {
                         notEmpty: {},
                         stringLength: {
-                            min: 10,
+                            min: 6,
                         },
                         digits: {},
                         remote: {

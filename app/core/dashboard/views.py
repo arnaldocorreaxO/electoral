@@ -11,8 +11,8 @@ from django.views.decorators.csrf import csrf_exempt, requires_csrf_token
 from django.views.generic import TemplateView
 
 from core.reports.choices import months,rango_edad
-from core.pos.models import Product, Sale, Client, Provider, Category, Purchase, Company
-from core.electoral.models import Elector, Seccional
+from core.pos.models import Company
+from core.electoral.models import Elector
 from core.security.models import Dashboard
 
 
