@@ -283,7 +283,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 						<pen lineWidth="1.0"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font isBold="true"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Lista 6]]></text>
 				</staticText>
@@ -293,7 +293,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 						<pen lineWidth="1.0"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font isBold="true"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Lista36]]></text>
 				</staticText>
@@ -303,7 +303,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 						<pen lineWidth="1.0"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font isBold="true"/>
+						<font size="8" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Lista 8]]></text>
 				</staticText>
