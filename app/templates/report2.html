@@ -3,18 +3,6 @@
 {% load security_extras %}
 {% load static %}
 {% block head_list %}
-    <!--Formvalidation Libs-->
-    <link rel="stylesheet" href="{% static 'lib/formvalidation-dist-v1.7.0/dist/css/formValidation.min.css' %}">
-    <script src="{% static 'lib/formvalidation-dist-v1.7.0/es6-shim.min.js' %}"></script>
-    <script src="{% static 'lib/formvalidation-dist-v1.7.0/dist/js/FormValidation.min.js' %}"></script>
-    <script src="{% static 'lib/formvalidation-dist-v1.7.0/dist/js/plugins/Bootstrap.min.js' %}"></script>
-    <script src="{% static 'lib/formvalidation-dist-v1.7.0/dist/js/locales/es_ES.min.js' %}"></script>
-    <!-- Select2 Libs -->
-    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
-    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
-    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
-    <!--Block head report-->
     {% block head_report %}{% endblock %}
 {% endblock %}
 
@@ -38,16 +26,18 @@
                     {% csrf_token %}
                     {# Forms Visible #}
                     <!-- {{ form.as_p}} -->
-                    {% for field in form.visible_fields %}
-                        <div class="form-group">
-                            <label>{{ field.label }}:</label>
-                            {% if field|is_checkbox %}
-                                {{ field }}
-                            {% else %}
-                                {{ field|add_class:'form-control'|attr:"autocomplete:off" }}
-                            {% endif %}
-                        </div>
-                    {% endfor %}
+                    {% block params_report %}
+                        {% for field in form.visible_fields %}
+                            <div class="form-group">
+                                <label>{{ field.label }}:</label>
+                                {% if field|is_checkbox %}
+                                    {{ field }}
+                                {% else %}
+                                    {{ field|add_class:'form-control'|attr:"autocomplete:off" }}
+                                {% endif %}
+                            </div>
+                        {% endfor %}          
+                    {% endblock %}
                 </div>
             </div>
             {% block box_footer %}

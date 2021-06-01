@@ -1,6 +1,7 @@
 from django.forms import *
 from django import forms
 from .models import *
+from core.base.forms import *
 
 ''' 
 ====================
@@ -10,11 +11,12 @@ from .models import *
 class DepartamentoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['denominacion'].widget.attrs['autofocus'] = True
+        self.fields['pais'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Departamento
         fields = '__all__'
+        exclude = readonly_fields
         widgets = {
             'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese un Departamento'}),
         }
@@ -37,11 +39,12 @@ class DepartamentoForm(ModelForm):
 class DistritoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['cod'].widget.attrs['autofocus'] = True
+        self.fields['departamento'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Distrito
         fields = '__all__'
+        exclude = readonly_fields
         widgets = {
             'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese un Distrito'}),
         }
@@ -64,11 +67,12 @@ class DistritoForm(ModelForm):
 class SeccionalForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['cod'].widget.attrs['autofocus'] = True
+        self.fields['distrito'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Seccional
         fields = '__all__'
+        exclude = readonly_fields
         widgets = {
             'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una Seccional'}),
         }
@@ -96,6 +100,7 @@ class PaisForm(ModelForm):
     class Meta:
         model = Pais
         fields = '__all__'
+        exclude = readonly_fields
         widgets = {
             'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una Ciudad'}),
         }
@@ -118,11 +123,12 @@ class PaisForm(ModelForm):
 class CiudadForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['denominacion'].widget.attrs['autofocus'] = True
+        self.fields['pais'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Ciudad
         fields = '__all__'
+        exclude = readonly_fields
         widgets = {
             'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una Ciudad'}),
         }
@@ -145,11 +151,12 @@ class CiudadForm(ModelForm):
 class BarrioForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['denominacion'].widget.attrs['autofocus'] = True
+        self.fields['ciudad'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Barrio
         fields = '__all__'
+        exclude = readonly_fields
         widgets = {
             'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese un Barrio'}),
         }
@@ -171,11 +178,12 @@ class BarrioForm(ModelForm):
 class ManzanaForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['denominacion'].widget.attrs['autofocus'] = True
+        self.fields['barrio'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Manzana
         fields = '__all__'
+        exclude = readonly_fields
         widgets = {
             'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una Manzana'}),
         }
@@ -202,6 +210,7 @@ class TipoVotoForm(ModelForm):
     class Meta:
         model = TipoVoto
         fields = '__all__'
+        exclude = readonly_fields
         widgets = {
             'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una TipoVoto'}),
         }
@@ -236,7 +245,7 @@ class ElectorForm(ModelForm):
         model = Elector
         fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
                   'tipo_voto','local_votacion','seccional']
-
+        exclude = readonly_fields
         widgets = {
             'ci': forms.TextInput(attrs={'placeholder': 'Ingrese Cedula','readonly':'readonly'}),
             'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre','readonly':'readonly'}),
@@ -281,7 +290,7 @@ class ElectorForm2(ModelForm):
         model = Elector
         fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
                   'tipo_voto']
-        
+        exclude = readonly_fields
         widgets = {
             'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre'}),
             'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido'}),
@@ -348,6 +357,7 @@ class CargaDiaDForm(ModelForm):
     class Meta:
         model = Elector
         fields = ['ci','nombre','apellido','pasoxmv','pasoxpc']
+        exclude = readonly_fields
         # widgets = {
         #     'ci': forms.TextInput(attrs={'placeholder': 'Ingrese Cedula','readonly':'readonly'}),
         #     'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre','readonly':'readonly'}),

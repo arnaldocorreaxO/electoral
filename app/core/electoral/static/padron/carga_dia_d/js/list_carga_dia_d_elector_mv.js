@@ -10,14 +10,14 @@ function initTable() {
         destroy: true,
         deferRender: true,
     });
-
+    // Establece width para exportar en PDF pdfmake
     $.each(tblData.settings()[0].aoColumns, function (key, value) {
         columns.push(value.sWidthOrig);
     });
 
     $('#data tbody tr').each(function (idx) {
-        $(this).children("td:eq(0)").html(idx + 1);
-        console.log(idx+1);
+        // $(this).children("td:eq(0)").html(idx + 1);
+        // console.log(idx+1);
     });
 }
 
