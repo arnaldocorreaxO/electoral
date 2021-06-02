@@ -67,7 +67,7 @@ class DistritoForm(ModelForm):
 class SeccionalForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['distrito'].widget.attrs['autofocus'] = True
+        self.fields['ciudad'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Seccional
