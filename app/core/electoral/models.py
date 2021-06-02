@@ -139,7 +139,8 @@ class Manzana(ModeloBase):
 ===  SECCIONAL   ===
 ==================== '''
 class Seccional(ModeloBase):
-    distrito = models.ForeignKey(Distrito, on_delete=models.PROTECT)
+    # distrito = models.ForeignKey(Distrito, on_delete=models.PROTECT)
+    ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
     cod = models.IntegerField(null=False, unique=True)
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
 
@@ -153,7 +154,7 @@ class Seccional(ModeloBase):
     class Meta:
         verbose_name = 'Seccional'
         verbose_name_plural = 'Seccionales'
-        ordering = ['distrito','denominacion']
+        ordering = ['ciudad','denominacion']
 
 
 ''' 

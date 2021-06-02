@@ -1,9 +1,10 @@
 {% extends 'list.html' %}
 
-{% block columns %}
-    <th>Cod</th>
+{% block columns %}    
     <th>Departamento</th>
     <th>Distrito</th>
+    <th>Ciudad</th>
+    <th>Cod</th>
     <th>Seccional</th>
     <!-- <th>Inventariado</th> -->
     <th class="text-center">Opciones</th>
@@ -11,10 +12,11 @@
 
 {% block rows %}
     {% for i in object_list %}
-        <tr>
+        <tr>            
+            <td>{{ i.ciudad.distrito.departamento }}</td>
+            <td>{{ i.ciudad.distrito }}</td>
+            <td>{{ i.ciudad }}</td>
             <td>{{ i.cod }}</td>
-            <td>{{ i.distrito.departamento }}</td>
-            <td>{{ i.distrito }}</td>
             <td>{{ i.denominacion }}</td>
             <!-- <td class="text-center">
                 {% if i.inventoried %}
