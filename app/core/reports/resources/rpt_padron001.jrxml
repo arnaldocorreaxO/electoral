@@ -268,7 +268,7 @@ ELE.ORDEN::INT]]>
 					<text><![CDATA[CI]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="247" y="0" width="100" height="21" uuid="9d1b8135-6269-4e34-b682-26104fdf0eec">
+					<reportElement x="246" y="0" width="100" height="21" uuid="9d1b8135-6269-4e34-b682-26104fdf0eec">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d0efd009-f36d-455f-9303-7008c4d0924c"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -327,7 +327,7 @@ ELE.ORDEN::INT]]>
 					<text><![CDATA[Abr 2013]]></text>
 				</staticText>
 				<staticText>
-					<reportElement stretchType="ElementGroupHeight" x="347" y="0" width="20" height="21" uuid="bebcb2ec-825f-4dcc-ad71-90d2eea43fda"/>
+					<reportElement stretchType="ElementGroupHeight" x="226" y="0" width="20" height="21" uuid="bebcb2ec-825f-4dcc-ad71-90d2eea43fda"/>
 					<box>
 						<topPen lineWidth="1.0"/>
 						<leftPen lineWidth="1.0"/>
@@ -431,7 +431,7 @@ ELE.ORDEN::INT]]>
 					<text><![CDATA[Abr 2018]]></text>
 				</staticText>
 				<staticText>
-					<reportElement stretchType="ElementGroupHeight" x="226" y="0" width="21" height="21" uuid="b5ff01f5-8827-4dd9-a4ba-a443f072b3bf"/>
+					<reportElement stretchType="ElementGroupHeight" x="346" y="0" width="21" height="21" uuid="b5ff01f5-8827-4dd9-a4ba-a443f072b3bf"/>
 					<box>
 						<topPen lineWidth="1.0"/>
 						<leftPen lineWidth="1.0"/>
@@ -475,7 +475,7 @@ ELE.ORDEN::INT]]>
 				<textFieldExpression><![CDATA[$P{P_TITULO3}]]></textFieldExpression>
 			</textField>
 			<image onErrorType="Icon">
-				<reportElement x="29" y="8" width="51" height="47" uuid="b0312ba4-0922-41f9-bd0c-e8c99988ccd3"/>
+				<reportElement x="30" y="3" width="51" height="47" uuid="b0312ba4-0922-41f9-bd0c-e8c99988ccd3"/>
 				<imageExpression><![CDATA[$P{P_RUTA} +  "logo_empresa.png"]]></imageExpression>
 			</image>
 		</band>
@@ -514,7 +514,7 @@ ELE.ORDEN::INT]]>
 				<textFieldExpression><![CDATA[$F{apellido_nombre}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
-				<reportElement stretchType="ElementGroupHeight" x="247" y="0" width="100" height="16" uuid="3b107d11-3458-432d-89b3-8dd900db5100">
+				<reportElement stretchType="ElementGroupHeight" x="246" y="0" width="100" height="16" uuid="3b107d11-3458-432d-89b3-8dd900db5100">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d0efd009-f36d-455f-9303-7008c4d0924c"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -556,7 +556,7 @@ ELE.ORDEN::INT]]>
 				<textFieldExpression><![CDATA[$F{partido}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="347" y="0" width="20" height="16" uuid="e0193b76-53cb-4663-a248-396d68fa4a93"/>
+				<reportElement x="226" y="0" width="20" height="16" uuid="e0193b76-53cb-4663-a248-396d68fa4a93"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -647,7 +647,7 @@ ELE.ORDEN::INT]]>
 				<textFieldExpression><![CDATA[$F{voto5}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="226" y="0" width="21" height="16" uuid="564ea1eb-cdd8-4310-9701-6ef7b7313b47"/>
+				<reportElement x="346" y="0" width="21" height="16" uuid="564ea1eb-cdd8-4310-9701-6ef7b7313b47"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
