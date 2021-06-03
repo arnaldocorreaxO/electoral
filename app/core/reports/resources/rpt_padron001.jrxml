@@ -124,7 +124,7 @@ ELE.ORDEN::INT]]>
 		<property name="com.jaspersoft.studio.field.name" value="apellido_nombre"/>
 		<property name="com.jaspersoft.studio.field.label" value="apellido_nombre"/>
 	</field>
-	<field name="edad" class="java.lang.String">
+	<field name="edad" class="java.lang.Long">
 		<property name="com.jaspersoft.studio.field.name" value="edad"/>
 		<property name="com.jaspersoft.studio.field.label" value="edad"/>
 	</field>
