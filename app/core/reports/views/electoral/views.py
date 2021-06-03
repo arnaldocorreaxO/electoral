@@ -52,10 +52,6 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 
 
 '''Electores por Barrios y Manzanas'''
-class RptElectoral001Config(JasperReportBase):
-	report_name  = 'rpt_electoral001'
-	report_url = reverse_lazy(report_name)
-
 class RptElectoral001ReportView(ModuleMixin, FormView):
 	template_name = 'electoral/reports/rpt_electoral001.html'
 	form_class = ReportForm
@@ -73,8 +69,12 @@ class RptElectoral001ReportView(ModuleMixin, FormView):
 				barrio = int(request.POST['barrio']) if request.POST['barrio'] else None
 				manzana = int(request.POST['manzana']) if request.POST['manzana'] else None
 						 
-				report = RptElectoral001Config()     
+				#CONFIG				 
+				report = JasperReportBase()  
+				report.report_name  = 'rpt_electoral001'
+				report.report_url = reverse_lazy(report.report_name)
 				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				#PARAMETROS                        
 				report.params['P_BARRIO_ID']= barrio
 				report.params['P_MANZANA_ID']= manzana 
 				
@@ -147,10 +147,6 @@ class RptElectoral002ReportView(ModuleMixin, FormView):
 
 
 '''Estadistica de Votos Positivos vs Negativos'''
-class RptEstadistica001Config(JasperReportBase):
-	report_name  = 'rpt_estadistica001'
-	report_url = reverse_lazy(report_name)
-
 class RptEstadistica001ReportView(ModuleMixin, FormView):
 	template_name = 'electoral/reports/rpt_estadistica001.html'
 	form_class = ReportForm
@@ -167,8 +163,12 @@ class RptEstadistica001ReportView(ModuleMixin, FormView):
 				data = []
 				local_votacion = int(request.POST['local_votacion']) if request.POST['local_votacion'] else None
 										 
-				report = RptEstadistica001Config()     
+				#CONFIG				 
+				report = JasperReportBase()  
+				report.report_name  = 'rpt_estadistica001'
+				report.report_url = reverse_lazy(report.report_name)
 				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				#PARAMETROS 
 				report.params['P_LOCAL_VOTACION_ID']= local_votacion				
 				
 				return report.render_to_response()			   
