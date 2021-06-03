@@ -11,6 +11,48 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView
 
+'''Padron'''
+class RptPadron001Config(JasperReportBase):
+	report_name  = 'rpt_padron001'
+	report_url = reverse_lazy(report_name)
+
+class RptPadron001ReportView(ModuleMixin, FormView):
+	template_name = 'electoral/reports/rpt_padron001.html'
+	form_class = ReportForm
+
+	@method_decorator(csrf_exempt)
+	def dispatch(self, request, *args, **kwargs):
+		return super().dispatch(request, *args, **kwargs)
+
+	def post(self, request, *args, **kwargs):
+		action = request.POST['action']
+		data = {}
+		try:
+			if action == 'report':
+				data = []
+				local_votacion = int(request.POST['local_votacion']) if request.POST['local_votacion'] else None
+				
+						 
+				report = RptPadron001Config()     
+				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				report.params['P_TITULO3'] = 'TRIBUNAL ELECTORAL PARTIDARIO'
+				report.params['P_LOCAL_VOTACION_ID']= local_votacion
+								
+				return report.render_to_response()
+
+			else:
+				data['error'] = 'No ha ingresado una opción'
+		except Exception as e:
+			data['error'] = str(e)
+		return HttpResponse(json.dumps(data), content_type='application/json')
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['title'] = 'Reporte de Padron'
+		context['action'] = 'report'
+		return context
+
+
 '''Electores por Barrios y Manzanas'''
 class RptElectoral001Config(JasperReportBase):
 	report_name  = 'rpt_electoral001'

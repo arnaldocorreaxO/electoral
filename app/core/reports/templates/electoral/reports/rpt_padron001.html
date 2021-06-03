@@ -1,0 +1,21 @@
+{% extends 'report2.html' %}
+{% load widget_tweaks %}
+{% load security_extras %}
+{% load static %}
+{% block head_report %}
+{% endblock %}
+
+{% block params_report %}
+<div class="row">
+
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Local Votacion</label>
+            <div class="input-group mb-3">
+                {{ form.local_votacion }}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
