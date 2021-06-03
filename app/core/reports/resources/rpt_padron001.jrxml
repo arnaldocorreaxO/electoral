@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rpt_001" pageWidth="612" pageHeight="936" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ba0f302e-7940-4e06-a588-1bee7ec99b04">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rpt_padron001" pageWidth="612" pageHeight="936" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ba0f302e-7940-4e06-a588-1bee7ec99b04">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PGSQL_ELECTORAL_LOCAL"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
@@ -14,14 +14,16 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
-	<parameter name="P_LOCAL_VOTACION_ID" class="java.lang.Long">
-		<parameterDescription><![CDATA[BARRIO]]></parameterDescription>
-	</parameter>
+	<parameter name="P_REPORTE" class="java.lang.String"/>
+	<parameter name="P_USUARIO" class="java.lang.String"/>
 	<parameter name="P_TITULO1" class="java.lang.String"/>
 	<parameter name="P_TITULO2" class="java.lang.String"/>
 	<parameter name="P_TITULO3" class="java.lang.String"/>
-	<parameter name="P_REPORTE" class="java.lang.String"/>
+	<parameter name="P_TITULO4" class="java.lang.String"/>
 	<parameter name="P_RUTA" class="java.lang.String"/>
+	<parameter name="P_LOCAL_VOTACION_ID" class="java.lang.Long">
+		<parameterDescription><![CDATA[BARRIO]]></parameterDescription>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT 
 DPT.ID AS COD_DEPARTAMENTO, 
@@ -182,6 +184,9 @@ ELE.ORDEN::INT]]>
 		<property name="com.jaspersoft.studio.field.label" value="voto5"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_elector"/>
 	</field>
+	<variable name="V_HOY" class="java.util.Date" resetType="None">
+		<variableExpression><![CDATA[NOW( )]]></variableExpression>
+	</variable>
 	<group name="Group1" isStartNewPage="true" isResetPageNumber="true" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{local_votacion}]]></groupExpression>
 		<groupHeader>
@@ -253,7 +258,7 @@ ELE.ORDEN::INT]]>
 		<groupHeader>
 			<band height="21">
 				<staticText>
-					<reportElement x="45" y="0" width="48" height="21" uuid="f4ebc135-81f3-4f52-9f7d-8a17af71e947">
+					<reportElement x="45" y="0" width="36" height="21" uuid="f4ebc135-81f3-4f52-9f7d-8a17af71e947">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b58a7b6a-dba4-4586-aeaa-5ecfd971d7e6"/>
 					</reportElement>
 					<box leftPadding="2">
@@ -355,7 +360,7 @@ ELE.ORDEN::INT]]>
 					<text><![CDATA[Orden]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="93" y="0" width="133" height="21" uuid="af317a60-b6ac-4105-b4c0-c965a23d72d0">
+					<reportElement x="81" y="0" width="145" height="21" uuid="af317a60-b6ac-4105-b4c0-c965a23d72d0">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="67fe75bb-e1db-46f1-9b0e-a023a3a2f183"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -449,26 +454,26 @@ ELE.ORDEN::INT]]>
 	<pageHeader>
 		<band height="59">
 			<textField>
-				<reportElement x="23" y="1" width="555" height="18" uuid="c90e11db-aa81-4780-b751-a4d623570501"/>
+				<reportElement x="81" y="1" width="399" height="18" uuid="c90e11db-aa81-4780-b751-a4d623570501"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{P_TITULO1}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="23" y="15" width="555" height="20" uuid="fa40376d-3b58-4e17-bec4-485484e2aae1"/>
+				<reportElement x="81" y="15" width="399" height="20" uuid="fa40376d-3b58-4e17-bec4-485484e2aae1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{P_TITULO2}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="23" y="39" width="555" height="20" uuid="84bbd460-3007-4467-9a0c-2e10b951c0bf"/>
+				<reportElement x="81" y="39" width="399" height="20" uuid="84bbd460-3007-4467-9a0c-2e10b951c0bf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$P{P_REPORTE}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{P_TITULO4}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="23" y="28" width="555" height="20" uuid="26d8dbb7-c737-4b0c-847b-9a98f244562e"/>
+				<reportElement x="81" y="28" width="399" height="20" uuid="26d8dbb7-c737-4b0c-847b-9a98f244562e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
@@ -478,12 +483,23 @@ ELE.ORDEN::INT]]>
 				<reportElement x="30" y="3" width="51" height="47" uuid="b0312ba4-0922-41f9-bd0c-e8c99988ccd3"/>
 				<imageExpression><![CDATA[$P{P_RUTA} +  "logo_empresa.png"]]></imageExpression>
 			</image>
+			<textField>
+				<reportElement stretchType="ContainerHeight" x="490" y="0" width="88" height="50" uuid="ec6b5d4d-e404-4c4d-a110-465dd06dc84d"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Impresión\n"
++ $P{P_REPORTE} 
++"\nFecha: " + DATEFORMAT($V{V_HOY},"dd/MM/yyyy") 
++"\nHora: " + DATEFORMAT($V{V_HOY},"hh:mm:ss")
++"\nUsuario: " + $P{P_USUARIO}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<detail>
 		<band height="16" splitType="Stretch">
 			<textField textAdjust="StretchHeight" pattern="#,##0">
-				<reportElement stretchType="ElementGroupHeight" x="45" y="0" width="48" height="16" uuid="1c01bebb-c90a-41cd-bd2a-511946d6d8fa">
+				<reportElement stretchType="ElementGroupHeight" x="45" y="0" width="36" height="16" uuid="1c01bebb-c90a-41cd-bd2a-511946d6d8fa">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b58a7b6a-dba4-4586-aeaa-5ecfd971d7e6"/>
 				</reportElement>
 				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="0">
@@ -498,7 +514,7 @@ ELE.ORDEN::INT]]>
 				<textFieldExpression><![CDATA[$F{ci}]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
-				<reportElement stretchType="ElementGroupHeight" x="93" y="0" width="133" height="16" uuid="7aa747d4-5412-4c4a-8c87-bd038afe8997">
+				<reportElement stretchType="ElementGroupHeight" x="81" y="0" width="145" height="16" uuid="7aa747d4-5412-4c4a-8c87-bd038afe8997">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="67fe75bb-e1db-46f1-9b0e-a023a3a2f183"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -662,18 +678,18 @@ ELE.ORDEN::INT]]>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="19" splitType="Stretch">
+		<band height="42" splitType="Stretch">
 			<textField>
 				<reportElement x="107" y="0" width="200" height="19" uuid="275a3616-58ed-4958-9b99-f3d77a862f28"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Pág. " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Group" evaluationGroup="Group1">
 				<reportElement x="307" y="0" width="200" height="19" uuid="f5c1ac6e-b1b6-4ca7-81b8-5984e8581551"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
-					<font size="9"/>
+					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" de " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>

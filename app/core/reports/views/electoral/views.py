@@ -1,5 +1,5 @@
 import json
-from django.urls import reverse_lazy
+
 from core.electoral.models import Elector
 from core.reports.forms import ReportForm
 from core.reports.jasperbase import JasperReportBase
@@ -7,14 +7,10 @@ from core.security.mixins import ModuleMixin
 from core.security.models import Module
 from django.db.models.aggregates import Count
 from django.http import HttpResponse
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import FormView
-
-'''Padron'''
-class RptPadron001Config(JasperReportBase):
-	report_name  = 'rpt_padron001'
-	report_url = reverse_lazy(report_name)
 
 class RptPadron001ReportView(ModuleMixin, FormView):
 	template_name = 'electoral/reports/rpt_padron001.html'
@@ -31,10 +27,12 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 			if action == 'report':
 				data = []
 				local_votacion = int(request.POST['local_votacion']) if request.POST['local_votacion'] else None
-				
-						 
-				report = RptPadron001Config()     
+				#CONFIG				 
+				report = JasperReportBase()  
+				report.report_name  = 'rpt_padron001'
+				report.report_url = reverse_lazy(report.report_name)
 				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				#PARAMETROS
 				report.params['P_TITULO3'] = 'TRIBUNAL ELECTORAL PARTIDARIO'
 				report.params['P_LOCAL_VOTACION_ID']= local_votacion
 								
@@ -80,8 +78,7 @@ class RptElectoral001ReportView(ModuleMixin, FormView):
 				report.params['P_BARRIO_ID']= barrio
 				report.params['P_MANZANA_ID']= manzana 
 				
-				return report.render_to_response()
-			   
+				return report.render_to_response()			   
 
 			else:
 				data['error'] = 'No ha ingresado una opción'
@@ -137,7 +134,6 @@ class RptElectoral002ReportView(ModuleMixin, FormView):
 						   }
 					data.append(item)
 				# print(data)
-
 			else:
 				data['error'] = 'No ha ingresado una opción'
 		except Exception as e:
