@@ -27,6 +27,7 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 			if action == 'report':
 				data = []
 				local_votacion = int(request.POST['local_votacion']) if request.POST['local_votacion'] else None
+				barrio = int(request.POST['barrio']) if request.POST['barrio'] else None
 				#CONFIG				 
 				report = JasperReportBase()  
 				report.report_name  = 'rpt_padron001'
@@ -35,6 +36,7 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 				#PARAMETROS
 				report.params['P_TITULO3'] = 'TRIBUNAL ELECTORAL PARTIDARIO'
 				report.params['P_LOCAL_VOTACION_ID']= local_votacion
+				report.params['P_BARRIO_ID'] = barrio
 								
 				return report.render_to_response()
 
