@@ -87,7 +87,7 @@ class DatabaseBackupsCreateView(PermissionMixin, TemplateView):
             db_name = connection.settings_dict['NAME']
             data_now = '{0:%Y-%m-%d_%H:%M:%S}'.format(datetime.now())
             name_backup = "{}_{}.backup".format('backup', data_now)
-            script = 'pg_dump -h localhost -p 5432 -U postgres -F c -b -v -f "{}" {}'.format(name_backup, db_name)
+            script = 'export PGPASSWORD="ox82"; pg_dump -h localhost -p 5432 -U postgres -F c -b -v -f "{}" {}'.format(name_backup, db_name)
             subprocess.call(script, shell=True)
             file = os.path.join(settings.BASE_DIR, name_backup)
             db = DatabaseBackups()
