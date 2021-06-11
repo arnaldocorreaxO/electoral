@@ -65,7 +65,9 @@ function getData(all) {
             // dataSrc: ""
         },
         order: [[5, 'asc'],[6, 'asc'],[7, 'asc']],
+        
         paging: true,
+        pageLength : 10,
         ordering: true,
         searching: true,
         dom: 'Bfrtip',
@@ -294,7 +296,7 @@ $(function () {
                 success: function (request) {
                     console.log(request);
                     if (!request.hasOwnProperty('error')) {
-                        getData('filter');
+                        message_info('Guardado Exitosamente!');
                         $("#modal-elector").modal("hide")
                         select_seccional.prop("disabled", true);
                         select_local_votacion.prop("disabled", true);
