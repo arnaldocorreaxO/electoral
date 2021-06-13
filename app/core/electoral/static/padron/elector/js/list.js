@@ -64,7 +64,7 @@ function getData(all) {
             data: parameters,
             // dataSrc: ""
         },
-        order: [[5, 'asc'],[6, 'asc'],[7, 'asc']],
+        order: [[5, 'asc'],[6, 'asc'],[7, 'asc'],[2, 'asc'],[3, 'asc']],
         
         paging: true,
         pageLength : 10,
@@ -294,12 +294,12 @@ $(function () {
                 type: form.attr("method"),
                 dataType: 'json',
                 success: function (request) {
-                    console.log(request);
-                    if (!request.hasOwnProperty('error')) {
-                        message_info('Guardado Exitosamente!');
-                        $("#modal-elector").modal("hide")
+                    // console.log(request);
+                    if (!request.hasOwnProperty('error')) {   
+                        tblData.draw('page');
+                        $("#modal-elector").modal("hide");
                         select_seccional.prop("disabled", true);
-                        select_local_votacion.prop("disabled", true);
+                        select_local_votacion.prop("disabled", true);                                                
                         return false;
                     }
                     message_error(request.error);
