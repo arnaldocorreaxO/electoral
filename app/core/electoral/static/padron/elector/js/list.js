@@ -142,12 +142,35 @@ function getData(all) {
             {data: "barrio.denominacion"},
             {data: "manzana.denominacion"},
             {data: "nro_casa"},
-            {data: "fecha_nacimiento"},         
+            {data: "id"},         
             {data: "edad"},
             {data: "id"},
         ],
         columnDefs: [
           
+            {
+                targets: [-3],
+                class: 'text-center',
+                render: function (data, type, row) {
+                   
+                   var badge_pc = '<span class="badge badge-warning">' + ' PC ' + '</span>';
+                   var badge_mv = '<span class="badge badge-success">' + ' VOTÓ ' + '</span>';
+                   var badge_no = '<span class="badge badge-danger"> Aun no votó </span>';
+                   var badges = badge_no; /*Default*/
+
+                        if (row.pasoxpc =='S') {
+                            badges = badge_pc  + badge_no;
+                        }
+                        if (row.pasoxmv =='S') {
+                            badges = badge_mv;
+                            if (row.pasoxpc =='S') {
+                                badges = badge_pc  + badge_mv;
+                            }
+                        }                       
+                     
+                     return badges;
+                }         
+            },
             {
                 targets: [-1],
                 class: 'text-center',
