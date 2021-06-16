@@ -9,6 +9,11 @@ function initTable() {
         autoWidth: false,
         destroy: true,
         deferRender: true,
+        order: [[0, 'asc']],
+        paging: false,
+        ordering: false,
+        searching: false,    
+        info:     false   ,
     });
     // Establece width para exportar en PDF pdfmake
     $.each(tblData.settings()[0].aoColumns, function (key, value) {
