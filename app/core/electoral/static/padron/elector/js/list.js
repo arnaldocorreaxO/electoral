@@ -157,7 +157,7 @@ function getData(all) {
                    var badge_mv = '<span class="badge badge-success">' + ' VOTÓ ' + '</span>';
                    var badge_no = '<span class="badge badge-danger"> Aun no votó </span>';
                    var badges = badge_no; /*Default*/
-
+                    
                         if (row.pasoxpc =='S') {
                             badges = badge_pc  + badge_no;
                         }
@@ -166,7 +166,10 @@ function getData(all) {
                             if (row.pasoxpc =='S') {
                                 badges = badge_pc  + badge_mv;
                             }
-                        }                       
+                        }     
+                        if (row.tipo_voto.id == 11){
+                           return '<span class="badge badge-secondary">'+ row.tipo_voto.cod+'</span>';
+                        }                  
                      
                      return badges;
                 }         
