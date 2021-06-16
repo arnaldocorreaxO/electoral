@@ -17,13 +17,13 @@ from core.base.models import *
 ==================== '''
 class ElectorResource(resources.ModelResource):
     class Meta:
-        model = Elector
-        
+        model = Elector        
 
 class ElectorAdmin(ImportExportModelAdmin):
     # form = ElectorForm
     resource_class = ElectorResource
     list_per_page = 25
+    search_fields =['ci','nombre','apellido']
     list_filter =['ciudad','seccional','barrio','manzana','tipo_voto']
     
     '''Filtrar solo los tipos de votos activos'''
@@ -68,7 +68,7 @@ class ElectorAdmin2(ImportExportModelAdmin):
     readonly_fields = ('ci','nombre','apellido','edad')   
     list_display =['ci','nombre','apellido','edad','telefono','get_cod_tipo_voto','manzana','nro_casa']
     # list_editable =['telefono','barrio','manzana','nro_casa'] #Consume muchos recursos (tarda mucho la consulta)
-    list_filter =['ciudad','seccional','barrio','manzana','tipo_voto']
+    list_filter =['ciudad','seccional','mesa','barrio','manzana','tipo_voto']
     search_fields =['ci','nombre','apellido']
     list_display_links = ['ci','nombre','apellido']
     list_per_page = 25
@@ -114,7 +114,7 @@ class ElectorAdmin3(ImportExportModelAdmin):
     readonly_fields = ('ci','nombre','apellido','edad')   
     list_display =['ci','nombre','apellido','edad','tipo_voto','manzana','nro_casa']
     list_editable =['tipo_voto','nro_casa'] #Consume muchos recursos (tarda mucho la consulta)
-    list_filter =['ciudad','seccional','barrio','manzana','tipo_voto']
+    list_filter =['ciudad','seccional','barrio','manzana','tipo_voto','mesa']
     search_fields =['ci','nombre','apellido']
     list_display_links = ['ci','nombre','apellido']
     list_per_page = 25
