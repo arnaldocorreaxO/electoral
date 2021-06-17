@@ -64,7 +64,7 @@ function getData(all) {
             data: parameters,
             // dataSrc: ""
         },
-        order: [[5, 'asc'],[6, 'asc'],[7, 'asc'],[2, 'asc'],[3, 'asc']],
+        order: [[4, 'asc'],[5, 'asc'],[6, 'asc'],[2, 'asc']],
         
         paging: true,
         pageLength : 10,
@@ -134,22 +134,22 @@ function getData(all) {
             }
         ],
         columns: [
-            {data: "position"},
+            // {data: "position"},
+            {data: "id"},         
             {data: "ci"},
-            {data: "apellido"},
-            {data: "nombre"},
+            {data: "fullname"},
+            // {data: "nombre"},
             {data: "tipo_voto.cod"},
             {data: "barrio.denominacion"},
             {data: "manzana.denominacion"},
-            {data: "nro_casa"},
-            {data: "id"},         
+            {data: "nro_casa"},            
             {data: "edad"},
             {data: "id"},
         ],
         columnDefs: [
           
             {
-                targets: [-3],
+                targets: [0],
                 class: 'text-center',
                 render: function (data, type, row) {
                    
@@ -168,7 +168,7 @@ function getData(all) {
                             }
                         }     
                         if (row.tipo_voto.id == 11){
-                           return '<span class="badge badge-secondary">'+ row.tipo_voto.cod+'</span>';
+                           return '<span class="badge badge-secondary">'+ row.tipo_voto.cod +'</span>';
                         }                  
                      
                      return badges;

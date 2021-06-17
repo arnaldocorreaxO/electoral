@@ -229,17 +229,17 @@ class Elector(ModeloBase):
     barrio = models.ForeignKey(Barrio, on_delete=models.PROTECT,null=True,blank=True) 
     manzana = models.ForeignKey(Manzana, on_delete=models.PROTECT,null=True,blank=True) 
     nro_casa = models.IntegerField(null=True,blank=True)
-    telefono = models.CharField(max_length=120,null=True,blank=True)
-    
+    telefono = models.CharField(max_length=120,null=True,blank=True)    
 
     def __str__(self):
         return f"{self.apellido} {self.nombre}"
        
     def get_edad(self):
         return calculate_age(self.fecha_nacimiento)
-    
+
     def toJSON(self):
         item = model_to_dict(self,exclude=[''])
+        item['fullname']  =  str(self) #Retorna el metodo __str__ al hacer la conversion
         item['barrio']  =  self.barrio.toJSON() if self.barrio  else {'id':'','denominacion':''}
         item['manzana'] =  self.manzana.toJSON() if self.manzana else {'id':'','denominacion':''}
         item['tipo_voto'] =  self.tipo_voto.toJSON() if self.tipo_voto else {'id':'','cod':''}
