@@ -60,6 +60,9 @@ class ElectorListView(PermissionMixin, FormView):
 						# print('Column Number:',_column_number)
 						if _column_number == '9': #Hacemos esto por que en el datatable edad es un campo calculado
 							_order.append('fecha_nacimiento')
+						elif _column_number == '2': #Hacemos esto por que en el datatable fullname es un campo calculado
+							_order.append('apellido')
+							_order.append('nombre')
 						else:			
 							_order.append(request.POST[f'columns[{_column_number}][data]'].split(".")[0])
 					if f'order[{i}][dir]' in request.POST:
@@ -109,7 +112,7 @@ class ElectorListView(PermissionMixin, FormView):
 				position = start + 1
 				for i in qs:
 					item = i.toJSON()
-					item['position'] = position
+					item['position'] = position					
 					data.append(item)
 					position += 1
 
