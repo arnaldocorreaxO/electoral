@@ -362,7 +362,8 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(null !=$F{tipo_voto} && $F{tipo_voto}.equals(1)?" * ":"") + $F{nombre}
+]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement stretchType="ElementGroupHeight" x="511" y="0" width="79" height="24" uuid="946efa1d-db5b-413e-b2f8-4ff4d3518459">
