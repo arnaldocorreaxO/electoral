@@ -175,15 +175,41 @@ function getData(all) {
                 }         
             },
             {
+                targets: [3],
+                class: 'text-center',
+                render: function (data, type, row) {                   
+
+                        if (row.tipo_voto.id == 1) {
+                            return '<span class="badge badge-danger">' + data + '</span>'
+                        }
+                        if (row.tipo_voto.id == 2) {
+                            return '<span class="badge badge-info">' + data + '</span>'
+                        }
+                        if (row.tipo_voto.id == 3) {
+                            return '<span class="badge badge-dark">' + data + '</span>'
+                        }
+                        if (row.tipo_voto.id == 4) {
+                            return '<span class="badge badge-success">' + data + '</span>'
+                        }
+                        // Ausentes
+                        if (row.tipo_voto.id == 13){
+                            return '<span class="badge badge-warning">'+ data +'</span>';
+                         }   
+                        //  Fallecidos
+                         if (row.tipo_voto.id == 11){
+                            return '<span class="badge badge-secondary">'+ data +'</span>';
+                         }   
+                        //Otros
+                        return data;
+                        
+                }         
+            },
+            {
                 targets: [-1],
                 class: 'text-center',
                 render: function (data, type, row) {
-                    var buttons = '';
-                    // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
-                    // buttons += '<a href="/electoral/elector/update/' + row.id + '/" data-toggle="tooltip" title="Editar registro" class="btn btn-warning  btn-flat"><i class="fas fa-edit"></i></a>';
-                    // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
-                    buttons += '<button type="button" class="btn btn-warning js-update" data-url="/electoral/elector/update/' + row.id + '/"><i class="fas fa-edit"></i></button>'
- 
+                    var buttons = '';                    
+                    buttons += '<button type="button" class="btn btn-warning js-update" data-url="/electoral/elector/update/' + row.id + '/"><i class="fas fa-edit"></i></button>';
                     return buttons;
                 }
             },
