@@ -43,7 +43,7 @@ class Departamento(ModeloBase):
         ordering = ['denominacion']
 ''' 
 ====================
-=== DISTRITO     ===
+===   DISTRITO   ===
 ==================== '''
 class Distrito(ModeloBase):
     departamento = models.ForeignKey(Departamento, on_delete=models.PROTECT)
@@ -123,10 +123,6 @@ class Manzana(ModeloBase):
     def toJSON(self):
         item = model_to_dict(self)
         return item
-        
-    # def full_name(self):
-    #     return f"({self.id}) - {self.denominacion}"
-
 
     class Meta:
         unique_together=('cod','barrio')
@@ -239,12 +235,12 @@ class Elector(ModeloBase):
 
     def toJSON(self):
         item = model_to_dict(self,exclude=[''])
-        item['fullname']  =  str(self) #Retorna el metodo __str__ al hacer la conversion
-        item['barrio']  =  self.barrio.toJSON() if self.barrio  else {'id':'','denominacion':''}
-        item['manzana'] =  self.manzana.toJSON() if self.manzana else {'id':'','denominacion':''}
-        item['tipo_voto'] =  self.tipo_voto.toJSON() if self.tipo_voto else {'id':'','cod':''}
-        item['barrio_fullname']  =  self.barrio.fullname() if self.barrio else None
-        item['manzana_fullname'] =  self.manzana.fullname() if self.manzana else None
+        item['fullname'] = str(self) #Retorna el metodo __str__ al hacer la conversion
+        item['barrio'] = self.barrio.toJSON() if self.barrio  else {'id':'','denominacion':''}
+        item['manzana'] = self.manzana.toJSON() if self.manzana else {'id':'','denominacion':''}
+        item['tipo_voto'] = self.tipo_voto.toJSON() if self.tipo_voto else {'id':'','cod':''}
+        item['barrio_fullname'] = self.barrio.fullname() if self.barrio else None
+        item['manzana_fullname'] = self.manzana.fullname() if self.manzana else None
         item['fecha_nacimiento'] = self.fecha_nacimiento.strftime('%d/%m/%Y')
         item['fecha_afiliacion'] = self.fecha_afiliacion.strftime('%d/%m/%Y') 
         item['fec_modificacion'] = self.fec_modificacion.strftime('%d/%m/%Y %H:%M:%S')       

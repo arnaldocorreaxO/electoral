@@ -43,7 +43,8 @@ e.nro_casa,
 e.mesa,
 e.pasoxpc ,
 e.pasoxmv ,
-e.partido
+e.partido,
+e.local_votacion_id
 FROM   	  electoral_elector e 
 INNER JOIN electoral_departamento d ON e.departamento_id = d.id
 INNER JOIN electoral_distrito t 		ON e.distrito_id 		= t.id 
@@ -132,6 +133,11 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 	<field name="partido" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="partido"/>
 		<property name="com.jaspersoft.studio.field.label" value="partido"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_elector"/>
+	</field>
+	<field name="local_votacion_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="local_votacion_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="local_votacion_id"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="electoral_elector"/>
 	</field>
 	<variable name="V_HOY" class="java.util.Date" resetType="None">
@@ -362,8 +368,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[(null !=$F{tipo_voto} && $F{tipo_voto}.equals(1)?" * ":"") + $F{nombre}
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[(null !=$F{tipo_voto} && $F{tipo_voto}.equals(1)?" * ":"") + $F{nombre}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement stretchType="ElementGroupHeight" x="511" y="0" width="79" height="24" uuid="946efa1d-db5b-413e-b2f8-4ff4d3518459">
@@ -437,7 +442,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{mesa}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{mesa} + ($F{local_votacion_id}.equals(2)?" TC":$F{local_votacion_id}.equals(3)?" SL":"")]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
