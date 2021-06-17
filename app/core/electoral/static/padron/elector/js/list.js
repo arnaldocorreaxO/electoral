@@ -154,8 +154,8 @@ function getData(all) {
                 render: function (data, type, row) {
                    
                    var badge_pc = '<span class="badge badge-warning">' + ' PC ' + '</span>';
-                   var badge_mv = '<span class="badge badge-success">' + ' VOTÓ ' + '</span>';
-                   var badge_no = '<span class="badge badge-danger"> Aun no votó </span>';
+                   var badge_mv = '<span class="badge badge-success">' + ' SI ' + '</span>';
+                   var badge_no = '<span class="badge badge-danger"> NO </span>';
                    var badges = badge_no; /*Default*/
                     
                         if (row.pasoxpc =='S') {
