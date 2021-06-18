@@ -28,7 +28,8 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 				data = []
 				local_votacion = int(request.POST['local_votacion']) if request.POST['local_votacion'] else None
 				barrio = int(request.POST['barrio']) if request.POST['barrio'] else None
-				tipo_voto = int(request.POST['tipo_voto']) if request.POST['tipo_voto'] else None
+				tipo_voto = int(request.POST['tipo_voto']) if request.POST['tipo_voto'] else None	
+				# Tipo de Voto I - INDECISO es igual a NO DEFINIDOS null ver query reporte		
 				#CONFIG				 
 				report = JasperReportBase()  
 				report.report_name  = 'rpt_padron001'
@@ -39,7 +40,6 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 				report.params['P_LOCAL_VOTACION_ID']= local_votacion
 				report.params['P_BARRIO_ID'] = barrio
 				report.params['P_TIPO_VOTO_ID'] = tipo_voto
-								
 				return report.render_to_response()
 
 			else:
