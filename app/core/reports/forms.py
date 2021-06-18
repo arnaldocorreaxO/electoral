@@ -17,7 +17,5 @@ class ReportForm(forms.ModelForm):
             'barrio': forms.Select(attrs={'class': 'form-control select2', }),
             'manzana': forms.Select(attrs={'class': 'form-control select2', }),
             'tipo_voto': forms.Select(attrs={'class': 'form-control select2', }),
-
-            
         }
       
