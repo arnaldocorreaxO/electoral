@@ -27,6 +27,9 @@
 	<parameter name="P_BARRIO_ID" class="java.lang.Long">
 		<parameterDescription><![CDATA[BARRIO]]></parameterDescription>
 	</parameter>
+	<parameter name="P_TIPO_VOTO_ID" class="java.lang.Long">
+		<parameterDescription><![CDATA[BARRIO]]></parameterDescription>
+	</parameter>
 	<queryString>
 		<![CDATA[SELECT 
 DPT.ID AS COD_DEPARTAMENTO, 
@@ -64,6 +67,7 @@ LEFT OUTER JOIN ELECTORAL_MANZANA MAN ON MAN.ID = ELE.MANZANA_ID
 LEFT OUTER JOIN ELECTORAL_TIPOVOTO TIP ON TIP.ID = ELE.TIPO_VOTO_ID
 WHERE (ELE.LOCAL_VOTACION_ID = $P{P_LOCAL_VOTACION_ID} OR $P{P_LOCAL_VOTACION_ID}  IS NULL) 
 AND (ELE.BARRIO_ID = $P{P_BARRIO_ID} OR $P{P_BARRIO_ID}  IS NULL)
+AND (ELE.TIPO_VOTO_ID = $P{P_TIPO_VOTO_ID} OR $P{P_TIPO_VOTO_ID}  IS NULL)
 ORDER BY DPT.ID ,
 DIS.COD::INT,
 SEC.COD::INT,
@@ -130,7 +134,7 @@ ELE.ORDEN::INT]]>
 		<property name="com.jaspersoft.studio.field.name" value="apellido_nombre"/>
 		<property name="com.jaspersoft.studio.field.label" value="apellido_nombre"/>
 	</field>
-	<field name="edad" class="java.lang.Long">
+	<field name="edad" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.name" value="edad"/>
 		<property name="com.jaspersoft.studio.field.label" value="edad"/>
 	</field>
@@ -190,6 +194,9 @@ ELE.ORDEN::INT]]>
 	</field>
 	<variable name="V_HOY" class="java.util.Date" resetType="None">
 		<variableExpression><![CDATA[NOW( )]]></variableExpression>
+	</variable>
+	<variable name="V_CTD_ELECTOR_X_MESA" class="java.lang.Long" resetType="Group" resetGroup="Group2" calculation="Count">
+		<variableExpression><![CDATA[$F{orden}]]></variableExpression>
 	</variable>
 	<group name="Group1" isStartNewPage="true" isResetPageNumber="true" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{local_votacion}]]></groupExpression>
@@ -454,6 +461,17 @@ ELE.ORDEN::INT]]>
 				</staticText>
 			</band>
 		</groupHeader>
+		<groupFooter>
+			<band height="19">
+				<textField>
+					<reportElement x="23" y="0" width="203" height="19" uuid="c7ce83d0-2e11-4e22-8e76-162119371e6b"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font size="7"/>
+					</textElement>
+					<textFieldExpression><![CDATA["MESA ("+ $F{mesa} +") Total Registros " + $V{V_CTD_ELECTOR_X_MESA}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
 	</group>
 	<pageHeader>
 		<band height="59">
@@ -682,7 +700,7 @@ ELE.ORDEN::INT]]>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="42" splitType="Stretch">
+		<band height="19" splitType="Stretch">
 			<textField>
 				<reportElement x="107" y="0" width="200" height="19" uuid="275a3616-58ed-4958-9b99-f3d77a862f28"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
