@@ -19,7 +19,7 @@
                         <div class="widget-user-header bg-gradient-red" style="height: auto;">
                             <h3 class="widget-user-username">
                                 {{ company.name }}<br>
-                                LISTA 32
+                                <b>LISTA 32</b>   
                                 <!-- Ruc: {#{ company.ruc }} -->
                             </h3>
                             <br>
@@ -28,7 +28,7 @@
                                 Tu último acceso fue {{ request.user.last_login }}
                             </h5>
                         </div>
-                        <img class="img-fluid d-block mx-auto p-3" style="width: 150px; height: 150px;"
+                        <img class="img-fluid mx-auto p-3" style="width: 500px; height: 500px;"
                              src="{{ company.get_image }}" alt="User Avatar">
                         <div class="card-footer">
                             <div class="row">
