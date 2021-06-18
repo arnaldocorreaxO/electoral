@@ -24,11 +24,11 @@
                             </h3>
                             <br>
                             <h5 class="widget-user-desc" style="font-weight: normal;">
-                                <b>Bienvenido {{ request.user.get_full_name }}</b><br>
+                                <b>Bienvenido {{ request.user.first_name }}</b><br>
                                 Tu último acceso fue {{ request.user.last_login }}
                             </h5>
                         </div>
-                        <img class="img-fluid d-block mx-auto p-3" style="width: 100px; height: 100px;"
+                        <img class="img-fluid d-block mx-auto p-3" style="width: 150px; height: 150px;"
                              src="{{ company.get_image }}" alt="User Avatar">
                         <div class="card-footer">
                             <div class="row">
