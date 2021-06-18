@@ -19,6 +19,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 
+from django.contrib.auth.decorators import permission_required
+
 class ElectorListView(PermissionMixin, FormView):
 	# model = Elector
 	template_name = 'padron/elector/list.html'
@@ -183,7 +185,6 @@ class ElectorCreateView(PermissionMixin, CreateView):
 		context['action'] = 'add'
 		return context
 
-
 class ElectorUpdateView(PermissionMixin, UpdateView):
 	model = Elector
 	template_name = 'padron/elector/create.html'
@@ -228,18 +229,22 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
 			data['error'] = str(e)
 		return HttpResponse(json.dumps(data), content_type='application/json')
 	
-	# Este usamos para el modal 
+	# Este usamos para el modal 	
 	def get(self, request, *args, **kwargs):
 		data = {}				
-		try:
-			pk = kwargs['pk']
-			elector = get_object_or_404(Elector, pk=pk)
-			form = ElectorForm(instance=elector)
-			context = self.get_context_data()
-			context['form'] = form
-			self.template_name = 'padron/elector/create_modal.html'
-			context['action_url'] = reverse_lazy('elector_update', kwargs={'pk': pk})
-			data['html_form'] = render_to_string(self.template_name, context, request=request)					
+		try:	
+			if request.user.has_perm('electoral.change_elector'):			
+				pk = kwargs['pk']
+				elector = get_object_or_404(Elector, pk=pk)
+				form = ElectorForm(instance=elector)
+				context = self.get_context_data()
+				context['form'] = form
+				self.template_name = 'padron/elector/create_modal.html'
+				context['action_url'] = reverse_lazy('elector_update', kwargs={'pk': pk})
+				data['html_form'] = render_to_string(self.template_name, context, request=request)
+			else:
+				data['error'] = 'No tiene permisos para editar'
+		
 		except Exception as e:
 			data['error'] = str(e)
 		# print(data['html_form'])

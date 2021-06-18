@@ -8,6 +8,7 @@ from core.electoral.views.padron.manzana.views import *
 from core.electoral.views.padron.tipo_voto.views import *
 from core.electoral.views.padron.elector.views import *
 from core.electoral.views.padron.carga_dia_d.views import *
+
 from django.urls import path
 
 
