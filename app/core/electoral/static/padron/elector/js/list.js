@@ -320,12 +320,18 @@ $(function () {
         type: 'get',
         dataType: 'json',
         beforeSend: function () {
-            // console.log('BEFOREEEEEEEEEEEEEEEEEEEEEEEE')
-            $("#modal-elector").modal("show");
+       
+                $("#modal-elector").modal("show");                                             
+
         },
         success: function (data) {    
             // console.log('SUCEEEEEEEEEEEEEEEEEEEEEEEEESS')        
-            $("#modal-elector .modal-content").html(data.html_form);
+            
+            if (!data.hasOwnProperty('error')) {   
+                $("#modal-elector .modal-content").html(data.html_form);                                           
+                return false;
+            }
+            message_error(data.error);
         }
       });
     };
