@@ -343,8 +343,6 @@ class ShearchForm(forms.Form):
     barrio.widget.attrs.update({'class': 'form-control select2'})
     manzana.widget.attrs.update({'class': 'form-control select2'})
     
-
-
 ''' 
 ====================
 === CARGA DIA D  ===
