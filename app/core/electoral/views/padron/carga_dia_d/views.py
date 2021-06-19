@@ -60,6 +60,7 @@ class CargaDiaDListView(PermissionMixin, FormView):
 			elif action == 'search_pasoxmv':
 				data = []          
 				mesa = request.POST['mesa']
+				local_votacion = request.POST['local_votacion']
 				_start = request.POST['start']
 				_length = request.POST['length']
 				_search = request.POST['search[value]']
@@ -73,6 +74,9 @@ class CargaDiaDListView(PermissionMixin, FormView):
 						_search = '%' + _search.replace(' ','%') + '%'
 						_where = " upper(nombre||' '|| apellido) LIKE upper(%s)"  
 				
+				if len(local_votacion):
+					_where += f" AND local_votacion_id = '{local_votacion}'" 
+
 				if len(mesa):
 					_where += f" AND mesa = '{mesa}'"                
 			  
