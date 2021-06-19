@@ -312,6 +312,10 @@ class ShearchForm(forms.Form):
     date_range = forms.CharField()
     # Termino de busqueda 
     term = forms.CharField()
+    # Local de Votacion
+    local_votacion = forms.ChoiceField(choices=[
+    (item.id, item.denominacion) for item in LocalVotacion.objects.all()])
+    
     # Mesas
     mesa = forms.ChoiceField(choices=[
     (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')\
@@ -332,6 +336,7 @@ class ShearchForm(forms.Form):
 
     date_range.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
+    local_votacion.widget.attrs.update({'class': 'form-control select2'})
     mesa.widget.attrs.update({'class': 'form-control select2'})
     ciudad.widget.attrs.update({'class': 'form-control select2'})
     seccional.widget.attrs.update({'class': 'form-control select2'})

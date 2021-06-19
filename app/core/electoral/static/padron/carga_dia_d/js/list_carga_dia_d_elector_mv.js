@@ -85,17 +85,21 @@ function getData(all) {
 
 function getData2(all) {
       
+    var local_votacion = localStorage.getItem("local_local_votacion");
     var mesa = localStorage.getItem("local_mesa");
 
+    $('select[name="local_votacion"]').val(local_votacion);
     $('select[name="mesa"]').val(mesa);
     
     var parameters = {
         'action': 'search_pasoxmv',
-        'mesa': mesa
+        'local_votacion': local_votacion,
+        'mesa': mesa,
 
     };
 
     if (all) {
+        parameters['local_votacion'] = '';        
         parameters['mesa'] = '';        
     }
 
@@ -178,8 +182,13 @@ $(function () {
         getData2(true);
     });
 
-    $('select[name="mesa"]').on('change', function () {        
-        localStorage.setItem("local_mesa", $(this).val());;
+    $('select[name="mesa"]').on('change', function () {  
+        localStorage.setItem("local_mesa", $(this).val());;        
+        getData2(false);
+        
+    });
+    $('select[name="local_votacion"]').on('change', function () {        
+        localStorage.setItem("local_local_votacion", $(this).val());;          
         getData2(false);
         
     });
