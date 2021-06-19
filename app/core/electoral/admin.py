@@ -112,7 +112,7 @@ class ElectorAdmin3(ImportExportModelAdmin):
     resource_class = ElectorResources3 
     form = ElectorForm2 
     readonly_fields = ('ci','nombre','apellido','edad')   
-    list_display =['ci','nombre','apellido','edad','tipo_voto','manzana','nro_casa']
+    list_display =['orden','ci','nombre','apellido','edad','tipo_voto','manzana','nro_casa']
     list_editable =['tipo_voto','nro_casa'] #Consume muchos recursos (tarda mucho la consulta)
     list_filter =['ciudad','seccional','barrio','manzana','tipo_voto','mesa']
     search_fields =['ci','nombre','apellido']
