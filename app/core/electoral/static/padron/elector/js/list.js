@@ -30,6 +30,7 @@ function getData(all) {
         select_seccional.val("").change();
         select_barrio.val("").change();
         select_manzana.val("").change();
+        select_mesa.val("").change();
     }
 
     var parameters = {
@@ -41,6 +42,7 @@ function getData(all) {
         'seccional': select_seccional.val(),
         'barrio': select_barrio.val(),
         'manzana': select_manzana.val(),
+        'mesa': select_mesa.val(),
         
     };
 
@@ -238,6 +240,7 @@ $(function () {
     select_seccional = $('select[name="seccional"]');
     select_barrio = $('select[name="barrio"]');
     select_manzana = $('select[name="manzana"]');
+    select_mesa = $('select[name="mesa"]');
 
 
     input_daterange
@@ -298,11 +301,17 @@ $(function () {
         text: 'Todas'
       }));
 
+    select_mesa.append($("<option>", {
+        value: '',
+        text: 'Todas'
+      }));
+
 
      select_ciudad.val("").change();
      select_seccional.val("").change();
      select_barrio.val("").change();
      select_manzana.val("").change();
+     select_mesa.val("").change();
 
 });
 
