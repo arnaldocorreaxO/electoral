@@ -207,6 +207,19 @@
                     </div>
                 </div>
             </div>
+            <div class="row">               
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Preferencia de Votos</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="container-fluid p-3" id="graph_control_preferencia_votos">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <script>
                 // GRAFICO CONTROL DIA D
                 var graph_dia_d = Highcharts.chart('graph_dia_d', {
@@ -583,6 +596,74 @@
                     });
                 }
 
+                //GRAFICO BARRA CONTROL PREFERENCIA DE VOTOS
+                function get_graph_control_preferencia_votos() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_control_preferencia_votos'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            Highcharts.chart('graph_control_preferencia_votos', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                exporting: {
+                                    enabled: false
+                                },
+                                xAxis: {
+                                    categories:['LISTAS'],
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    min: 0,
+                                    title: {
+                                        text: 'Cantidad Electores'
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0
+                                    },
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            style: {
+                                                fontSize: 12 + 'px'
+                                            }
+                                        }
+                                    }
+                                },
+                                series: request
+                            });
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
+
+                    });
+                }
+
                 function init() {
                     get_graph_dia_d();
                     get_graph_dia_d_bar();
@@ -590,6 +671,7 @@
                     get_graph_preferencia_votos();
                     get_graph_rango_edades_pie();
                     get_graph_rango_edades();
+                    get_graph_control_preferencia_votos();
                 }
 
                 $(function () {
