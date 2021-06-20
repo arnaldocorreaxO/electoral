@@ -70,6 +70,15 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     'colorByPoint': True,
                     'data': info,
                 }
+            elif action == 'get_graph_control_preferencia_votos':
+                info = []
+                for i in Elector.objects.values('tipo_voto__denominacion') \
+                                        .filter(pasoxmv='S')\
+                                        .annotate(tot_votos=Count(True)) \
+                                        .order_by('-tot_votos'):
+                                        info.append({'name' : i['tipo_voto__denominacion'] if i['tipo_voto__denominacion'] else 'SIN PREFERENCIA',
+                                                     'data' : [float(i['tot_votos']),]})
+                data = info
 
             elif action == 'get_graph_dia_d':
                 info = []
