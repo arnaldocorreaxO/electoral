@@ -314,7 +314,7 @@ class ShearchForm(forms.Form):
     term = forms.CharField()
     # Local de Votacion
     local_votacion = forms.ChoiceField(choices=[
-    (item.id, item.denominacion) for item in LocalVotacion.objects.all()])
+    (item.id, item.denominacion) for item in LocalVotacion.objects.filter(activo__exact=True)])
     
     # Mesas
     mesa = forms.ChoiceField(choices=[
@@ -323,16 +323,16 @@ class ShearchForm(forms.Form):
                                                             .distinct().order_by('int_mesa')])
     # Ciudades
     ciudad = forms.ChoiceField(choices=[
-    (item.id, item.denominacion) for item in Ciudad.objects.all().order_by('denominacion')])
+    (item.id, item.denominacion) for item in Ciudad.objects.filter(activo__exact=True).order_by('denominacion')])
     # Seccionales
     seccional = forms.ChoiceField(choices=[
-    (item.id, item.denominacion) for item in Seccional.objects.all().order_by('denominacion')])
+    (item.id, item.denominacion) for item in Seccional.objects.filter(activo__exact=True).order_by('denominacion')])
     # Barrios
     barrio = forms.ChoiceField(choices=[
-    (item.id, item.denominacion) for item in Barrio.objects.all().order_by('denominacion')])
+    (item.id, item.denominacion) for item in Barrio.objects.filter(activo__exact=True).order_by('denominacion')])
     # Ciudades
     manzana = forms.ChoiceField(choices=[
-    (item.id, item.fullname) for item in Manzana.objects.all().order_by('denominacion')])
+    (item.id, item.fullname) for item in Manzana.objects.filter(activo__exact=True).order_by('denominacion')])
 
     date_range.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
