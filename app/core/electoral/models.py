@@ -241,8 +241,8 @@ class Elector(ModeloBase):
         item['tipo_voto'] = self.tipo_voto.toJSON() if self.tipo_voto else {'id':'','cod':''}
         item['barrio_fullname'] = self.barrio.fullname() if self.barrio else None
         item['manzana_fullname'] = self.manzana.fullname() if self.manzana else None
-        item['fecha_nacimiento'] = self.fecha_nacimiento.strftime('%d/%m/%Y')
-        item['fecha_afiliacion'] = self.fecha_afiliacion.strftime('%d/%m/%Y') 
+        item['fecha_nacimiento'] = self.fecha_nacimiento.strftime('%d/%m/%Y') if self.fecha_nacimiento else None
+        item['fecha_afiliacion'] = self.fecha_afiliacion.strftime('%d/%m/%Y')  if self.fecha_afiliacion else None
         item['fec_modificacion'] = self.fec_modificacion.strftime('%d/%m/%Y %H:%M:%S')       
         item['edad'] = self.get_edad()
         return item
