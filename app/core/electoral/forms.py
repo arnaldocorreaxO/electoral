@@ -329,10 +329,13 @@ class ShearchForm(forms.Form):
     (item.id, item) for item in Seccional.objects.filter(activo__exact=True).order_by('denominacion')])
     # Barrios
     barrio = forms.ChoiceField(choices=[
-    (item.id, item) for item in Barrio.objects.filter(activo__exact=True).order_by('denominacion')])
+    (item.id, item.fullname) for item in Barrio.objects.filter(activo__exact=True).order_by('denominacion')])
     # Ciudades
     manzana = forms.ChoiceField(choices=[
     (item.id, item.fullname) for item in Manzana.objects.filter(activo__exact=True).order_by('denominacion')])
+    # Tipo de Voto
+    tipo_voto = forms.ChoiceField(choices=[
+    (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('denominacion')])
 
     date_range.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
@@ -342,6 +345,7 @@ class ShearchForm(forms.Form):
     seccional.widget.attrs.update({'class': 'form-control select2'})
     barrio.widget.attrs.update({'class': 'form-control select2'})
     manzana.widget.attrs.update({'class': 'form-control select2'})
+    tipo_voto.widget.attrs.update({'class': 'form-control select2'})
     
 ''' 
 ====================
@@ -361,15 +365,6 @@ class CargaDiaDForm(ModelForm):
         model = Elector
         fields = ['ci','nombre','apellido','pasoxmv','pasoxpc']
         exclude = readonly_fields
-        # widgets = {
-        #     'ci': forms.TextInput(attrs={'placeholder': 'Ingrese Cedula','readonly':'readonly'}),
-        #     'nombre': forms.TextInput(attrs={'placeholder': 'Ingrese Nombre','readonly':'readonly'}),
-        #     'apellido': forms.TextInput(attrs={'placeholder': 'Ingrese Apellido','readonly':'readonly'}),
-        #     'ciudad': forms.Select(attrs={'class': 'form-control select2',}),
-        #     'barrio': forms.Select(attrs={'class': 'form-control select2', }),
-        #     'manzana': forms.Select(attrs={'class': 'form-control select2', }),
-        #     'tipo_voto': forms.Select(attrs={'class': 'form-control select2', }),
-        # }
 
     def save(self, commit=True):
         data = {}
