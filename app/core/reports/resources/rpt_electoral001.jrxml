@@ -323,7 +323,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 	</pageHeader>
 	<detail>
 		<band height="24" splitType="Stretch">
-			<textField textAdjust="StretchHeight" pattern="#,##0">
+			<textField textAdjust="StretchHeight" pattern="#,##0" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="51" y="0" width="60" height="24" uuid="1c01bebb-c90a-41cd-bd2a-511946d6d8fa">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b58a7b6a-dba4-4586-aeaa-5ecfd971d7e6"/>
 				</reportElement>
@@ -338,7 +338,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ci}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="StretchHeight">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="111" y="0" width="128" height="24" uuid="7aa747d4-5412-4c4a-8c87-bd038afe8997">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="67fe75bb-e1db-46f1-9b0e-a023a3a2f183"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -354,7 +354,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 				</textElement>
 				<textFieldExpression><![CDATA[$F{apellido}]]></textFieldExpression>
 			</textField>
-			<textField textAdjust="StretchHeight">
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="239" y="0" width="128" height="24" uuid="3b107d11-3458-432d-89b3-8dd900db5100">
 					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d0efd009-f36d-455f-9303-7008c4d0924c"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -398,7 +398,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nro_casa}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="428" y="0" width="83" height="24" uuid="cfbe5d76-e066-4029-9c64-d0850faf6ad3"/>
 				<box>
 					<topPen lineWidth="1.0"/>
@@ -411,7 +411,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 				</textElement>
 				<textFieldExpression><![CDATA[$F{partido}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="392" y="0" width="18" height="24" uuid="3da589ad-33ba-4ab2-9b76-44a85cfb29bc"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<topPen lineWidth="1.0"/>
@@ -422,7 +422,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[($F{pasoxpc}.equals("S")?"X":"")]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="ElementGroupHeight" x="410" y="0" width="18" height="24" uuid="60f23416-e001-48e9-8dbf-a24785e38346"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
 					<topPen lineWidth="1.0"/>
@@ -433,7 +433,7 @@ ORDER BY CAST(b.id AS integer),CAST(m.cod AS integer),nro_casa,apellido,nombre]]
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[($F{pasoxmv}.equals("S")?"X":"")]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="367" y="0" width="25" height="24" uuid="e0193b76-53cb-4663-a248-396d68fa4a93"/>
 				<box>
 					<topPen lineWidth="1.0"/>
