@@ -9,3 +9,4 @@ app/core/reports/jasperbase.py
 query_tsje_datos_migra.sql
 backup_electoral_14092021.backup
 requirements.txt
+symmetricds.backup
