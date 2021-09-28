@@ -329,10 +329,10 @@ class ShearchForm(forms.Form):
     (item.id, item) for item in Seccional.objects.filter(activo__exact=True).order_by('denominacion')])
     # Barrios
     barrio = forms.ChoiceField(choices=[
-    (item.id, item.fullname) for item in Barrio.objects.filter(activo__exact=True).order_by('denominacion')])
+    (item.id, item.fullname) for item in Barrio.objects.filter(activo__exact=True).order_by('id')])
     # Ciudades
     manzana = forms.ChoiceField(choices=[
-    (item.id, item.fullname) for item in Manzana.objects.filter(activo__exact=True).order_by('denominacion')])
+    (item.id, item.fullname) for item in Manzana.objects.filter(activo__exact=True).order_by('barrio__id','id')])
     # Tipo de Voto
     tipo_voto = forms.ChoiceField(choices=[
     (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('denominacion')])

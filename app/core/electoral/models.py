@@ -92,7 +92,7 @@ class Barrio(ModeloBase):
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
 
     def __str__(self):
-        return self.denominacion
+        return f"({self.pk}) - {self.denominacion}" 
     
     def fullname(self):
         return f"({self.pk}) - {self.denominacion}" 
@@ -104,7 +104,7 @@ class Barrio(ModeloBase):
     class Meta:
         verbose_name = 'Barrio'
         verbose_name_plural = 'Barrios'
-        ordering = ['ciudad','denominacion']
+        ordering = ['pk',]
 ''' 
 ====================
 ===   MANZANA    ===
@@ -115,7 +115,7 @@ class Manzana(ModeloBase):
     denominacion = models.CharField(max_length=50, verbose_name='Denominacion')
 
     def __str__(self):
-        return f"{self.denominacion} - {self.barrio}"
+        return f"({self.barrio.pk} / {self.cod}) - {self.denominacion}"
     
     def fullname(self):
         return f"({self.barrio.pk} / {self.cod}) - {self.denominacion}"
