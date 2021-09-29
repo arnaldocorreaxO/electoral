@@ -128,7 +128,7 @@ class Manzana(ModeloBase):
         unique_together=('cod','barrio')
         verbose_name = 'Manzana'
         verbose_name_plural = 'Manzanas'
-        ordering = ['barrio','denominacion']
+        ordering = ['barrio__id','id']
 
 ''' 
 ====================
