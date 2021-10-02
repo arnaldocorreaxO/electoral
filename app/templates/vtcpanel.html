@@ -138,8 +138,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row">               
-
+            <div class="row">        
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
@@ -162,6 +161,43 @@
                     </div>
                 </div>
             </div>
+            <div class="row">        
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D Vallemi </h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="container-fluid p-3" id="graph_dia_d_bar_vmi">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D Tres Cerros </h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="container-fluid p-3" id="graph_dia_d_bar_tce">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D San Lazaro</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="container-fluid p-3" id="graph_dia_d_bar_sla">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
             <div class="row">               
                 <div class="col-md-6">
                     <div class="card">
@@ -453,18 +489,233 @@
 
                     });
                 }
-
+                
+                // GRAFICO CONTROL DIA D BARRA GENERAL
                 function get_graph_dia_d_bar() {
                     $.ajax({
                         url: window.location.pathname,
                         type: 'POST',
                         data: {
-                            'action': 'get_graph_dia_d_bar'
+                            'action': 'get_graph_dia_d_bar',
+                            'local_votacion' : '0' // 0 igual a todos los locales
                         },
                         dataType: 'json',
                     }).done(function (request) {
                         if (!request.hasOwnProperty('error')) {
                             Highcharts.chart('graph_dia_d_bar', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                exporting: {
+                                    enabled: false
+                                },
+                                xAxis: {
+                                    categories: [
+                                    'CONTROL'                                 
+                                    ],
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    // min: 0,
+                                    title: {
+                                        text: 'Cantidad Electores'
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0
+                                    },
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            style: {
+                                                fontSize: 20 + 'px'
+                                            }
+                                        }
+                                    }
+                                },
+                                series: request
+                            });
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
+
+                    });
+                }
+                // GRAFICO CONTROL DIA D BARRA VALLEMI
+                function get_graph_dia_d_bar_vmi() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_dia_d_bar',
+                            'local_votacion' : '1'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            Highcharts.chart('graph_dia_d_bar_vmi', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                exporting: {
+                                    enabled: false
+                                },
+                                xAxis: {
+                                    categories: [
+                                    'CONTROL'                                 
+                                    ],
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    // min: 0,
+                                    title: {
+                                        text: 'Cantidad Electores'
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0
+                                    },
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            style: {
+                                                fontSize: 20 + 'px'
+                                            }
+                                        }
+                                    }
+                                },
+                                series: request
+                            });
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
+
+                    });
+                }
+                
+                
+                // GRAFICO CONTROL DIA D BARRA GENERAL
+                function get_graph_dia_d_bar_tce() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_dia_d_bar',
+                            'local_votacion' : '2'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            Highcharts.chart('graph_dia_d_bar_tce', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                exporting: {
+                                    enabled: false
+                                },
+                                xAxis: {
+                                    categories: [
+                                    'CONTROL'                                 
+                                    ],
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    // min: 0,
+                                    title: {
+                                        text: 'Cantidad Electores'
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0
+                                    },
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            style: {
+                                                fontSize: 20 + 'px'
+                                            }
+                                        }
+                                    }
+                                },
+                                series: request
+                            });
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
+
+                    });
+                }
+
+                // GRAFICO CONTROL DIA D BARRA GENERAL SAN LAZARO
+                function get_graph_dia_d_bar_sla() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_dia_d_bar',
+                            'local_votacion' : '3'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            Highcharts.chart('graph_dia_d_bar_sla', {
                                 chart: {
                                     type: 'column'
                                 },
@@ -665,8 +916,12 @@
                 }
 
                 function init() {
-                    get_graph_dia_d();
+                    
                     get_graph_dia_d_bar();
+                    get_graph_dia_d();
+                    get_graph_dia_d_bar_vmi();                  
+                    get_graph_dia_d_bar_tce();
+                    get_graph_dia_d_bar_sla();
                     get_graph_electores_seccional();
                     get_graph_preferencia_votos();
                     get_graph_rango_edades_pie();

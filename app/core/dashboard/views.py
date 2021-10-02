@@ -37,7 +37,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            action = request.POST['action']
+            action = request.POST['action']            
             if action == 'get_graph_electores_seccional':
                 info = []
                 # for i in Product.objects.order_by('-id')[0:10]:
@@ -100,17 +100,22 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 }   
 
             elif action == 'get_graph_dia_d_bar':
+                # Se envia 0 (cero) para todos los locales 
+                lv = request.POST['local_votacion']
                 data = []
 
                 rows = []
-                cant_pasoxpc =  Elector.objects.filter(pasoxpc__exact='S')\
-                                         .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                cant_pasoxpc = Elector.objects.filter(pasoxpc__exact='S')\
+                                              .extra(where=["local_votacion_id IN (%s) OR 0=%s"], params=[lv,lv])\
+                                              .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                                     
                 rows.append(float(cant_pasoxpc))
                 data.append({'name': 'Puesto de Control', 'data': rows})
                 
                 rows = []
-                cant_pasoxmv =  Elector.objects.filter(pasoxmv__exact='S')\
-                                         .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                cant_pasoxmv = Elector.objects.filter(pasoxmv__exact='S')\
+                                              .extra(where=["local_votacion_id IN (%s) OR 0=%s"], params=[lv,lv])\
+                                              .aggregate(cant=Coalesce(Count(True), 0))['cant']
                 rows.append(float(cant_pasoxmv))
                 data.append({'name': 'Local de Votacion', 'data': rows})
                 
