@@ -30,6 +30,8 @@ function getData(all) {
     var parameters = {
         'action': 'search',
         'term' : input_term.val(),
+        'local_votacion' : select_local_votacion.val(),
+        'mesa' : select_mesa.val(),
     };
 
 
@@ -156,6 +158,8 @@ $(function () {
 
     current_date = new moment().format('YYYY-MM-DD');
     input_term = $('input[name="term"]');
+    select_local_votacion = $('select[name="local_votacion"]');
+    select_mesa = $('select[name="mesa"]');
 
     
     // BTN DEFAULT 

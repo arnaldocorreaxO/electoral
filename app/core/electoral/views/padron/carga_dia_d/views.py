@@ -37,19 +37,29 @@ class CargaDiaDListView(PermissionMixin, FormView):
 			if action == 'search':
 				data = []
 				term = request.POST['term']
+				local_votacion = request.POST['local_votacion']
+				mesa = request.POST['mesa']				
 				 
 				if len(term):
-					term1 = 0
-					if term.isnumeric():
-						term1 = term
+					#Busqueda por Local Votacion, Mesa y Orden (maximo 3 digitos)
+					if len(term) <= 3:
+						position = 1    
+						qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+										.extra(where=["local_votacion_id = %s AND  mesa = %s AND orden =%s"], params=[local_votacion,mesa,term]) \
+										.order_by('fullname')[0:10]
 					else:
-						term = '%' + term.replace(' ','%') + '%'
-					position = 1    
-					qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
-									 .extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
-									 .order_by('fullname')[0:10]
+						# Busqueda por Nro. de Cedula y/o Nombre o Apellido
+						term1 = 0
+						if term.isnumeric():
+							term1 = term
+						else:
+							term = '%' + term.replace(' ','%') + '%'
+						position = 1    
+						qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+										.extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
+										.order_by('fullname')[0:10]
+					
 					# print(qs.query)
-
 					for i in qs:
 						item = i.toJSON()
 						item['position'] = position
