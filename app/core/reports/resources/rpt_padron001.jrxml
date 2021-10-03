@@ -319,21 +319,6 @@ ELE.ORDEN::INT]]>
 					<text><![CDATA[FECHA AFIL.]]></text>
 				</staticText>
 				<staticText>
-					<reportElement stretchType="ElementGroupHeight" x="489" y="0" width="18" height="21" uuid="5745faeb-2dcc-4e5f-95ca-a07f38e2f054">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-					</reportElement>
-					<box>
-						<topPen lineWidth="1.0"/>
-						<leftPen lineWidth="1.0"/>
-						<bottomPen lineWidth="1.0"/>
-						<rightPen lineWidth="1.0"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font size="6" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Abr 2013]]></text>
-				</staticText>
-				<staticText>
 					<reportElement stretchType="ElementGroupHeight" x="226" y="0" width="20" height="21" uuid="bebcb2ec-825f-4dcc-ad71-90d2eea43fda"/>
 					<box>
 						<topPen lineWidth="1.0"/>
@@ -378,7 +363,7 @@ ELE.ORDEN::INT]]>
 					<text><![CDATA[APELLIDOS Y NOMBRES]]></text>
 				</staticText>
 				<staticText>
-					<reportElement stretchType="ElementGroupHeight" x="507" y="0" width="18" height="21" uuid="ea176ca2-a4f6-455f-85ef-3c30d548e4a1">
+					<reportElement stretchType="ElementGroupHeight" x="489" y="0" width="18" height="21" uuid="ea176ca2-a4f6-455f-85ef-3c30d548e4a1">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
@@ -393,7 +378,7 @@ ELE.ORDEN::INT]]>
 					<text><![CDATA[Jul 2015]]></text>
 				</staticText>
 				<staticText>
-					<reportElement stretchType="ElementGroupHeight" x="525" y="0" width="18" height="21" uuid="911d1704-e0a3-4632-8e83-caf48207c8c6">
+					<reportElement stretchType="ElementGroupHeight" x="507" y="0" width="18" height="21" uuid="911d1704-e0a3-4632-8e83-caf48207c8c6">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
@@ -408,7 +393,7 @@ ELE.ORDEN::INT]]>
 					<text><![CDATA[Nov 2015]]></text>
 				</staticText>
 				<staticText>
-					<reportElement stretchType="ElementGroupHeight" x="543" y="0" width="18" height="21" uuid="21ffdb85-042f-4eb7-8d7b-6d3ba377fb02">
+					<reportElement stretchType="ElementGroupHeight" x="525" y="0" width="18" height="21" uuid="21ffdb85-042f-4eb7-8d7b-6d3ba377fb02">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
@@ -423,7 +408,7 @@ ELE.ORDEN::INT]]>
 					<text><![CDATA[Dic 2017]]></text>
 				</staticText>
 				<staticText>
-					<reportElement stretchType="ElementGroupHeight" x="561" y="0" width="18" height="21" uuid="7d5a0293-2ce0-472a-99bc-d7243ac3efe9">
+					<reportElement stretchType="ElementGroupHeight" x="543" y="0" width="18" height="21" uuid="7d5a0293-2ce0-472a-99bc-d7243ac3efe9">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<box>
@@ -449,6 +434,21 @@ ELE.ORDEN::INT]]>
 						<font size="6" isBold="true"/>
 					</textElement>
 					<text><![CDATA[TIPO VOTO]]></text>
+				</staticText>
+				<staticText>
+					<reportElement stretchType="ElementGroupHeight" x="561" y="0" width="18" height="21" uuid="5745faeb-2dcc-4e5f-95ca-a07f38e2f054">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font size="6" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Jun 2021]]></text>
 				</staticText>
 			</band>
 		</groupHeader>
