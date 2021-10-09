@@ -8,14 +8,14 @@
 
 {% block params_report %}
 <div class="row">
-    <!-- <div class="col-lg-4">
+    <div class="col-lg-4">
         <div class="form-group">
-            <label>Por Seccional</label>
+            <label>Por Local de Votacion</label>
             <div class="input-group mb-3">
-                {{ form.seccional }}
+                {{ form.local_votacion }}
             </div>
         </div>
-    </div> -->
+    </div>
     <div class="col-lg-4">
         <div class="form-group">
             <label>Por Barrio</label>
@@ -32,6 +32,24 @@
             </div>
         </div>
     </div>
+</div>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="form-group">
+            <label>Titulo Extra</label>
+            <div class="input-group mb-3">
+                {{ form.titulo_extra }}
+            </div>
+        </div>
+    </div>   
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label>Salto de Página</label>
+            <div class="input-group mb-3">
+                {{ form.salto_pagina }}
+            </div>
+        </div>
+    </div>   
 </div>
 
 {% endblock %}

@@ -49,6 +49,13 @@
     </div>
     <!--Block report_javascript-->
     {% block javascript_report %}
-
+        <script>
+            $(function () {
+                $('.select2').select2({
+                    theme: "bootstrap4",
+                    language: 'es'
+                });
+            });
+        </script>
     {% endblock %}
 {% endblock %}
