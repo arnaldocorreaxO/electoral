@@ -337,6 +337,21 @@ class ShearchForm(forms.Form):
     tipo_voto = forms.ChoiceField(choices=[
     (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('denominacion')])
 
+    PASOXPC_CHOICES = [
+        ('','Todos'),
+        ('S','YA Pasaron'),
+        ('N','NO Pasaron'),
+    ]
+    pasoxpc = forms.ChoiceField(choices=PASOXPC_CHOICES)
+    
+    PASOXMV_CHOICES = [
+        ('','Todos'),
+        ('S','YA Votaron'),
+        ('N','NO Votaron'),
+    ]
+    
+    pasoxmv = forms.ChoiceField(choices=PASOXMV_CHOICES)
+
     date_range.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     local_votacion.widget.attrs.update({'class': 'form-control select2'})
@@ -346,6 +361,8 @@ class ShearchForm(forms.Form):
     barrio.widget.attrs.update({'class': 'form-control select2'})
     manzana.widget.attrs.update({'class': 'form-control select2'})
     tipo_voto.widget.attrs.update({'class': 'form-control select2'})
+    pasoxmv.widget.attrs.update({'class': 'form-control select2'})
+    pasoxpc.widget.attrs.update({'class': 'form-control select2'})
     
 ''' 
 ====================

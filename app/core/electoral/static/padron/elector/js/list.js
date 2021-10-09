@@ -8,6 +8,7 @@ function initTable() {
         responsive: true,
         autoWidth: false,
         destroy: true,
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         // deferRender: true,
         // processing: true,
         // serverSide: true,
@@ -31,6 +32,8 @@ function getData(all) {
         select_barrio.val("").change();
         select_manzana.val("").change();
         select_mesa.val("").change();
+        select_pasoxpc.val("").change();
+        select_pasoxmv.val("").change();
     }
 
     var parameters = {
@@ -43,6 +46,8 @@ function getData(all) {
         'barrio': select_barrio.val(),
         'manzana': select_manzana.val(),
         'mesa': select_mesa.val(),
+        'pasoxpc': select_pasoxpc.val(),
+        'pasoxmv': select_pasoxmv.val(),
         
     };
 
@@ -60,6 +65,13 @@ function getData(all) {
         deferRender: true,
         processing: true,
         serverSide: true,
+        paging: true,
+        ordering: true,
+        searching: true,
+        stateSave: true,        
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        pagingType: "full_numbers",
+        pageLength: 10,
         ajax: {
             url: pathname,
             type: 'POST',
@@ -68,11 +80,8 @@ function getData(all) {
         },
         order: [[4, 'asc'],[5, 'asc'],[6, 'asc'],[2, 'asc']],
         
-        paging: true,
-        pageLength : 10,
-        ordering: true,
-        searching: true,
-        dom: 'Bfrtip',
+        
+        dom: 'Blfrtip',
         buttons: [
             {
                 extend: 'excelHtml5',
@@ -241,6 +250,8 @@ $(function () {
     select_barrio = $('select[name="barrio"]');
     select_manzana = $('select[name="manzana"]');
     select_mesa = $('select[name="mesa"]');
+    select_pasoxpc = $('select[name="pasoxpc"]');
+    select_pasoxmv = $('select[name="pasoxmv"]');
 
 
     input_daterange

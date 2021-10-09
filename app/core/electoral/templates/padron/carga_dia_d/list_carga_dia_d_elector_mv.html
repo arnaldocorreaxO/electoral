@@ -31,20 +31,7 @@
 {% endblock %}
 
 {% block content_list_before %}
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="form-group">
-                <label>Buscar por Orden, CI o Nombre y Apellido </label>
-                <div class="input-group mb-3">
-                    {{ form.term }}
-                    <div class="input-group-append">
-                        <button class="btn btn-success btnSearch" type="submit">
-                            <i class="fas fa-search"></i> Buscar
-                        </button>    
-                    </div>
-                </div>
-            </div>    
-        </div>
+    <div class="row">        
         <div class="col-lg-4">
             <div class="form-group">
                 <label>Local de Votacion</label>
@@ -71,6 +58,19 @@
                             <!-- <a class="dropdown-item btnRemoveAllElector"><i
                                     class="fas fa-trash-alt"></i> Borrar todo</a> -->
                         </div>
+                    </div>
+                </div>
+            </div>    
+        </div>
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label>Buscar por Orden, CI o Nombre y Apellido </label>
+                <div class="input-group mb-3">
+                    {{ form.term }}
+                    <div class="input-group-append">
+                        <button class="btn btn-success btnSearch" type="submit">
+                            <i class="fas fa-search"></i> Buscar
+                        </button>    
                     </div>
                 </div>
             </div>    
