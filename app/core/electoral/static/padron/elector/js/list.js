@@ -8,7 +8,7 @@ function initTable() {
         responsive: true,
         autoWidth: false,
         destroy: true,
-        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
         // deferRender: true,
         // processing: true,
         // serverSide: true,
@@ -69,7 +69,7 @@ function getData(all) {
         ordering: true,
         searching: true,
         stateSave: true,        
-        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
         pagingType: "full_numbers",
         pageLength: 10,
         ajax: {
