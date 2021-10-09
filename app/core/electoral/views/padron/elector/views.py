@@ -112,7 +112,7 @@ class ElectorListView(PermissionMixin, FormView):
 								   fecha_nacimiento__day__exact=start_date.day)
 
 				total = qs.count()
-				print(qs.query)
+				# print(qs.query)
 				
 				if _start and _length:
 					start = int(_start)
