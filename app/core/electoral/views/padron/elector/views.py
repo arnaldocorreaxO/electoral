@@ -46,6 +46,8 @@ class ElectorListView(PermissionMixin, FormView):
 				barrio = request.POST['barrio']
 				manzana = request.POST['manzana']
 				mesa = request.POST['mesa']
+				pasoxpc = request.POST['pasoxpc']
+				pasoxmv = request.POST['pasoxmv']
 
 				_start = request.POST['start']
 				_length = request.POST['length']
@@ -94,6 +96,10 @@ class ElectorListView(PermissionMixin, FormView):
 					_where += f" AND electoral_elector.manzana_id = '{manzana}'"
 				if len(mesa):
 					_where += f" AND electoral_elector.mesa = '{mesa}'"
+				if len(pasoxpc):
+					_where += f" AND electoral_elector.pasoxpc = '{pasoxpc}'"
+				if len(pasoxmv):
+					_where += f" AND electoral_elector.pasoxmv = '{pasoxmv}'"
 				
 				qs = Elector.objects.filter()\
 									.extra(where=[_where], params=[_search])\

@@ -31,6 +31,8 @@ function getData(all) {
         select_barrio.val("").change();
         select_manzana.val("").change();
         select_mesa.val("").change();
+        select_pasoxpc.val("").change();
+        select_pasoxmv.val("").change();
     }
 
     var parameters = {
@@ -43,6 +45,8 @@ function getData(all) {
         'barrio': select_barrio.val(),
         'manzana': select_manzana.val(),
         'mesa': select_mesa.val(),
+        'pasoxpc': select_pasoxpc.val(),
+        'pasoxmv': select_pasoxmv.val(),
         
     };
 
@@ -241,6 +245,8 @@ $(function () {
     select_barrio = $('select[name="barrio"]');
     select_manzana = $('select[name="manzana"]');
     select_mesa = $('select[name="mesa"]');
+    select_pasoxpc = $('select[name="pasoxpc"]');
+    select_pasoxmv = $('select[name="pasoxmv"]');
 
 
     input_daterange
