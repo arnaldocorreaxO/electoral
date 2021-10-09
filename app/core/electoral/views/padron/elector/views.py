@@ -97,9 +97,10 @@ class ElectorListView(PermissionMixin, FormView):
 				if len(mesa):
 					_where += f" AND electoral_elector.mesa = '{mesa}'"
 				if len(pasoxpc):
-					_where += f" AND electoral_elector.pasoxpc = '{pasoxpc}'"
+					_where += f" AND COALESCE(electoral_elector.pasoxpc,'N') = '{pasoxpc}'"
 				if len(pasoxmv):
-					_where += f" AND electoral_elector.pasoxmv = '{pasoxmv}'"
+					_where += f" AND COALESCE(electoral_elector.tipo_voto_id,0) <> 11 \
+								 AND COALESCE(electoral_elector.pasoxmv,'N') = '{pasoxmv}'"
 				
 				qs = Elector.objects.filter()\
 									.extra(where=[_where], params=[_search])\
@@ -111,6 +112,7 @@ class ElectorListView(PermissionMixin, FormView):
 								   fecha_nacimiento__day__exact=start_date.day)
 
 				total = qs.count()
+				print(qs.query)
 				
 				if _start and _length:
 					start = int(_start)
