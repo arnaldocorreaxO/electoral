@@ -8,6 +8,7 @@ function initTable() {
         responsive: true,
         autoWidth: false,
         destroy: true,
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         // deferRender: true,
         // processing: true,
         // serverSide: true,
@@ -64,6 +65,13 @@ function getData(all) {
         deferRender: true,
         processing: true,
         serverSide: true,
+        paging: true,
+        ordering: true,
+        searching: true,
+        stateSave: true,        
+        lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
+        pagingType: "full_numbers",
+        pageLength: 25,
         ajax: {
             url: pathname,
             type: 'POST',
@@ -72,11 +80,8 @@ function getData(all) {
         },
         order: [[4, 'asc'],[5, 'asc'],[6, 'asc'],[2, 'asc']],
         
-        paging: true,
-        pageLength : 10,
-        ordering: true,
-        searching: true,
-        dom: 'Bfrtip',
+        
+        dom: 'Blfrtip',
         buttons: [
             {
                 extend: 'excelHtml5',

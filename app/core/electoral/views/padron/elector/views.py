@@ -111,13 +111,16 @@ class ElectorListView(PermissionMixin, FormView):
 								   fecha_nacimiento__day__exact=start_date.day)
 
 				total = qs.count()
-
+				
 				if _start and _length:
 					start = int(_start)
 					length = int(_length)
 					page = math.ceil(start / length) + 1
 					per_page = length
-
+				
+				if _length== '-1':
+					qs = qs[start:]
+				else:
 					qs = qs[start:start + length]
 
 				position = start + 1
