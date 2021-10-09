@@ -71,7 +71,7 @@ function getData(all) {
         stateSave: true,        
         lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "All"]],
         pagingType: "full_numbers",
-        pageLength: 25,
+        pageLength: 10,
         ajax: {
             url: pathname,
             type: 'POST',
