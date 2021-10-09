@@ -148,7 +148,7 @@ ORDER BY CAST(B.ID AS INTEGER),CAST(M.COD AS INTEGER),NRO_CASA,APELLIDO,NOMBRE]]
 	<variable name="V_HOY" class="java.util.Date" resetType="None">
 		<variableExpression><![CDATA[NOW( )]]></variableExpression>
 	</variable>
-	<group name="Group1" isStartNewPage="true" isResetPageNumber="true" isReprintHeaderOnEachPage="true">
+	<group name="Group1" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{barrio_manzana}]]></groupExpression>
 		<groupHeader>
 			<band height="45">

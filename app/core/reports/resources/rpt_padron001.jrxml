@@ -12,13 +12,16 @@
 	<parameter name="P_TITULO3" class="java.lang.String"/>
 	<parameter name="P_TITULO4" class="java.lang.String"/>
 	<parameter name="P_RUTA" class="java.lang.String"/>
-	<parameter name="P_LOCAL_VOTACION_ID" class="java.lang.Long">
+	<parameter name="P_LOCAL_VOTACION_ID" class="java.lang.String">
 		<parameterDescription><![CDATA[BARRIO]]></parameterDescription>
 	</parameter>
-	<parameter name="P_BARRIO_ID" class="java.lang.Long">
+	<parameter name="P_BARRIO_ID" class="java.lang.String">
 		<parameterDescription><![CDATA[BARRIO]]></parameterDescription>
 	</parameter>
-	<parameter name="P_TIPO_VOTO_ID" class="java.lang.Long">
+	<parameter name="P_TIPO_VOTO_ID" class="java.lang.String">
+		<parameterDescription><![CDATA[BARRIO]]></parameterDescription>
+	</parameter>
+	<parameter name="P_MESA_ID" class="java.lang.String">
 		<parameterDescription><![CDATA[BARRIO]]></parameterDescription>
 	</parameter>
 	<queryString>
@@ -56,9 +59,10 @@ INNER JOIN ELECTORAL_LOCALVOTACION LOC 	ON LOC.ID = ELE.LOCAL_VOTACION_ID
 LEFT OUTER JOIN ELECTORAL_BARRIO BAR ON BAR.ID = ELE.BARRIO_ID
 LEFT OUTER JOIN ELECTORAL_MANZANA MAN ON MAN.ID = ELE.MANZANA_ID 
 LEFT OUTER JOIN ELECTORAL_TIPOVOTO TIP ON TIP.ID = ELE.TIPO_VOTO_ID
-WHERE (ELE.LOCAL_VOTACION_ID = $P{P_LOCAL_VOTACION_ID} OR $P{P_LOCAL_VOTACION_ID}  IS NULL) 
-AND (ELE.BARRIO_ID = $P{P_BARRIO_ID} OR $P{P_BARRIO_ID}  IS NULL)
-AND (COALESCE(ELE.TIPO_VOTO_ID,14) = $P{P_TIPO_VOTO_ID} OR $P{P_TIPO_VOTO_ID}  IS NULL)
+WHERE 1 = 1  
+AND  (ELE.LOCAL_VOTACION_ID IN ($P!{P_LOCAL_VOTACION_ID}) OR $P{P_LOCAL_VOTACION_ID}  IS NULL) 
+AND  (ELE.BARRIO_ID IN ($P!{P_BARRIO_ID}) OR $P{P_BARRIO_ID}  IS NULL) 
+AND  (COALESCE(ELE.TIPO_VOTO_ID,14) IN ($P!{P_TIPO_VOTO_ID}) OR $P{P_TIPO_VOTO_ID}  IS NULL) 
 ORDER BY DPT.ID ,
 DIS.COD::INT,
 SEC.COD::INT,

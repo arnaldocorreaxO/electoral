@@ -57,8 +57,8 @@ LEFT  JOIN ELECTORAL_BARRIO B 		ON E.BARRIO_ID 		= B.ID
 LEFT  JOIN ELECTORAL_MANZANA M 		ON E.MANZANA_ID 		= M.ID 
 WHERE 1=1
 AND  (L.ID IN ($P!{P_LOCAL_VOTACION_ID}) OR $P{P_LOCAL_VOTACION_ID}  IS NULL) 
-AND  (B.ID IN ($P!{P_BARRIO_ID}) OR $P{P_BARRIO_ID}  IS NULL) 
-AND  (M.ID IN ($P!{P_MANZANA_ID}) OR $P{P_MANZANA_ID}  IS NULL) 
+AND  (B.ID NOT IN ($P!{P_BARRIO_ID}) OR $P{P_BARRIO_ID}  IS NULL) 
+AND  (M.ID NOT IN ($P!{P_MANZANA_ID}) OR $P{P_MANZANA_ID}  IS NULL) 
 ORDER BY CAST(B.ID AS INTEGER),CAST(M.COD AS INTEGER),NRO_CASA,APELLIDO,NOMBRE]]>
 	</queryString>
 	<field name="cod_departamento" class="java.lang.Integer">
@@ -148,7 +148,7 @@ ORDER BY CAST(B.ID AS INTEGER),CAST(M.COD AS INTEGER),NRO_CASA,APELLIDO,NOMBRE]]
 	<variable name="V_HOY" class="java.util.Date" resetType="None">
 		<variableExpression><![CDATA[NOW( )]]></variableExpression>
 	</variable>
-	<group name="Group1" isStartNewPage="true" isResetPageNumber="true" isReprintHeaderOnEachPage="true">
+	<group name="Group1" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{barrio_manzana}]]></groupExpression>
 		<groupHeader>
 			<band height="45">
@@ -460,7 +460,7 @@ ORDER BY CAST(B.ID AS INTEGER),CAST(M.COD AS INTEGER),NRO_CASA,APELLIDO,NOMBRE]]
 				</textElement>
 				<textFieldExpression><![CDATA["Pág. " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Group" evaluationGroup="Group1">
+			<textField evaluationTime="Report">
 				<reportElement x="301" y="10" width="200" height="19" uuid="f5c1ac6e-b1b6-4ca7-81b8-5984e8581551"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9"/>

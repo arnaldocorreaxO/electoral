@@ -183,9 +183,13 @@ class ElectorCreateView(PermissionMixin, CreateView):
 			elif action == 'validate_data':
 				return self.validate_data()
 			elif action == 'search_manzana_id':
-				data = [{'id': '', 'text': '------------'}]
-				for i in Manzana.objects.filter(barrio_id=request.POST['id']):			
+				data = [{'id': '', 'text': '------------'}]				
+				barrio_list = request.POST['id'] if 'id' in request.POST else None
+				if barrio_list is None:
+					barrio_list = request.POST.getlist('id[]') if 'id[]' in request.POST else ''	
+				for i in Manzana.objects.filter(barrio_id__in=barrio_list):			
 					data.append({'id': i.id, 'text': str(i), 'data': i.barrio.toJSON()})
+	
 			else:
 				data['error'] = 'No ha seleccionado ninguna opción'
 		except Exception as e:
