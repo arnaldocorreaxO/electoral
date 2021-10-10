@@ -12,7 +12,7 @@
 	<parameter name="P_TITULO3" class="java.lang.String"/>
 	<parameter name="P_TITULO4" class="java.lang.String"/>
 	<parameter name="P_RUTA" class="java.lang.String"/>
-	<parameter name="P_LOCAL_VOTACION_ID" class="java.lang.Long">
+	<parameter name="P_LOCAL_VOTACION_ID" class="java.lang.String">
 		<parameterDescription><![CDATA[LOCAL_VOTACION]]></parameterDescription>
 	</parameter>
 	<queryString>
