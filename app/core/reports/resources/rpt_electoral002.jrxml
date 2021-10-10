@@ -460,7 +460,7 @@ ORDER BY CAST(B.ID AS INTEGER),CAST(M.COD AS INTEGER),NRO_CASA,APELLIDO,NOMBRE]]
 				</textElement>
 				<textFieldExpression><![CDATA["Pág. " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
-			<textField evaluationTime="Report">
+			<textField evaluationTime="Group" evaluationGroup="Group1">
 				<reportElement x="301" y="10" width="200" height="19" uuid="f5c1ac6e-b1b6-4ca7-81b8-5984e8581551"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="9"/>
