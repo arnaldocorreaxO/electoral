@@ -28,13 +28,13 @@ class LoginAuthView(LoginView):
         form = super(LoginAuthView, self).get_form()
         form.fields['username'].widget.attrs = {
             'class': 'form-control',
-            'placeholder': 'Ingrese su username',
+            'placeholder': 'Ingrese su usuario',
             'autocomplete': 'off',
             'autofocus': True
         }
         form.fields['password'].widget.attrs = {
             'class': 'form-control',
-            'placeholder': 'Ingrese su password',
+            'placeholder': 'Ingrese su contraseña',
             'autocomplete': 'off',
         }
         return form
