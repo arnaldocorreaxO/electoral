@@ -225,6 +225,33 @@ class TipoVotoForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+'''        
+=========================
+===  LOCAL VOTACION   ===
+========================= '''
+class LocalVotacionForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self.fields['cod'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = LocalVotacion
+        fields = '__all__'
+        exclude = readonly_fields
+        widgets = {
+            'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese una Denominacion'}),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        try:
+            if self.is_valid():
+                super().save()
+            else:
+                data['error'] = self.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
 
 ''' 
 ====================
@@ -307,6 +334,9 @@ class ElectorForm2(ModelForm):
 class ShearchForm(forms.Form):
     mesa = forms.ChoiceField()
     local_votacion = forms.ChoiceField()
+    seccional = forms.ChoiceField()
+    barrio = forms.ChoiceField()
+    manzana = forms.ChoiceField()
     def __init__(self, *args, **kwargs):
         usuario = kwargs.pop('usuario', None)
         # print(usuario)
@@ -314,48 +344,41 @@ class ShearchForm(forms.Form):
         self.fields['term'].widget.attrs['autofocus'] = True
 
         if usuario:
+            #Mesa
             self.fields['mesa'] = forms.ChoiceField(choices=[
             (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')\
                                                                     .filter(distrito=usuario.distrito)\
                                                                     .extra(select={'int_mesa':'CAST(mesa AS INTEGER)'})\
                                                                     .distinct().order_by('int_mesa')])
-            self.fields['mesa'].widget.attrs.update({'class': 'form-control select2'})
-
+            # Local de Votacion
             self.fields['local_votacion'] = forms.ChoiceField(choices=[
             (item.id, item) for item in LocalVotacion.objects.filter(ciudad__distrito=usuario.distrito,activo__exact=True)\
                                                              .order_by('id')])
+            # Seccionales
+            self.fields['seccional'] = forms.ChoiceField(choices=[
+            (item.id, item) for item in Seccional.objects.filter(ciudad__distrito=usuario.distrito,activo__exact=True).order_by('denominacion')])
+            # Barrios
+            self.fields['barrio'] = forms.ChoiceField(choices=[
+            (item.id, item.fullname) for item in Barrio.objects.filter(ciudad__distrito=usuario.distrito,activo__exact=True).order_by('id')])
+            # Manzana
+            self.fields['manzana'] = forms.ChoiceField(choices=[
+            (item.id, item.fullname) for item in Manzana.objects.filter(barrio__ciudad__distrito=usuario.distrito,activo__exact=True).order_by('barrio__id','id')])
             
             self.fields['local_votacion'].widget.attrs.update({'class': 'form-control select2'})
-
+            self.fields['mesa'].widget.attrs.update({'class': 'form-control select2'})
+            self.fields['seccional'].widget.attrs.update({'class': 'form-control select2'})
+            self.fields['barrio'].widget.attrs.update({'class': 'form-control select2'})
+            self.fields['manzana'].widget.attrs.update({'class': 'form-control select2'})
     # Rango de fechas 
     date_range = forms.CharField()
     # Termino de busqueda 
     term = forms.CharField()
-    # Local de Votacion
     
     
-    # Mesas
-    
-    # # if usuario:
-    # mesa = forms.ChoiceField(choices=[
-    # (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')\
-    #                                                         .filter(distrito=1)\
-    #                                                         .extra(select={'int_mesa':'CAST(mesa AS INTEGER)'})\
-    #                                                         .distinct().order_by('int_mesa')])
-    # mesa.widget.attrs.update({'class': 'form-control select2'})
-
     # Ciudades
     ciudad = forms.ChoiceField(choices=[
     (item.id, item) for item in Ciudad.objects.filter(activo__exact=True).order_by('denominacion')])
-    # Seccionales
-    seccional = forms.ChoiceField(choices=[
-    (item.id, item) for item in Seccional.objects.filter(activo__exact=True).order_by('denominacion')])
-    # Barrios
-    barrio = forms.ChoiceField(choices=[
-    (item.id, item.fullname) for item in Barrio.objects.filter(activo__exact=True).order_by('id')])
-    # Ciudades
-    manzana = forms.ChoiceField(choices=[
-    (item.id, item.fullname) for item in Manzana.objects.filter(activo__exact=True).order_by('barrio__id','id')])
+    
     # Tipo de Voto
     tipo_voto = forms.ChoiceField(choices=[
     (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('denominacion')])
@@ -377,12 +400,7 @@ class ShearchForm(forms.Form):
 
     date_range.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
-    # local_votacion.widget.attrs.update({'class': 'form-control select2'})
-    # mesa.widget.attrs.update({'class': 'form-control select2'})
-    ciudad.widget.attrs.update({'class': 'form-control select2'})
-    seccional.widget.attrs.update({'class': 'form-control select2'})
-    barrio.widget.attrs.update({'class': 'form-control select2'})
-    manzana.widget.attrs.update({'class': 'form-control select2'})
+    ciudad.widget.attrs.update({'class': 'form-control select2'})    
     tipo_voto.widget.attrs.update({'class': 'form-control select2'})
     pasoxmv.widget.attrs.update({'class': 'form-control select2'})
     pasoxpc.widget.attrs.update({'class': 'form-control select2'})

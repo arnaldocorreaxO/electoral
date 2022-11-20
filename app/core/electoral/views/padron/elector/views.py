@@ -45,6 +45,7 @@ class ElectorListView(PermissionMixin, FormView):
 				seccional = request.POST['seccional']
 				barrio = request.POST['barrio']
 				manzana = request.POST['manzana']
+				local_votacion = request.POST['local_votacion']
 				mesa = request.POST['mesa']
 				pasoxpc = request.POST['pasoxpc']
 				pasoxmv = request.POST['pasoxmv']
@@ -94,6 +95,8 @@ class ElectorListView(PermissionMixin, FormView):
 					_where += f" AND electoral_elector.barrio_id = '{barrio}'"
 				if len(manzana):
 					_where += f" AND electoral_elector.manzana_id = '{manzana}'"
+				if len(local_votacion):
+					_where += f" AND electoral_elector.local_votacion_id = '{local_votacion}'"
 				if len(mesa):
 					_where += f" AND electoral_elector.mesa = '{mesa}'"
 				if len(pasoxpc):
@@ -102,7 +105,7 @@ class ElectorListView(PermissionMixin, FormView):
 					_where += f" AND COALESCE(electoral_elector.tipo_voto_id,0) <> 11 \
 								 AND COALESCE(electoral_elector.pasoxmv,'N') = '{pasoxmv}'"
 				
-				qs = Elector.objects.filter()\
+				qs = Elector.objects.filter(distrito=request.user.distrito)\
 									.extra(where=[_where], params=[_search])\
 									.order_by(*_order)
 
@@ -146,9 +149,11 @@ class ElectorListView(PermissionMixin, FormView):
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context['create_url'] = reverse_lazy('elector_create')
+		context['form'] = ShearchForm(usuario=self.request.user)
 		context['title'] = 'Listado de Electores'
+		context['distrito'] = self.request.user.distrito.denominacion
 		return context
-
+	
 
 class ElectorCreateView(PermissionMixin, CreateView):
 	model = Elector
