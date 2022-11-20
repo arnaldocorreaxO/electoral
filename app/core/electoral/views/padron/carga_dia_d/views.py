@@ -132,6 +132,7 @@ class CargaDiaDListView(PermissionMixin,FormView):
 		context['create_url'] = reverse_lazy('elector_create')
 		context['title'] = 'Carga de Votos Mesa de Votacion'
 		context['title2'] = 'Lista de Electores Mesa de Votación'
+		context['distrito'] = self.request.user.distrito.denominacion
 		return context
 
 
@@ -182,6 +183,7 @@ class CargaDiaDCreateView(PermissionMixin, CreateView):
 		context['list_url'] = self.success_url
 		context['title'] = 'Carga Día D - Veedor'
 		context['action'] = 'add'
+		context['distrito'] = self.request.user.distrito.denominacion
 		return context
 
 
@@ -243,6 +245,7 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
 		context['list_url'] = self.success_url
 		context['title'] = 'Carga Día D - Elector'
 		context['action'] = 'edit'
+		context['distrito'] = self.request.user.distrito.denominacion
 		return context
 
 
@@ -402,6 +405,7 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
 		context = super().get_context_data(**kwargs)
 		context['create_url'] = reverse_lazy('elector_create')
 		context['title'] = 'Carga de Electores Puesto de Control'
+		context['distrito'] = self.request.user.distrito.denominacion
 		return context
 
 # class CargaDiaDElectorView(ModuleMixin, TemplateView):
