@@ -5,8 +5,8 @@ C:\Users\arnaldo\proyectos\electoral\.env\Lib\site-packages\django\
 contrib\admin\templates\admin\change_form.html
 Se utiliza para modificar el comportamiento de todos los SELECT en 
 el Administrador de Django
-En ese path se referencia a este js para Select2 Anidado de Barrios 
-y Manzanas
+En ese path se referencia a este js para Select2 Anidado de  
+Local de Votacion y Mesas
 ====================================================================
 */
 $(function () {
