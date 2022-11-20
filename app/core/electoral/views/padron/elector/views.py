@@ -187,6 +187,7 @@ class ElectorCreateView(PermissionMixin, CreateView):
 				data = self.get_form().save()
 			elif action == 'validate_data':
 				return self.validate_data()
+
 			elif action == 'search_manzana_id':
 				data = [{'id': '', 'text': '------------'}]				
 				barrio_list = [request.POST['id'] if 'id' in request.POST else None]
@@ -194,6 +195,17 @@ class ElectorCreateView(PermissionMixin, CreateView):
 					barrio_list = [request.POST.getlist('id[]') if 'id[]' in request.POST else '']	
 				for i in Manzana.objects.filter(barrio_id__in=barrio_list):			
 					data.append({'id': i.id, 'text': str(i), 'data': i.barrio.toJSON()})
+			
+			elif action == 'search_mesa_id':
+				data = [{'id': '', 'text': '------------'}]				
+				local_votacion_list = [request.POST['id'] if 'id' in request.POST else None]
+				if local_votacion_list is None:
+					local_votacion_list = [request.POST.getlist('id[]') if 'id[]' in request.POST else '']	
+				for i in Elector.objects.values('mesa')\
+										.filter(distrito=self.request.user.distrito,local_votacion_id__in=local_votacion_list)\
+										.extra(select={'int_mesa':'CAST(mesa AS INTEGER)'})\
+										.distinct().order_by('int_mesa'):			
+					data.append({'id': i['mesa'], 'text': i['mesa'], 'data': i})
 				
 			else:
 				data['error'] = 'No ha seleccionado ninguna opción'
