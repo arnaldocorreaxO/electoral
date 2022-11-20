@@ -8,6 +8,7 @@ from django.db import models
 from django.forms.models import model_to_dict
 
 from config import settings
+from core.electoral.models import Distrito
 
 
 class User(AbstractUser):
@@ -15,7 +16,7 @@ class User(AbstractUser):
     image = models.ImageField(upload_to='users/%Y/%m/%d', verbose_name='Imagen', null=True, blank=True)
     is_change_password = models.BooleanField(default=False)
     token = models.UUIDField(primary_key=False, editable=False, null=True, blank=True, default=uuid.uuid4, unique=True)
-
+    distrito = models.ForeignKey(Distrito, verbose_name='Distrito', on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_distrito',blank=True,null=True)
     def toJSON(self):
         item = model_to_dict(self, exclude=['last_login', 'token', 'password', 'user_permissions'])
         item['image'] = self.get_image()

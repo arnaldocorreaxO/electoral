@@ -305,22 +305,45 @@ class ElectorForm2(ModelForm):
 ===   SHEARCH    ===
 ==================== '''
 class ShearchForm(forms.Form):
+    mesa = forms.ChoiceField()
+    local_votacion = forms.ChoiceField()
     def __init__(self, *args, **kwargs):
+        usuario = kwargs.pop('usuario', None)
+        print(usuario)
         super().__init__(*args, **kwargs)        
         self.fields['term'].widget.attrs['autofocus'] = True
+
+        if usuario:
+            self.fields['mesa'] = forms.ChoiceField(choices=[
+            (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')\
+                                                                    .filter(distrito=usuario.distrito)\
+                                                                    .extra(select={'int_mesa':'CAST(mesa AS INTEGER)'})\
+                                                                    .distinct().order_by('int_mesa')])
+            self.fields['mesa'].widget.attrs.update({'class': 'form-control select2'})
+
+            self.fields['local_votacion'] = forms.ChoiceField(choices=[
+            (item.id, item) for item in LocalVotacion.objects.filter(ciudad__distrito=usuario.distrito,activo__exact=True)\
+                                                             .order_by('id')])
+            
+            self.fields['local_votacion'].widget.attrs.update({'class': 'form-control select2'})
+
     # Rango de fechas 
     date_range = forms.CharField()
     # Termino de busqueda 
     term = forms.CharField()
     # Local de Votacion
-    local_votacion = forms.ChoiceField(choices=[
-    (item.id, item) for item in LocalVotacion.objects.filter(activo__exact=True)])
+    
     
     # Mesas
-    mesa = forms.ChoiceField(choices=[
-    (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')\
-                                                            .extra(select={'int_mesa':'CAST(mesa AS INTEGER)'})\
-                                                            .distinct().order_by('int_mesa')])
+    
+    # # if usuario:
+    # mesa = forms.ChoiceField(choices=[
+    # (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')\
+    #                                                         .filter(distrito=1)\
+    #                                                         .extra(select={'int_mesa':'CAST(mesa AS INTEGER)'})\
+    #                                                         .distinct().order_by('int_mesa')])
+    # mesa.widget.attrs.update({'class': 'form-control select2'})
+
     # Ciudades
     ciudad = forms.ChoiceField(choices=[
     (item.id, item) for item in Ciudad.objects.filter(activo__exact=True).order_by('denominacion')])
@@ -354,8 +377,8 @@ class ShearchForm(forms.Form):
 
     date_range.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
-    local_votacion.widget.attrs.update({'class': 'form-control select2'})
-    mesa.widget.attrs.update({'class': 'form-control select2'})
+    # local_votacion.widget.attrs.update({'class': 'form-control select2'})
+    # mesa.widget.attrs.update({'class': 'form-control select2'})
     ciudad.widget.attrs.update({'class': 'form-control select2'})
     seccional.widget.attrs.update({'class': 'form-control select2'})
     barrio.widget.attrs.update({'class': 'form-control select2'})

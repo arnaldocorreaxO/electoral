@@ -20,7 +20,7 @@ from core.electoral.forms import Elector, CargaDiaDForm, ShearchForm
 from core.security.mixins import ModuleMixin, PermissionMixin
 
 
-class CargaDiaDListView(PermissionMixin, FormView):
+class CargaDiaDListView(FormView):
 	# model = Elector
 	template_name = 'padron/carga_dia_d/list_carga_dia_d_elector_mv.html'
 	permission_required = 'view_elector'
@@ -45,6 +45,7 @@ class CargaDiaDListView(PermissionMixin, FormView):
 					if len(term) <= 3:
 						position = 1    
 						qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+										.filter(distrito=request.user.distrito)\
 										.extra(where=["local_votacion_id = %s AND  mesa = %s AND orden =%s"], params=[local_votacion,mesa,term]) \
 										.order_by('fullname')[0:10]
 					else:
@@ -56,6 +57,7 @@ class CargaDiaDListView(PermissionMixin, FormView):
 							term = '%' + term.replace(' ','%') + '%'
 						position = 1    
 						qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+										.filter(distrito=request.user.distrito)\
 										.extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
 										.order_by('fullname')[0:10]
 					
@@ -90,7 +92,7 @@ class CargaDiaDListView(PermissionMixin, FormView):
 				if len(mesa):
 					_where += f" AND mesa = '{mesa}'"                
 			  
-				qs = Elector.objects.filter(pasoxmv='S')\
+				qs = Elector.objects.filter(distrito=request.user.distrito,pasoxmv='S')\
 									.extra(where=[_where], params=[_search]) 
 
 				# print(qs.query)
@@ -126,6 +128,7 @@ class CargaDiaDListView(PermissionMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		context['form'] = ShearchForm(usuario=self.request.user)
 		context['create_url'] = reverse_lazy('elector_create')
 		context['title'] = 'Carga de Votos Mesa de Votacion'
 		context['title2'] = 'Lista de Electores Mesa de Votación'
@@ -150,7 +153,7 @@ class CargaDiaDCreateView(PermissionMixin, CreateView):
 			type = self.request.POST['type']
 			obj = self.request.POST['obj'].strip()            
 			if type == 'denominacion':                
-				if Elector.objects.filter(denominacion__iexact=obj):
+				if Elector.objects.filter(distrito=self.request.user.distrito,denominacion__iexact=obj):
 					data['valid'] = False
 		except:
 			pass
@@ -205,7 +208,7 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
 			obj = self.request.POST['obj'].strip()
 			id = self.get_object().id
 			if type == 'denominacion':
-				if Elector.objects.filter(name__iexact=obj).exclude(id=id):
+				if Elector.objects.filter(distrito=self.request.user.distrito,name__iexact=obj).exclude(id=id):
 					data['valid'] = False
 		except:
 			pass
@@ -294,6 +297,7 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
 					position = 1    
 					
 					qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+									 .filter(distrito=request.user.distrito)\
 									 .extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
 									 .order_by('fullname')[0:10]
 					# print(qs.query)
@@ -339,7 +343,7 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
 						_search = '%' + _search.replace(' ','%') + '%'
 						_where = " upper(nombre||' '|| apellido) LIKE upper(%s)"  
 				
-				qs = Elector.objects.filter(pasoxpc='S',usu_modificacion=request.user)\
+				qs = Elector.objects.filter(distrito=request.user.distrito,pasoxpc='S',usu_modificacion=request.user)\
 									.extra(where=[_where], params=[_search])\
 									.order_by(*_order) 
 				total = qs.count()   
