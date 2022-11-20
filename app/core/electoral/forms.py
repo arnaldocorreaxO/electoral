@@ -309,7 +309,7 @@ class ShearchForm(forms.Form):
     local_votacion = forms.ChoiceField()
     def __init__(self, *args, **kwargs):
         usuario = kwargs.pop('usuario', None)
-        print(usuario)
+        # print(usuario)
         super().__init__(*args, **kwargs)        
         self.fields['term'].widget.attrs['autofocus'] = True
 
