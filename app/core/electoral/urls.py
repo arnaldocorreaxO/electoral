@@ -5,6 +5,7 @@ from core.electoral.views.padron.pais.views import *
 from core.electoral.views.padron.ciudad.views import *
 from core.electoral.views.padron.barrio.views import *
 from core.electoral.views.padron.manzana.views import *
+from core.electoral.views.padron.local_votacion.views import *
 from core.electoral.views.padron.tipo_voto.views import *
 from core.electoral.views.padron.elector.views import *
 from core.electoral.views.padron.carga_dia_d.views import *
@@ -54,6 +55,11 @@ urlpatterns = [
     path('tipovoto/add/', TipoVotoCreateView.as_view(), name='tipo_voto_create'),
     path('tipovoto/update/<int:pk>/', TipoVotoUpdateView.as_view(), name='tipo_voto_update'),
     path('tipovoto/delete/<int:pk>/', TipoVotoDeleteView.as_view(), name='tipo_voto_delete'),
+    #Local Votacion
+    path('localvotacion', LocalVotacionListView.as_view(), name='local_votacion_list'),
+    path('localvotacion/add/', LocalVotacionCreateView.as_view(), name='local_votacion_create'),
+    path('localvotacion/update/<int:pk>/', LocalVotacionUpdateView.as_view(), name='local_votacion_update'),
+    path('localvotacion/delete/<int:pk>/', LocalVotacionDeleteView.as_view(), name='local_votacion_delete'),
     #Elector
     path('elector', ElectorListView.as_view(), name='elector_list'),
     path('elector/add/', ElectorCreateView.as_view(), name='elector_create'),

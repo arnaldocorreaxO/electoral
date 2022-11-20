@@ -6,32 +6,32 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from core.electoral.forms import Distrito, DistritoForm
+from core.electoral.forms import LocalVotacion, LocalVotacionForm
 from core.security.mixins import PermissionMixin
 
 
-class DistritoListView(PermissionMixin, ListView):
-    model = Distrito
-    template_name = 'padron/distrito/list.html'
-    permission_required = 'view_distrito'
+class LocalVotacionListView(PermissionMixin, ListView):
+    model = LocalVotacion
+    template_name = 'padron/local_votacion/list.html'
+    permission_required = 'view_localvotacion'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['create_url'] = reverse_lazy('distrito_create')
-        context['title'] = 'Listado de Distritos'
+        context['create_url'] = reverse_lazy('local_votacion_create')
+        context['title'] = 'Listado de Local de Votaciones'
         context['distrito'] = self.request.user.distrito.denominacion
         return context
 
 
-class DistritoCreateView(PermissionMixin, CreateView):
-    model = Distrito
-    template_name = 'padron/distrito/create.html'
-    form_class = DistritoForm
-    success_url = reverse_lazy('distrito_list')
-    permission_required = 'add_distrito'
+class LocalVotacionCreateView(PermissionMixin, CreateView):
+    model = LocalVotacion
+    template_name = 'padron/local_votacion/create.html'
+    form_class = LocalVotacionForm
+    success_url = reverse_lazy('local_votacion_list')
+    permission_required = 'add_localvotacion'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -43,7 +43,7 @@ class DistritoCreateView(PermissionMixin, CreateView):
             type = self.request.POST['type']
             obj = self.request.POST['obj'].strip()            
             if type == 'denominacion':                
-                if Distrito.objects.filter(denominacion__iexact=obj):
+                if LocalVotacion.objects.filter(denominacion__iexact=obj):
                     data['valid'] = False
         except:
             pass
@@ -66,17 +66,17 @@ class DistritoCreateView(PermissionMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['list_url'] = self.success_url
-        context['title'] = 'Nuevo registro de un Distrito'
+        context['title'] = 'Nuevo registro de un Local de Votacion'
         context['action'] = 'add'
         return context
 
 
-class DistritoUpdateView(PermissionMixin, UpdateView):
-    model = Distrito
-    template_name = 'padron/distrito/create.html'
-    form_class = DistritoForm
-    success_url = reverse_lazy('distrito_list')
-    permission_required = 'change_distrito'
+class LocalVotacionUpdateView(PermissionMixin, UpdateView):
+    model = LocalVotacion
+    template_name = 'padron/local_votacion/create.html'
+    form_class = LocalVotacionForm
+    success_url = reverse_lazy('local_votacion_list')
+    permission_required = 'change_localvotacion'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -90,7 +90,7 @@ class DistritoUpdateView(PermissionMixin, UpdateView):
             obj = self.request.POST['obj'].strip()
             id = self.get_object().id
             if type == 'denominacion':
-                if Distrito.objects.filter(name__iexact=obj).exclude(id=id):
+                if LocalVotacion.objects.filter(denominacion__iexact=obj).exclude(id=id):
                     data['valid'] = False
         except:
             pass
@@ -113,16 +113,16 @@ class DistritoUpdateView(PermissionMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['list_url'] = self.success_url
-        context['title'] = 'Edición de un Distrito'
+        context['title'] = 'Edición de un Local de Votacion'
         context['action'] = 'edit'
         return context
 
 
-class DistritoDeleteView(PermissionMixin, DeleteView):
-    model = Distrito
-    template_name = 'padron/distrito/delete.html'
-    success_url = reverse_lazy('distrito_list')
-    permission_required = 'delete_distrito'
+class LocalVotacionDeleteView(PermissionMixin, DeleteView):
+    model = LocalVotacion
+    template_name = 'padron/local_votacion/delete.html'
+    success_url = reverse_lazy('local_votacion_list')
+    permission_required = 'delete_localvotacion'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):

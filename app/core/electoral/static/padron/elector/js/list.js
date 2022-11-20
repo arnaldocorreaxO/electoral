@@ -31,6 +31,7 @@ function getData(all) {
         select_seccional.val("").change();
         select_barrio.val("").change();
         select_manzana.val("").change();
+        select_local_votacion.val("").change();
         select_mesa.val("").change();
         select_pasoxpc.val("").change();
         select_pasoxmv.val("").change();
@@ -45,6 +46,7 @@ function getData(all) {
         'seccional': select_seccional.val(),
         'barrio': select_barrio.val(),
         'manzana': select_manzana.val(),
+        'local_votacion': select_local_votacion.val(),
         'mesa': select_mesa.val(),
         'pasoxpc': select_pasoxpc.val(),
         'pasoxmv': select_pasoxmv.val(),
@@ -197,7 +199,7 @@ function getData(all) {
                             return '<span class="badge badge-info">' + data + '</span>'
                         }
                         if (row.tipo_voto.id == 3) {
-                            return '<span class="badge badge-dark">' + data + '</span>'
+                            return '<span class="badge badge-danger">' + data + '</span>'
                         }
                         if (row.tipo_voto.id == 4) {
                             return '<span class="badge badge-success">' + data + '</span>'
@@ -249,7 +251,8 @@ $(function () {
     select_seccional = $('select[name="seccional"]');
     select_barrio = $('select[name="barrio"]');
     select_manzana = $('select[name="manzana"]');
-    select_mesa = $('select[name="mesa"]');
+    select_local_votacion = $('select[name="local_votacion"]');
+    select_mesa = $('select[name="mesa"]');    
     select_pasoxpc = $('select[name="pasoxpc"]');
     select_pasoxmv = $('select[name="pasoxmv"]');
 
@@ -312,6 +315,11 @@ $(function () {
         text: 'Todas'
       }));
 
+    select_local_votacion.append($("<option>", {
+        value: '',
+        text: 'Todos'
+      }));
+
     select_mesa.append($("<option>", {
         value: '',
         text: 'Todas'
@@ -322,6 +330,7 @@ $(function () {
      select_seccional.val("").change();
      select_barrio.val("").change();
      select_manzana.val("").change();
+     select_local_votacion.val("").change();
      select_mesa.val("").change();
 
 });

@@ -30,15 +30,23 @@
 
 
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
             <div class="form-group">
-                <label>Por Ciudad:</label>
+                <label>Por Local Votacion:</label>
                 <div class="input-group mb-3">
-                    {{ form.ciudad }}
+                    {{ form.local_votacion }}
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label>Por Mesa:</label>
+                <div class="input-group mb-3">
+                    {{ form.mesa }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
             <div class="form-group">
                 <label>Por Seccional:</label>
                 <div class="input-group mb-3">
@@ -50,7 +58,15 @@
  
     
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-4">
+            <div class="form-group">
+                <label>Por Ciudad:</label>
+                <div class="input-group mb-3">
+                    {{ form.ciudad }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
             <div class="form-group">
                 <label>Por Barrio:</label>
                 <div class="input-group mb-3">
@@ -58,7 +74,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-4">
             <div class="form-group">
                 <label>Por Manzana:</label>
                 <div class="input-group mb-3">
@@ -69,7 +85,7 @@
     </div>
   
 
-    <div class="row">
+    <div class="row d-none">
         <div class="col-lg-6">
             <div class="form-group">
                 <label>Rangos de fechas:</label>
@@ -90,41 +106,43 @@
                     {{ form.mesa }}
                 </div>
             </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="form-group">
-                <label>Control Electores:</label>
-                <div class="input-group mb-3">
-                    {{ form.pasoxmv }}
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="form-group">
-                <label>Control PC:</label>
-                <div class="input-group mb-3">
-                    {{ form.pasoxpc }}
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="form-group">
-                <label>Buscar por Cédula ó Nombre y Apellido </label>
-                <div class="input-group mb-3">
-                    {{ form.term }}
-                    <div class="input-group-append">
-                        <button class="btn btn-warning btnFilter" type="button">
-                            <i class="fas fa-search"></i> Filtrar
-                        </button>     
-                            <button class="btn btn-success btnSearchAll" type="button">
-                                <i class="fab fa-searchengin"></i> Ver todos
-                            </button>          
+        </div>    
+    </div>
+    
+        <div class="row">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Control Electores:</label>
+                    <div class="input-group mb-3">
+                        {{ form.pasoxmv }}
                     </div>
                 </div>
             </div>
-        </div>  
-        
-    </div>
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label>Control PC:</label>
+                    <div class="input-group mb-3">
+                        {{ form.pasoxpc }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="form-group">
+                    <label>Buscar por Cédula ó Nombre y Apellido </label>
+                    <div class="input-group mb-3">
+                        {{ form.term }}
+                        <div class="input-group-append">
+                            <button class="btn btn-warning btnFilter" type="button">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                            <button class="btn btn-success btnSearchAll" type="button">
+                                <i class="fab fa-searchengin"></i> Ver todos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     <hr>
 {% endblock %}
 
