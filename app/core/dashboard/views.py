@@ -186,14 +186,19 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
+        usu_distrito = self.request.user.distrito
+        company = Company.objects.first()
         context = super().get_context_data(**kwargs)
         context['title'] = 'Panel de administración'
-        context['company'] = Company.objects.first()
-        context['total_padron'] = Elector.objects.all().count()
+        context['company'] = company
+        context['distrito'] = usu_distrito.denominacion
+        context['total_padron'] = Elector.objects.filter(distrito=usu_distrito).count()
         context['total_ubicados'] = Elector.objects.exclude(barrio__id__in=[0])\
-                                                      .exclude(barrio__isnull=True).count()
-        context['votos_positivos'] = Elector.objects.filter(tipo_voto__exact=1).count()
-        context['votos_negativos'] = Elector.objects.exclude(tipo_voto__cod__in=[1,'A','E','F'])\
+                                                   .exclude(barrio__isnull=True)\
+                                                   .filter(distrito=usu_distrito).count()
+        context['votos_positivos'] = Elector.objects.filter(distrito=usu_distrito,tipo_voto__cod__exact=company.lista).count()
+        context['votos_negativos'] = Elector.objects.exclude(tipo_voto__cod__in=[company.lista,'A','E','F'])\
+                                                    .filter(distrito=usu_distrito)\
                                                     .count()
         # context['product'] = Product.objects.all().count()
         # context['sale'] = Sale.objects.filter().order_by('-id')[0:10]

@@ -20,7 +20,7 @@ from core.electoral.forms import Elector, CargaDiaDForm, ShearchForm
 from core.security.mixins import ModuleMixin, PermissionMixin
 
 
-class CargaDiaDListView(FormView):
+class CargaDiaDListView(PermissionMixin,FormView):
 	# model = Elector
 	template_name = 'padron/carga_dia_d/list_carga_dia_d_elector_mv.html'
 	permission_required = 'view_elector'
