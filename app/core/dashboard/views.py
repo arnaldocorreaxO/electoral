@@ -6,6 +6,7 @@ from django.db.models import Sum,Count
 from django.db.models.functions import Coalesce
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, requires_csrf_token
 from django.views.generic import TemplateView
@@ -202,6 +203,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                                                     .count()
         # context['product'] = Product.objects.all().count()
         # context['sale'] = Sale.objects.filter().order_by('-id')[0:10]
+        context['create_url'] = reverse_lazy('carga_dia_d_list_mv')
         return context
 
 
