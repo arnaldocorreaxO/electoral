@@ -2,29 +2,42 @@ from core.electoral.models import Barrio, Elector, LocalVotacion, Manzana, Secci
 from django import forms
 
 class ReportForm(forms.Form):
+    local_votacion = forms.ChoiceField()
+    seccional = forms.ChoiceField()
+    barrio = forms.ChoiceField()
+    manzana = forms.ChoiceField()
+    tipo_voto = forms.ChoiceField()
+    
+    def __init__(self, *args, **kwargs):
+        usuario = kwargs.pop('usuario', None)
+        # print(usuario)
+        super().__init__(*args, **kwargs)  
+        if usuario:
+            self.fields['local_votacion'] = forms.ModelChoiceField(queryset=LocalVotacion.objects.filter(
+                ciudad__distrito=usuario.distrito, activo=True).order_by('id'), empty_label="(Todos)")
+            self.fields['seccional'] = forms.ModelChoiceField(queryset=Seccional.objects.filter(
+                ciudad__distrito=usuario.distrito, activo=True).order_by('id'), empty_label="(Todos)")
+            self.fields['barrio'] = forms.ModelChoiceField(queryset=Barrio.objects.filter(
+                ciudad__distrito=usuario.distrito, activo=True).order_by('id'), empty_label="(Todos)")
+            self.fields['manzana'] = forms.ModelChoiceField(queryset=Manzana.objects.filter(
+                barrio__ciudad__distrito=usuario.distrito, activo=True).order_by('barrio__id','cod'), empty_label="(Todos)")
+            self.fields['tipo_voto'] = forms.ModelChoiceField(
+                queryset=TipoVoto.objects.filter(activo=True).order_by('id'), empty_label="(Todos)")
+
+            #WIDGET
+            self.fields['local_votacion'].widget.attrs.update({'class': 'form-control select2','multiple':'true'})
+            self.fields['seccional'].widget.attrs.update({'class': 'form-control select2','multiple':'true'})
+            self.fields['barrio'].widget.attrs.update({'class': 'form-control select2','multiple':'true'})
+            self.fields['manzana'].widget.attrs.update({'class': 'form-control select2','multiple':'true'})   
+            self.fields['tipo_voto'].widget.attrs.update({'class': 'form-control select2','multiple':'true'})   
+            
     # Extra Fields
     date_range = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'form-control',
         'autocomplete': 'off'
     }))
 
-    local_votacion = forms.ChoiceField(choices=[
-    (item.id, item) for item in LocalVotacion.objects.filter(activo__exact=True).order_by('id')])
-    seccional = forms.ChoiceField(choices=[
-    (item.id, item) for item in Seccional.objects.filter(activo__exact=True).order_by('id')])
-    barrio = forms.ChoiceField(choices=[
-    (item.id, item ) for item in Barrio.objects.filter(activo__exact=True).order_by('id')])
-    manzana = forms.ChoiceField(choices=[
-    (item.id, item) for item in Manzana.objects.filter(activo__exact=True).order_by('barrio__id','cod')])
-    tipo_voto = forms.ChoiceField(choices=[
-    (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('id')])
     salto_pagina = forms.BooleanField(initial=True,required=False)
     titulo_extra = forms.CharField(required=False)
-
-    local_votacion.widget.attrs.update({'class': 'form-control select2','multiple':'true'})
-    seccional.widget.attrs.update({'class': 'form-control select2','multiple':'true'})
-    barrio.widget.attrs.update({'class': 'form-control select2','multiple':'true'})
-    manzana.widget.attrs.update({'class': 'form-control select2','multiple':'true'})   
-    tipo_voto.widget.attrs.update({'class': 'form-control select2','multiple':'true'})   
+    #WIDGET
     titulo_extra.widget.attrs.update({'class': 'form-control'})   
-    

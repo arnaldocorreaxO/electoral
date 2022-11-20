@@ -199,7 +199,7 @@ function getData(all) {
                             return '<span class="badge badge-info">' + data + '</span>'
                         }
                         if (row.tipo_voto.id == 3) {
-                            return '<span class="badge badge-danger">' + data + '</span>'
+                            return '<span class="badge badge-dark">' + data + '</span>'
                         }
                         if (row.tipo_voto.id == 4) {
                             return '<span class="badge badge-success">' + data + '</span>'
