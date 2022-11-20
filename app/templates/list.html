@@ -135,6 +135,17 @@
                         load_image(src);
                     });
             });
+
+            $(function () {
+                $('form').submit(function (event) {
+                    // event.preventDefault();
+                    //Captura el boton activado para submit cuando hace click
+                    var tipo = $(document.activeElement).attr("value");
+                    //Si no hace click sobre los botones PDF o XLS tipo es undefined  
+                    typeof tipo=="undefined"?tipo='pdf':tipo=tipo;
+                    document.getElementById("tipo").setAttribute("value", tipo);
+                });
+        });
         </script>
     {% endblock %}
 {% endblock %}

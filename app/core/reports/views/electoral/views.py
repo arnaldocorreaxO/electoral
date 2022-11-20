@@ -29,21 +29,26 @@ class RptElectoral000ReportView(ModuleMixin, FormView):
 		try:
 			if action == 'search_report':
 				data = []
-				# print(request.POST)
-				seccional = request.POST.getlist('seccional[]') if 'seccional[]' in request.POST else ''
-				barrio = request.POST.getlist('barrio[]') if 'barrio[]' in request.POST else ''
-				manzana = request.POST.getlist('manzana[]') if 'manzana[]' in request.POST else ''
+				print(request.POST)
+				seccional = request.POST.getlist('seccional[]') if 'seccional[]' in request.POST else None
+				seccional = seccional if seccional!=['']  else None
+				barrio = request.POST.getlist('barrio[]') if 'barrio[]' in request.POST else None
+				barrio = barrio if barrio!=['']  else None
+				manzana = request.POST.getlist('manzana[]') if 'manzana[]' in request.POST else None
+				manzana = manzana if manzana!=['']  else None
 				# end_date = request.POST['end_date']
 				_where = "1=1"
-				if len(seccional):
+				
+				if seccional:
 					_where += f" AND electoral_elector.seccional_id IN {seccional}"
-				if len(barrio):
+				if barrio:
 					_where += f" AND electoral_elector.barrio_id IN {barrio}"
-				if len(manzana):
+				if manzana:
 					_where += f" AND electoral_elector.manzana_id IN {manzana}"
 				_where = _where.replace('[','(').replace(']',')')
 				print(_where)
 				qs = Elector.objects.values('barrio__id','barrio__denominacion','manzana__cod','manzana__denominacion',) \
+						.filter(distrito=self.request.user.distrito)\
 						.extra(select = {'barrio__cod': 'CAST (electoral_elector.barrio_id AS INTEGER)'})\
 						.annotate(cant_elector=Count(True)) \
 						.extra(where=[_where])\
@@ -64,6 +69,7 @@ class RptElectoral000ReportView(ModuleMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		context['form']=ReportForm(usuario=self.request.user)
 		context['title'] = 'Reporte de Barrios y Manzanas'
 		return context
 
@@ -82,11 +88,9 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 		try:
 			if action == 'report':
 				data = []
-				# local_votacion = int(request.POST['local_votacion']) if request.POST['local_votacion'] else None
+				tipo = request.POST['tipo']
 				local_votacion = request.POST.getlist('local_votacion') if 'local_votacion' in request.POST else None
-				# barrio = int(request.POST['barrio']) if request.POST['barrio'] else None
 				barrio = request.POST.getlist('barrio') if 'barrio' in request.POST else None
-				# tipo_voto = int(request.POST['tipo_voto']) if request.POST['tipo_voto'] else None	
 				tipo_voto = request.POST.getlist('tipo_voto') if 'tipo_voto' in request.POST else None
 				# Tipo de Voto I - INDECISO es igual a NO DEFINIDOS null ver query reporte		
 				#CONFIG				 
@@ -96,10 +100,11 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
 				#PARAMETROS
 				report.params['P_TITULO3'] = 'TRIBUNAL ELECTORAL PARTIDARIO'
-				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion else None
-				report.params['P_BARRIO_ID'] =",".join(barrio) if barrio else None
-				report.params['P_TIPO_VOTO_ID'] = ",".join(tipo_voto) if tipo_voto else None
-				return report.render_to_response()
+				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=[''] else None
+				report.params['P_BARRIO_ID'] =",".join(barrio) if barrio!=[''] else None
+				report.params['P_TIPO_VOTO_ID'] = ",".join(tipo_voto) if tipo_voto!=[''] else None
+				
+				return report.render_to_response(tipo)
 
 			else:
 				data['error'] = 'No ha ingresado una opción'
@@ -109,6 +114,7 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		context['form']=ReportForm(usuario=self.request.user)
 		context['title'] = 'Reporte de Padron'
 		context['action'] = 'report'
 		return context
@@ -130,6 +136,7 @@ class RptElectoral001ReportView(ModuleMixin, FormView):
 		try:
 			if action == 'report':
 				data = []
+				tipo = request.POST['tipo']
 				local_votacion = request.POST.getlist('local_votacion') if 'local_votacion' in request.POST else None
 				barrio = request.POST.getlist('barrio') if 'barrio' in request.POST else None
 				manzana = request.POST.getlist('manzana') if 'manzana' in request.POST else None
@@ -144,14 +151,14 @@ class RptElectoral001ReportView(ModuleMixin, FormView):
 				if len(titulo_extra):
 					report.report_title = titulo_extra[0]
 				#PARAMETROS                        
-				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion else None
-				report.params['P_BARRIO_ID']= ",".join(barrio) if barrio else None
-				report.params['P_MANZANA_ID']= ",".join(manzana) if manzana else None
+				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=['']  else None
+				report.params['P_BARRIO_ID']= ",".join(barrio) if barrio!=['']  else None
+				report.params['P_MANZANA_ID']= ",".join(manzana) if manzana!=['']  else None
 				
 				if not salto_pagina: 
 					report.report_name  = 'rpt_electoral001_ss'
 
-				return report.render_to_response()			   
+				return report.render_to_response(tipo)			   
 
 			else:
 				data['error'] = 'No ha ingresado una opción'
@@ -161,6 +168,7 @@ class RptElectoral001ReportView(ModuleMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		context['form']=ReportForm(usuario=self.request.user)
 		context['title'] = 'Reporte de Elector por Barrios y Manzanas'
 		context['action'] = 'report'
 		return context
@@ -180,6 +188,7 @@ class RptElectoral002ReportView(ModuleMixin, FormView):
 		try:
 			if action == 'report':
 				data = []
+				tipo = request.POST['tipo']
 				local_votacion = request.POST.getlist('local_votacion') if 'local_votacion' in request.POST else None
 				barrio = request.POST.getlist('barrio') if 'barrio' in request.POST else None
 				manzana = request.POST.getlist('manzana') if 'manzana' in request.POST else None
@@ -195,14 +204,14 @@ class RptElectoral002ReportView(ModuleMixin, FormView):
 					report.report_title = titulo_extra[0]
 						                      
 				#PARAMETROS                        
-				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion else None
-				report.params['P_BARRIO_ID']= ",".join(barrio) if barrio else None
-				report.params['P_MANZANA_ID']= ",".join(manzana) if manzana else None
+				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=['']  else None
+				report.params['P_BARRIO_ID']= ",".join(barrio) if barrio!=['']  else None
+				report.params['P_MANZANA_ID']= ",".join(manzana) if manzana!=['']  else None
 				
 				if not salto_pagina:
 					report.report_name  = 'rpt_electoral002_ss'
 
-				return report.render_to_response()			   
+				return report.render_to_response(tipo)			   
 
 			else:
 				data['error'] = 'No ha ingresado una opción'
@@ -212,6 +221,7 @@ class RptElectoral002ReportView(ModuleMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		context['form']=ReportForm(usuario=self.request.user)
 		context['title'] = 'Reporte de Elector por Barrios y Manzanas'
 		context['action'] = 'report'
 		return context
@@ -231,6 +241,7 @@ class RptEstadistica001ReportView(ModuleMixin, FormView):
 		try:
 			if action == 'report':
 				data = []
+				tipo = request.POST['tipo']
 				local_votacion = request.POST.getlist('local_votacion') if 'local_votacion' in request.POST else None
 										 
 				#CONFIG				 
@@ -239,9 +250,9 @@ class RptEstadistica001ReportView(ModuleMixin, FormView):
 				report.report_url = reverse_lazy(report.report_name)
 				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
 				#PARAMETROS 
-				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion else None	
+				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=['']  else None	
 				
-				return report.render_to_response()			   
+				return report.render_to_response(tipo)			   
 
 			else:
 				data['error'] = 'No ha ingresado una opción'
@@ -251,6 +262,7 @@ class RptEstadistica001ReportView(ModuleMixin, FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		context['form']=ReportForm(usuario=self.request.user)
 		context['title'] = 'Reporte de Estadisticas Votos Positivos vs Negativos'
 		context['action'] = 'report'
 		return context
