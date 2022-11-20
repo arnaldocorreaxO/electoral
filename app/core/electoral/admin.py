@@ -16,6 +16,7 @@ from core.base.models import *
 ===   ELECTOR    ===
 ==================== '''
 class ElectorResource(resources.ModelResource):
+    
     class Meta:
         model = Elector        
 
@@ -25,6 +26,10 @@ class ElectorAdmin(ImportExportModelAdmin):
     list_per_page = 25
     search_fields =['ci','nombre','apellido']
     list_filter =['ciudad','seccional','barrio','manzana','tipo_voto']
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(distrito=request.user.distrito)
     
     '''Filtrar solo los tipos de votos activos'''
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
@@ -74,6 +79,9 @@ class ElectorAdmin2(ImportExportModelAdmin):
     list_per_page = 25
     # ordering = ['seccional','-barrio','manzana','nro_casa']
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(distrito=request.user.distrito)
    
     def edad(self,obj):
         return obj.get_edad()
@@ -119,6 +127,9 @@ class ElectorAdmin3(ImportExportModelAdmin):
     list_display_links = ['ci','nombre','apellido']
     list_per_page = 25
     # ordering = ['seccional','-barrio','manzana','nro_casa']
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(distrito=request.user.distrito)
 
     def edad(self,obj):
         return obj.get_edad()

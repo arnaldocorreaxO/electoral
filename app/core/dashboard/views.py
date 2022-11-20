@@ -37,12 +37,15 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            action = request.POST['action']            
+            action = request.POST['action']      
+            distrito = request.user.distrito    
+            distrito = distrito if distrito else 1 #Distrito por defecto 1 San Lazaro
             if action == 'get_graph_electores_seccional':
                 info = []
                 # for i in Product.objects.order_by('-id')[0:10]:
                 #     info.append([i.name, i.stock])
                 for i in Elector.objects.values('seccional__denominacion') \
+                        .filter(distrito=distrito)\
                         .annotate(tot_electores=Count(True)) \
                         .order_by('-tot_electores'):
                         info.append([i['seccional__denominacion'],i['tot_electores']])
@@ -58,6 +61,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 # for i in Product.objects.order_by('-id')[0:10]:
                 #     info.append([i.name, i.stock])
                 for i in Elector.objects.values('tipo_voto__denominacion') \
+                        .filter(distrito=distrito)\
                         .exclude(tipo_voto__cod__in=['F','E'])\
                         .annotate(tot_votos=Count(True)) \
                         .order_by('-tot_votos'):
@@ -73,7 +77,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             elif action == 'get_graph_control_preferencia_votos':
                 info = []
                 for i in Elector.objects.values('tipo_voto__denominacion') \
-                                        .filter(pasoxmv='S')\
+                                        .filter(distrito=distrito,pasoxmv='S')\
                                         .annotate(tot_votos=Count(True)) \
                                         .order_by('-tot_votos'):
                                         info.append({'name' : i['tipo_voto__denominacion'] if i['tipo_voto__denominacion'] else 'SIN PREFERENCIA',
@@ -84,11 +88,11 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 info = []
                 # for i in Product.objects.order_by('-id')[0:10]:
                 #     info.append([i.name, i.stock])
-                cant_pc =  Elector.objects.filter(pasoxpc__exact='S')\
+                cant_pc =  Elector.objects.filter(distrito=distrito,pasoxpc__exact='S')\
                                           .aggregate(cant=Coalesce(Count(True), 0))['cant']
                 info.append(['PUESTO CONTROL',cant_pc])
 
-                cant_mv =  Elector.objects.filter(pasoxmv__exact='S')\
+                cant_mv =  Elector.objects.filter(distrito=distrito,pasoxmv__exact='S')\
                                           .aggregate(cant=Coalesce(Count(True), 0))['cant']
                 info.append(['LOCAL VOTACION',cant_mv])
                
@@ -105,7 +109,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 data = []
 
                 rows = []
-                cant_pasoxpc = Elector.objects.filter(pasoxpc__exact='S')\
+                cant_pasoxpc = Elector.objects.filter(distrito=distrito,pasoxpc__exact='S')\
                                               .extra(where=["local_votacion_id IN (%s) OR 0=%s"], params=[lv,lv])\
                                               .aggregate(cant=Coalesce(Count(True), 0))['cant']
                                      
@@ -113,7 +117,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                 data.append({'name': 'Puesto de Control', 'data': rows})
                 
                 rows = []
-                cant_pasoxmv = Elector.objects.filter(pasoxmv__exact='S')\
+                cant_pasoxmv = Elector.objects.filter(distrito=distrito,pasoxmv__exact='S')\
                                               .extra(where=["local_votacion_id IN (%s) OR 0=%s"], params=[lv,lv])\
                                               .aggregate(cant=Coalesce(Count(True), 0))['cant']
                 rows.append(float(cant_pasoxmv))
@@ -138,7 +142,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     anho_ini = (hoy - relativedelta(years=i[1])).year
                     anho_fin = (hoy - relativedelta(years=i[0])).year
 
-                    cant = Elector.objects.filter(fecha_nacimiento__year__range=[anho_ini,anho_fin])\
+                    cant = Elector.objects.filter(distrito=distrito,fecha_nacimiento__year__range=[anho_ini,anho_fin])\
                             .aggregate(cant=Coalesce(Count(True), 0))['cant']
                     info.append([i[2],cant])
                
@@ -157,7 +161,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     anho_ini = (hoy - relativedelta(years=i[1])).year
                     anho_fin = (hoy - relativedelta(years=i[0])).year
                     # print(anho_ini,'-',anho_fin)
-                    result = Elector.objects.filter(fecha_nacimiento__year__range=[anho_ini,anho_fin])\
+                    result = Elector.objects.filter(distrito=distrito,fecha_nacimiento__year__range=[anho_ini,anho_fin])\
                                             .aggregate(cant=Coalesce(Count(True), 0))['cant']
                     rows.append(float(result))
                 data.append({'name': 'Total', 'data': rows})
@@ -168,7 +172,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     anho_ini = (hoy - relativedelta(years=i[1])).year
                     anho_fin = (hoy - relativedelta(years=i[0])).year
                     # print(anho_ini,'-',anho_fin)
-                    result = Elector.objects.filter(fecha_nacimiento__year__range=[anho_ini,anho_fin])\
+                    result = Elector.objects.filter(distrito=distrito,fecha_nacimiento__year__range=[anho_ini,anho_fin])\
                                             .exclude(barrio_id__exact=0)\
                                             .exclude(barrio__isnull=True)\
                                             .aggregate(cant=Coalesce(Count(True), 0))['cant']
