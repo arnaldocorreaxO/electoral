@@ -1,5 +1,5 @@
 import math
-from core.reports.jasperbase2 import JasperReportBase
+from core.reports.jasperbase import JasperReportBase
 from core.electoral.models import Manzana
 from datetime import date, datetime
 from core.reports.forms import ReportForm
