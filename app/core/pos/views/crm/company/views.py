@@ -34,6 +34,7 @@ class CompanyUpdateView(ModuleMixin, UpdateView):
             comp.email = request.POST['email']
             comp.website = request.POST['website']
             comp.address = request.POST['address']
+            comp.lista = request.POST['lista']
             if 'image' in request.FILES:
                 comp.image = request.FILES['image']
             if 'image-clear' in request.POST:
