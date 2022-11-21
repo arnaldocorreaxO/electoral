@@ -166,11 +166,14 @@
                     </div>
                 </div>
             </div>
+            <!-- VALLEMI -->
+   
+            {%if request.user.distrito.id == 1 %}
             <div class="row">        
                 <div class="col-lg-4">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D Vallemi </h3>
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D - Vallemi </h3>
                         </div>
                         <div class="card-body p-0">
                             <div class="container-fluid p-3" id="graph_dia_d_bar_vmi">
@@ -181,7 +184,7 @@
                 <div class="col-lg-4">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D Tres Cerros </h3>
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D - Tres Cerros </h3>
                         </div>
                         <div class="card-body p-0">
                             <div class="container-fluid p-3" id="graph_dia_d_bar_tce">
@@ -192,16 +195,43 @@
                 <div class="col-lg-4">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D San Lazaro</h3>
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D - San Lazaro</h3>
                         </div>
                         <div class="card-body p-0">
                             <div class="container-fluid p-3" id="graph_dia_d_bar_sla">
                             </div>
                         </div>
                     </div>
-                </div>
-                
+                </div>                
             </div>
+            {% endif %}
+            <!-- VILLETA -->
+            {% if request.user.distrito.id == 2 %}
+            <div class="row">        
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D - Carlos A. Lopez </h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="container-fluid p-3" id="graph_dia_d_bar_vta1">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Control Día D - Virgen del Rosario </h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <div class="container-fluid p-3" id="graph_dia_d_bar_vta2">
+                            </div>
+                        </div>
+                    </div>
+                </div>                                
+            </div>
+            {% endif %}
 
             <div class="row">               
                 <div class="col-md-6">
@@ -239,7 +269,7 @@
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Comparativo Edades Elector</h3>
+                            <h3 class="card-title"><i class="fas fa-calendar-check"></i> Comparativo Edades Electores Identificados</h3>
                         </div>
                         <div class="card-body p-0">
                             <div class="container-fluid p-3" id="graph_rango_edades">
@@ -565,6 +595,7 @@
 
                     });
                 }
+              
                 // GRAFICO CONTROL DIA D BARRA VALLEMI
                 function get_graph_dia_d_bar_vmi() {
                     $.ajax({
@@ -637,7 +668,7 @@
                 }
                 
                 
-                // GRAFICO CONTROL DIA D BARRA GENERAL
+                // GRAFICO CONTROL DIA D BARRA TRES CERROS
                 function get_graph_dia_d_bar_tce() {
                     $.ajax({
                         url: window.location.pathname,
@@ -778,6 +809,155 @@
 
                     });
                 }
+
+                // ############################################################    
+                // DISTRITO VILLETA
+                // ############################################################    
+
+                // GRAFICO CONTROL DIA D BARRA LOCAL 1 CARLOS A. LOPEZ 
+                function get_graph_dia_d_bar_vta1() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_dia_d_bar',
+                            'local_votacion' : '4'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            Highcharts.chart('graph_dia_d_bar_vta1', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                exporting: {
+                                    enabled: false
+                                },
+                                xAxis: {
+                                    categories: [
+                                    'CONTROL'                                 
+                                    ],
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    // min: 0,
+                                    title: {
+                                        text: 'Cantidad Electores'
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0
+                                    },
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            style: {
+                                                fontSize: 20 + 'px'
+                                            }
+                                        }
+                                    }
+                                },
+                                series: request
+                            });
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
+
+                    });
+                }
+                
+                
+                // GRAFICO CONTROL DIA D BARRA LOCAL 2 VIRGEN DEL ROSARIO
+                function get_graph_dia_d_bar_vta2() {
+                    $.ajax({
+                        url: window.location.pathname,
+                        type: 'POST',
+                        data: {
+                            'action': 'get_graph_dia_d_bar',
+                            'local_votacion' : '5'
+                        },
+                        dataType: 'json',
+                    }).done(function (request) {
+                        if (!request.hasOwnProperty('error')) {
+                            Highcharts.chart('graph_dia_d_bar_vta2', {
+                                chart: {
+                                    type: 'column'
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                subtitle: {
+                                    text: ''
+                                },
+                                exporting: {
+                                    enabled: false
+                                },
+                                xAxis: {
+                                    categories: [
+                                    'CONTROL'                                 
+                                    ],
+                                    crosshair: true
+                                },
+                                yAxis: {
+                                    // min: 0,
+                                    title: {
+                                        text: 'Cantidad Electores'
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b>{point.y:.0f}</b></td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true
+                                },
+                                plotOptions: {
+                                    column: {
+                                        pointPadding: 0.2,
+                                        borderWidth: 0
+                                    },
+                                    series: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            style: {
+                                                fontSize: 20 + 'px'
+                                            }
+                                        }
+                                    }
+                                },
+                                series: request
+                            });
+                            return false;
+                        }
+                        message_error(request.error);
+                    }).fail(function (jqXHR, textStatus, errorThrown) {
+                        alert(textStatus + ': ' + errorThrown);
+                    }).always(function (data) {
+
+                    });
+                }
+
+                
 
                 //GRAFICO BARRA RANGO DE EDADES
                 function get_graph_rango_edades() {
@@ -924,9 +1104,20 @@
                     
                     get_graph_dia_d_bar();
                     get_graph_dia_d();
-                    get_graph_dia_d_bar_vmi();                  
-                    get_graph_dia_d_bar_tce();
-                    get_graph_dia_d_bar_sla();
+                    
+                    // DISTRITO SAN LAZARO
+                    {% if request.user.distrito.id == 1 %}
+                        get_graph_dia_d_bar_vmi();                  
+                        get_graph_dia_d_bar_tce();
+                        get_graph_dia_d_bar_sla();
+                    {% endif %}
+
+                    // DISTRITO VILLETA
+                    {% if request.user.distrito.id == 2 %}
+                        get_graph_dia_d_bar_vta1();                  
+                        get_graph_dia_d_bar_vta2();
+                    {% endif %}
+
                     get_graph_electores_seccional();
                     get_graph_preferencia_votos();
                     get_graph_rango_edades_pie();
