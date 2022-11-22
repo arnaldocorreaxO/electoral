@@ -31,7 +31,7 @@
 
 
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <div class="form-group">
                 <label>Por Local Votacion:</label>
                 <div class="input-group mb-3">
@@ -39,7 +39,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <div class="form-group">
                 <label>Por Mesa:</label>
                 <div class="input-group mb-3">
@@ -47,7 +47,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <div class="form-group">
                 <label>Por Seccional:</label>
                 <div class="input-group mb-3">
@@ -55,11 +55,19 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Por Operador:</label>
+                <div class="input-group mb-3">
+                    {{ form.operador }}
+                </div>
+            </div>
+        </div>
     </div>
  
     
     <div class="row">
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <div class="form-group">
                 <label>Por Ciudad:</label>
                 <div class="input-group mb-3">
@@ -67,7 +75,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <div class="form-group">
                 <label>Por Barrio:</label>
                 <div class="input-group mb-3">
@@ -75,11 +83,19 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-3">
             <div class="form-group">
                 <label>Por Manzana:</label>
                 <div class="input-group mb-3">
                     {{ form.manzana }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="form-group">
+                <label>Por Tipo Voto:</label>
+                <div class="input-group mb-3">
+                    {{ form.tipo_voto }}
                 </div>
             </div>
         </div>

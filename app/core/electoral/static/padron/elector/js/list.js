@@ -25,31 +25,40 @@ function initTable() {
 }
 
 function getData(all) {
-    if (all=='all'){
-        input_term.val("");
-        select_ciudad.val("").change();
+    if (all=='all'){        
+        select_local_votacion.val("").change();       
+        select_mesa.val("").change();
         select_seccional.val("").change();
+        select_operador.val("").change();
+
+        select_ciudad.val("").change();
         select_barrio.val("").change();
         select_manzana.val("").change();
-        select_local_votacion.val("").change();
-        select_mesa.val("").change();
+        select_tipo_voto.val("").change();
+
         select_pasoxpc.val("").change();
         select_pasoxmv.val("").change();
+        input_term.val("");
     }
 
     var parameters = {
         'action': 'search',
         'start_date': input_daterange.data('daterangepicker').startDate.format('YYYY-MM-DD'),
         'end_date': input_daterange.data('daterangepicker').endDate.format('YYYY-MM-DD'),
-        'term': input_term.val(),
-        'ciudad': select_ciudad.val(),
-        'seccional': select_seccional.val(),
-        'barrio': select_barrio.val(),
-        'manzana': select_manzana.val(),
+
         'local_votacion': select_local_votacion.val(),
         'mesa': select_mesa.val(),
+        'seccional': select_seccional.val(),
+        'operador': select_operador.val(),
+        
+        'ciudad': select_ciudad.val(),        
+        'barrio': select_barrio.val(),
+        'manzana': select_manzana.val(),       
+        'tipo_voto': select_tipo_voto.val(),     
+                
         'pasoxpc': select_pasoxpc.val(),
         'pasoxmv': select_pasoxmv.val(),
+        'term': input_term.val(),
         
     };
 
@@ -246,13 +255,18 @@ $(function () {
 
     input_term = $('input[name="term"]');
     current_date = new moment().format('YYYY-MM-DD');
-    input_daterange = $('input[name="date_range"]');    
-    select_ciudad = $('select[name="ciudad"]');
+    input_daterange = $('input[name="date_range"]');        
+    
+    select_local_votacion = $('select[name="local_votacion"]');
+    select_mesa = $('select[name="mesa"]');   
     select_seccional = $('select[name="seccional"]');
+    select_operador = $('select[name="operador"]');
+
+    select_ciudad = $('select[name="ciudad"]');   
     select_barrio = $('select[name="barrio"]');
     select_manzana = $('select[name="manzana"]');
-    select_local_votacion = $('select[name="local_votacion"]');
-    select_mesa = $('select[name="mesa"]');    
+    select_tipo_voto = $('select[name="tipo_voto"]');
+     
     select_pasoxpc = $('select[name="pasoxpc"]');
     select_pasoxmv = $('select[name="pasoxmv"]');
 
@@ -293,14 +307,29 @@ $(function () {
       });
 
 
-    // Agregamos una linea vacia a los select
-    
-    select_ciudad.append($("<option>", {
+    // Agregamos una linea vacia a los select    
+
+    select_local_votacion.append($("<option>", {
+        value: '',
+        text: 'Todos'
+      }));
+
+    select_mesa.append($("<option>", {
+        value: '',
+        text: 'Todas'
+      }));
+
+    select_seccional.append($("<option>", {
         value: '',
         text: 'Todas'
       }));
     
-    select_seccional.append($("<option>", {
+    select_operador.append($("<option>", {
+    value: '',
+    text: 'Todos'
+    }));
+
+    select_ciudad.append($("<option>", {
         value: '',
         text: 'Todas'
       }));
@@ -315,23 +344,21 @@ $(function () {
         text: 'Todas'
       }));
 
-    select_local_votacion.append($("<option>", {
+    select_tipo_voto.append($("<option>", {
         value: '',
         text: 'Todos'
       }));
 
-    select_mesa.append($("<option>", {
-        value: '',
-        text: 'Todas'
-      }));
-
-
-     select_ciudad.val("").change();
+     select_local_votacion.val("").change();     
+     select_mesa.val("").change();
      select_seccional.val("").change();
+     select_operador.val("").change();
+
+     select_ciudad.val("").change();     
      select_barrio.val("").change();
      select_manzana.val("").change();
-     select_local_votacion.val("").change();
-     select_mesa.val("").change();
+     select_tipo_voto.val("").change();
+     
 
 });
 

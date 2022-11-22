@@ -287,8 +287,13 @@ class LocalVotacionForm(ModelForm):
 ==================== '''
 class ElectorForm(ModelForm):
     def __init__(self, *args, **kwargs):
+        usuario = kwargs.pop('usuario', None)
         super().__init__(*args, **kwargs)
         self.fields['tipo_voto'].queryset = TipoVoto.objects.filter(activo__exact=True)
+        if usuario:
+            self.fields['barrio'].queryset = Barrio.objects.filter(ciudad__distrito=usuario.distrito,activo__exact=True)
+            self.fields['manzana'].queryset = Manzana.objects.filter(barrio__ciudad__distrito=usuario.distrito,activo__exact=True)
+            self.fields['operador'].queryset = Operador.objects.filter(distrito=usuario.distrito,activo__exact=True)
         self.fields['ci'].widget.attrs['autofocus'] = True
     
     def set_readonly( self ):
@@ -299,7 +304,7 @@ class ElectorForm(ModelForm):
     class Meta:
         model = Elector
         fields = ['ci','nombre','apellido','ciudad','barrio','manzana','nro_casa','telefono',
-                  'tipo_voto','local_votacion','seccional']
+                  'tipo_voto','local_votacion','seccional','operador']
         exclude = readonly_fields
         widgets = {
             'ci': forms.TextInput(attrs={'placeholder': 'Ingrese Cedula','readonly':'readonly'}),
@@ -309,6 +314,7 @@ class ElectorForm(ModelForm):
             'barrio': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
             'manzana': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
             'tipo_voto': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
+            'operador': forms.Select(attrs={'class': 'form-control select2', 'style': 'width: 100%;' }),
             'local_votacion': forms.Select(attrs={'class': 'form-control select2',
                                                   'style': 'width: 100%;',
                                                   'disabled':'disabled',
@@ -365,6 +371,8 @@ class ShearchForm(forms.Form):
     seccional = forms.ChoiceField()
     barrio = forms.ChoiceField()
     manzana = forms.ChoiceField()
+    operador = forms.ChoiceField()
+    tipo_voto = forms.ChoiceField()
     def __init__(self, *args, **kwargs):
         usuario = kwargs.pop('usuario', None)
         # print(usuario)
@@ -391,12 +399,20 @@ class ShearchForm(forms.Form):
             # Manzana
             self.fields['manzana'] = forms.ChoiceField(choices=[
             (item.id, item.fullname) for item in Manzana.objects.filter(barrio__ciudad__distrito=usuario.distrito,activo__exact=True).order_by('barrio__id','id')])
+            # Operador
+            self.fields['operador'] = forms.ChoiceField(choices=[
+                (item.id, item) for item in Operador.objects.filter(distrito=usuario.distrito, activo__exact=True).order_by('denominacion')])
+            # Tipo de Voto
+            self.fields['tipo_voto'] = forms.ChoiceField(choices=[
+                (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('id')])
             
             self.fields['local_votacion'].widget.attrs.update({'class': 'form-control select2'})
             self.fields['mesa'].widget.attrs.update({'class': 'form-control select2'})
             self.fields['seccional'].widget.attrs.update({'class': 'form-control select2'})
             self.fields['barrio'].widget.attrs.update({'class': 'form-control select2'})
             self.fields['manzana'].widget.attrs.update({'class': 'form-control select2'})
+            self.fields['operador'].widget.attrs.update({'class': 'form-control select2'})
+            self.fields['tipo_voto'].widget.attrs.update({'class': 'form-control select2'})
     # Rango de fechas 
     date_range = forms.CharField()
     # Termino de busqueda 

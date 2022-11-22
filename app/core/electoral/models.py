@@ -198,6 +198,7 @@ class TipoVoto(ModeloBase):
 === OPERADOR ===
 ==================== '''
 class Operador(ModeloBase):
+    distrito = models.ForeignKey(Distrito, on_delete=models.PROTECT,null=True,blank=True)
     denominacion = models.CharField(max_length=250, verbose_name='Denominacion')
 
     def __str__(self):
@@ -243,7 +244,8 @@ class Elector(ModeloBase):
     barrio = models.ForeignKey(Barrio, on_delete=models.PROTECT,null=True,blank=True) 
     manzana = models.ForeignKey(Manzana, on_delete=models.PROTECT,null=True,blank=True) 
     nro_casa = models.IntegerField(null=True,blank=True)
-    telefono = models.CharField(max_length=120,null=True,blank=True)    
+    telefono = models.CharField(max_length=120,null=True,blank=True)
+    operador = models.ForeignKey(Operador, on_delete=models.PROTECT,null=True,blank=True)    
 
     def __str__(self):
         return f"{self.apellido} {self.nombre}"
