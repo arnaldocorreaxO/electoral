@@ -41,12 +41,17 @@ class ElectorListView(PermissionMixin, FormView):
 				term = request.POST['term']
 				start_date = request.POST['start_date']
 				end_date = request.POST['end_date']
-				ciudad = request.POST['ciudad']
+				
+				local_votacion = request.POST['local_votacion']
+				mesa = request.POST['mesa']				
 				seccional = request.POST['seccional']
+				operador = request.POST['operador']
+
+				ciudad = request.POST['ciudad']
 				barrio = request.POST['barrio']
 				manzana = request.POST['manzana']
-				local_votacion = request.POST['local_votacion']
-				mesa = request.POST['mesa']
+				tipo_voto = request.POST['tipo_voto']		
+
 				pasoxpc = request.POST['pasoxpc']
 				pasoxmv = request.POST['pasoxmv']
 
@@ -97,13 +102,20 @@ class ElectorListView(PermissionMixin, FormView):
 					_where += f" AND electoral_elector.manzana_id = '{manzana}'"
 				if len(local_votacion):
 					_where += f" AND electoral_elector.local_votacion_id = '{local_votacion}'"
+				if len(operador):
+					_where += f" AND electoral_elector.operador_id = '{operador}'"
 				if len(mesa):
 					_where += f" AND electoral_elector.mesa = '{mesa}'"
+				if len(tipo_voto):
+					_where += f" AND electoral_elector.tipo_voto_id = '{tipo_voto}'"
 				if len(pasoxpc):
 					_where += f" AND COALESCE(electoral_elector.pasoxpc,'N') = '{pasoxpc}'"
 				if len(pasoxmv):
-					_where += f" AND COALESCE(electoral_elector.tipo_voto_id,0) <> 11 \
-								 AND COALESCE(electoral_elector.pasoxmv,'N') = '{pasoxmv}'"
+					_where += f" AND COALESCE(electoral_elector.pasoxmv,'N') = '{pasoxmv}'"
+
+				# if len(pasoxmv):
+				# 	_where += f" AND COALESCE(electoral_elector.tipo_voto_id,0) <> 11 \
+				# 				 AND COALESCE(electoral_elector.pasoxmv,'N') = '{pasoxmv}'"
 				
 				qs = Elector.objects.filter(distrito=request.user.distrito)\
 									.extra(where=[_where], params=[_search])\
@@ -271,7 +283,7 @@ class ElectorUpdateView(PermissionMixin, UpdateView):
 			if request.user.has_perm('electoral.change_elector'):			
 				pk = kwargs['pk']
 				elector = get_object_or_404(Elector, pk=pk)
-				form = ElectorForm(instance=elector)
+				form = ElectorForm(usuario=self.request.user,instance=elector)
 				context = self.get_context_data()
 				context['form'] = form
 				self.template_name = 'padron/elector/create_modal.html'

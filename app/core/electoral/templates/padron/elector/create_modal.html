@@ -114,6 +114,14 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">                       
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>{% render_field form.operador.label %}:</label>
+                                {% render_field form.operador|add_class:'form-control'|attr:"autocomplete:off" %}
+                            </div>
+                        </div>
+                    </div>
 
             </div>
             {% block box_footer %}

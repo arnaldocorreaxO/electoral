@@ -193,6 +193,25 @@ class TipoVoto(ModeloBase):
         verbose_name = 'Tipo Voto'
         verbose_name_plural = 'Tipo de Votos'
         ordering = ['id','denominacion']
+''' 
+====================
+=== OPERADOR ===
+==================== '''
+class Operador(ModeloBase):
+    distrito = models.ForeignKey(Distrito, on_delete=models.PROTECT,null=True,blank=True)
+    denominacion = models.CharField(max_length=250, verbose_name='Denominacion')
+
+    def __str__(self):
+        return self.denominacion
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    class Meta:
+        verbose_name = 'Operador'
+        verbose_name_plural = 'Operadores'
+        ordering = ['denominacion']
 
 
 ''' 
@@ -225,7 +244,8 @@ class Elector(ModeloBase):
     barrio = models.ForeignKey(Barrio, on_delete=models.PROTECT,null=True,blank=True) 
     manzana = models.ForeignKey(Manzana, on_delete=models.PROTECT,null=True,blank=True) 
     nro_casa = models.IntegerField(null=True,blank=True)
-    telefono = models.CharField(max_length=120,null=True,blank=True)    
+    telefono = models.CharField(max_length=120,null=True,blank=True)
+    operador = models.ForeignKey(Operador, on_delete=models.PROTECT,null=True,blank=True)    
 
     def __str__(self):
         return f"{self.apellido} {self.nombre}"

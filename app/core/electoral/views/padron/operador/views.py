@@ -1,3 +1,4 @@
+from core.electoral.models import Operador
 import json
 
 from django.http import JsonResponse, HttpResponse
@@ -6,38 +7,32 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from core.electoral.forms import Manzana, ManzanaForm
+from core.electoral.forms import Operador, OperadorForm
 from core.security.mixins import PermissionMixin
 
 
-class ManzanaListView(PermissionMixin, ListView):
-    model = Manzana
-    template_name = 'padron/manzana/list.html'
-    permission_required = 'view_manzana'
+class OperadorListView(PermissionMixin, ListView):
+    model = Operador
+    template_name = 'padron/operador/list.html'
+    permission_required = 'view_operador'
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-    
-    def get_queryset(self):
-        if self.request.user.distrito:
-            return self.model.objects.filter(barrio__ciudad__distrito=self.request.user.distrito)            
-        else:
-            return self.queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['create_url'] = reverse_lazy('manzana_create')
-        context['title'] = 'Listado de Manzanas'
+        context['create_url'] = reverse_lazy('operador_create')
+        context['title'] = 'Listado de Operadores'
         context['distrito'] = self.request.user.distrito.denominacion
         return context
 
 
-class ManzanaCreateView(PermissionMixin, CreateView):
-    model = Manzana
-    template_name = 'padron/manzana/create.html'
-    form_class = ManzanaForm
-    success_url = reverse_lazy('manzana_list')
-    permission_required = 'add_manzana'
+class OperadorCreateView(PermissionMixin, CreateView):
+    model = Operador
+    template_name = 'padron/operador/create.html'
+    form_class = OperadorForm
+    success_url = reverse_lazy('operador_list')
+    permission_required = 'add_operador'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -49,7 +44,7 @@ class ManzanaCreateView(PermissionMixin, CreateView):
             type = self.request.POST['type']
             obj = self.request.POST['obj'].strip()            
             if type == 'denominacion':                
-                if Manzana.objects.filter(denominacion__iexact=obj):
+                if Operador.objects.filter(denominacion__iexact=obj):
                     data['valid'] = False
         except:
             pass
@@ -72,17 +67,17 @@ class ManzanaCreateView(PermissionMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['list_url'] = self.success_url
-        context['title'] = 'Nuevo registro de Manzana'
+        context['title'] = 'Nuevo registro de un Operador'
         context['action'] = 'add'
         return context
 
 
-class ManzanaUpdateView(PermissionMixin, UpdateView):
-    model = Manzana
-    template_name = 'padron/manzana/create.html'
-    form_class = ManzanaForm
-    success_url = reverse_lazy('manzana_list')
-    permission_required = 'change_manzana'
+class OperadorUpdateView(PermissionMixin, UpdateView):
+    model = Operador
+    template_name = 'padron/operador/create.html'
+    form_class = OperadorForm
+    success_url = reverse_lazy('operador_list')
+    permission_required = 'change_operador'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -96,7 +91,7 @@ class ManzanaUpdateView(PermissionMixin, UpdateView):
             obj = self.request.POST['obj'].strip()
             id = self.get_object().id
             if type == 'denominacion':
-                if Manzana.objects.filter(denominacion__iexact=obj).exclude(id=id):
+                if Operador.objects.filter(denominacion__iexact=obj).exclude(id=id):
                     data['valid'] = False
         except:
             pass
@@ -119,16 +114,16 @@ class ManzanaUpdateView(PermissionMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         context['list_url'] = self.success_url
-        context['title'] = 'Edición de Manzana'
+        context['title'] = 'Edición de un Operador'
         context['action'] = 'edit'
         return context
 
 
-class ManzanaDeleteView(PermissionMixin, DeleteView):
-    model = Manzana
-    template_name = 'padron/manzana/delete.html'
-    success_url = reverse_lazy('manzana_list')
-    permission_required = 'delete_manzana'
+class OperadorDeleteView(PermissionMixin, DeleteView):
+    model = Operador
+    template_name = 'padron/operador/delete.html'
+    success_url = reverse_lazy('operador_list')
+    permission_required = 'delete_operador'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
