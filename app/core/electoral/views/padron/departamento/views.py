@@ -23,6 +23,7 @@ class DepartamentoListView(PermissionMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['create_url'] = reverse_lazy('departamento_create')
         context['title'] = 'Listado de Departamentos'
+        context['distrito'] = self.request.user.distrito.denominacion
         return context
 
 

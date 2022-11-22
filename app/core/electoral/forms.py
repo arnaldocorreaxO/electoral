@@ -225,6 +225,34 @@ class TipoVotoForm(ModelForm):
         except Exception as e:
             data['error'] = str(e)
         return data
+
+'''        
+====================
+===  OPERADOR    ===
+==================== '''
+class OperadorForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['denominacion'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Operador
+        fields = '__all__'
+        exclude = readonly_fields
+        widgets = {
+            'denominacion': forms.TextInput(attrs={'placeholder': 'Ingrese un Operador'}),
+        }
+
+    def save(self, commit=True):
+        data = {}
+        try:
+            if self.is_valid():
+                super().save()
+            else:
+                data['error'] = self.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
 '''        
 =========================
 ===  LOCAL VOTACION   ===

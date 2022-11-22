@@ -22,6 +22,7 @@ class CiudadListView(PermissionMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['create_url'] = reverse_lazy('ciudad_create')
         context['title'] = 'Listado de Ciudades'
+        context['distrito'] = self.request.user.distrito.denominacion
         return context
 
 

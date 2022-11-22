@@ -23,6 +23,7 @@ class PaisListView(PermissionMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['create_url'] = reverse_lazy('pais_create')
         context['title'] = 'Listado de paises'
+        context['distrito'] = self.request.user.distrito.denominacion
         return context
 
 

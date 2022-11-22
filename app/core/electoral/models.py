@@ -193,6 +193,24 @@ class TipoVoto(ModeloBase):
         verbose_name = 'Tipo Voto'
         verbose_name_plural = 'Tipo de Votos'
         ordering = ['id','denominacion']
+''' 
+====================
+=== OPERADOR ===
+==================== '''
+class Operador(ModeloBase):
+    denominacion = models.CharField(max_length=250, verbose_name='Denominacion')
+
+    def __str__(self):
+        return self.denominacion
+
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+
+    class Meta:
+        verbose_name = 'Operador'
+        verbose_name_plural = 'Operadores'
+        ordering = ['denominacion']
 
 
 ''' 

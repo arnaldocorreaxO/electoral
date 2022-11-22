@@ -23,6 +23,7 @@ class TipoVotoListView(PermissionMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['create_url'] = reverse_lazy('tipo_voto_create')
         context['title'] = 'Listado de Tipo Votos'
+        context['distrito'] = self.request.user.distrito.denominacion
         return context
 
 

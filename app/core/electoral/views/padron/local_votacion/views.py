@@ -17,6 +17,12 @@ class LocalVotacionListView(PermissionMixin, ListView):
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        if self.request.user.distrito:
+            return self.model.objects.filter(ciudad__distrito=self.request.user.distrito)            
+        else:
+            return self.queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -17,11 +17,18 @@ class SeccionalListView(PermissionMixin, ListView):
 
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+    
+    def get_queryset(self):
+        if self.request.user.distrito:
+            return self.model.objects.filter(ciudad__distrito=self.request.user.distrito)            
+        else:
+            return self.queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['create_url'] = reverse_lazy('seccional_create')
         context['title'] = 'Listado de Seccionales'
+        context['distrito'] = self.request.user.distrito.denominacion
         return context
 
 
