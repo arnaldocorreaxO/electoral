@@ -202,16 +202,20 @@ class ElectorCreateView(PermissionMixin, CreateView):
 
 			elif action == 'search_manzana_id':
 				data = [{'id': '', 'text': '------------'}]	
-				barrio_list = None					
+				barrio_list = None	
+				print(request.POST)				
 				if 'id' in request.POST:
-					barrio_list = request.POST['id'] if 'id' in request.POST else None
+					barrio_list = [request.POST['id'] if 'id' in request.POST else None]
 
 				elif 'id[]' in request.POST:
 					barrio_list = request.POST.getlist('id[]') if 'id[]' in request.POST else None
 	
 				if barrio_list:
+					qs = Manzana.objects.filter(barrio_id__in=barrio_list)
+					print(qs.query)
 					for i in Manzana.objects.filter(barrio_id__in=barrio_list):			
 						data.append({'id': i.id, 'text': str(i), 'data': i.barrio.toJSON()})
+				print(data)
 			
 			elif action == 'search_mesa_id':
 				data = [{'id': '', 'text': '------------'}]				
