@@ -56,6 +56,6 @@ $(function () {
 
     select_manzanas.on('change', function () {
         var value = select_manzanas.select2('data')[0];
-        console.log(value);
+        // console.log(value);
     });
 });
