@@ -16,19 +16,19 @@
     <script src="{% static 'lib/datatables-1.10.20/plugins/pdfmake-0.1.36/vfs_fonts.js' %}" type="text/javascript"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/buttons.html5.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'lib/datatables-1.10.20/plugins/buttons-1.6.1/js/buttons.print.min.js' %}" type="text/javascript"></script>
-    <!-- Select2 Libs -->
+    <!-- SELECT2 LIBS -->
     <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
     <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
     <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
     <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
-    <!--Block head list-->
+    <!--BLOCK HEAD LIST-->
     {% block head_list %}{% endblock %}
 {% endblock %}
 
 {% block content %}
-    <div class="alert alert-warning text-center" role="alert">
-        <h5>DISTRITO: {{distrito}}</h5>
-    </div>
+<div class="alert alert-warning text-center" role="alert">
+    <h5>DISTRITO: {{distrito}}</h5>
+</div>
     <div class="card {{ dshboard.card }}">
         <div class="card-header">
             <h3 class="card-title">
@@ -103,49 +103,47 @@
         <!--Block box footer after-->
         {% block box_footer_after %}{% endblock %}
         {% block content_modals %}{% endblock %}
-    </div>
-    {% block javascript_list %}
-    
-        <script type="application/javascript">
+    </div>    
+{% endblock %}
+{% block javascript_list %}
+    <script type="application/javascript">
 
-            $('.select2').select2({
-                theme: "bootstrap4",
-                language: 'es'
-            });
- 
+        $('.select2').select2({
+            theme: "bootstrap4",
+            language: 'es'
+        });    
 
-            var table;
-            $(function () {
-                table = $('#data').DataTable({
-                    responsive: true,
-                    autoWidth: false,
-                    destroy: true,
-                    deferRender: true,
-                    initComplete: function (settings, json) {
+        var table;
+        $(function () {
+            table = $('#data').DataTable({
+                responsive: true,
+                autoWidth: false,
+                destroy: true,
+                deferRender: true,
+                initComplete: function (settings, json) {
 
-                    }
-                });
-
-                $('.table')
-                    .on('draw', function () {
-                        $('[data-toggle="tooltip"]').tooltip();
-                    })
-                    .on('click', 'img', function () {
-                        var src = $(this).attr('src');
-                        load_image(src);
-                    });
+                }
             });
 
-            $(function () {
-                $('form').submit(function (event) {
-                    // event.preventDefault();
-                    //Captura el boton activado para submit cuando hace click
-                    var tipo = $(document.activeElement).attr("value");
-                    //Si no hace click sobre los botones PDF o XLS tipo es undefined  
-                    typeof tipo=="undefined"?tipo='pdf':tipo=tipo;
-                    document.getElementById("tipo").setAttribute("value", tipo);
+            $('.table')
+                .on('draw', function () {
+                    $('[data-toggle="tooltip"]').tooltip();
+                })
+                .on('click', 'img', function () {
+                    var src = $(this).attr('src');
+                    load_image(src);
                 });
         });
-        </script>
-    {% endblock %}
+
+        $(function () {
+            $('form').submit(function (event) {
+                // event.preventDefault();
+                //Captura el boton activado para submit cuando hace click
+                var tipo = $(document.activeElement).attr("value");
+                //Si no hace click sobre los botones PDF o XLS tipo es undefined  
+                typeof tipo=="undefined"?tipo='pdf':tipo=tipo;
+                document.getElementById("tipo").setAttribute("value", tipo);
+            });
+        });
+    </script>
 {% endblock %}

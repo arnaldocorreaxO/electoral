@@ -48,6 +48,8 @@
         <!--Include template footer-->
         {% include 'footer.html' %}
     </div>
+    <!-- Block javascript List  -->
+    {% block javascript_list%}{% endblock %}
     <script>
         {% if messages %}
             var html = '<p>';

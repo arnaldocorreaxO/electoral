@@ -1,4 +1,4 @@
-from core.electoral.models import Barrio, Elector, LocalVotacion, Manzana, Seccional, TipoVoto
+from core.electoral.models import Barrio, LocalVotacion, Manzana, Operador, Seccional, TipoVoto
 from django import forms
 
 class ReportForm(forms.Form):
@@ -7,6 +7,7 @@ class ReportForm(forms.Form):
     barrio = forms.ChoiceField()
     manzana = forms.ChoiceField()
     tipo_voto = forms.ChoiceField()
+    operador = forms.ChoiceField()
     
     def __init__(self, *args, **kwargs):
         usuario = kwargs.pop('usuario', None)
@@ -21,6 +22,8 @@ class ReportForm(forms.Form):
                 ciudad__distrito=usuario.distrito, activo=True).order_by('id'), empty_label="(Todos)")
             self.fields['manzana'] = forms.ModelChoiceField(queryset=Manzana.objects.filter(
                 barrio__ciudad__distrito=usuario.distrito, activo=True).order_by('barrio__id','cod'), empty_label="(Todos)")
+            self.fields['operador'] = forms.ModelChoiceField(queryset=Operador.objects.filter(
+                distrito=usuario.distrito, activo=True).order_by('denominacion'), empty_label="(Todos)")
             self.fields['tipo_voto'] = forms.ModelChoiceField(
                 queryset=TipoVoto.objects.filter(activo=True).order_by('id'), empty_label="(Todos)")
 
@@ -30,6 +33,7 @@ class ReportForm(forms.Form):
             self.fields['barrio'].widget.attrs.update({'class': 'form-control select2','multiple':'true'})
             self.fields['manzana'].widget.attrs.update({'class': 'form-control select2','multiple':'true'})   
             self.fields['tipo_voto'].widget.attrs.update({'class': 'form-control select2','multiple':'true'})   
+            self.fields['operador'].widget.attrs.update({'class': 'form-control select2','multiple':'true'})   
             
     # Extra Fields
     date_range = forms.CharField(widget=forms.TextInput(attrs={
