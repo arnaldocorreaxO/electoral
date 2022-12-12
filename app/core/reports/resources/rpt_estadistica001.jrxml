@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.16.0.final using JasperReports Library version 6.16.0-48579d909b7943b64690c65c71e07e0b80981928  -->
+<!-- Created with Jaspersoft Studio version 6.18.1.final using JasperReports Library version 6.18.1-9d75d1969e774d4f179fb3be8401e98a0e6d1611  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rpt_estadistica001" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ba0f302e-7940-4e06-a588-1bee7ec99b04">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PGSQL_ELECTORAL_LOCAL"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
@@ -201,7 +201,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[LISTA 1]]></text>
+					<text><![CDATA[LISTA A]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="82" y="41" width="40" height="20" uuid="e9adcd34-2265-452a-8e28-6ea296a1c0b2"/>
@@ -211,7 +211,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="7" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Lista 5]]></text>
+					<text><![CDATA[Lista B]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="122" y="41" width="40" height="20" uuid="fe56d49a-4896-401b-bb5c-5c5f54f4d7b9"/>
@@ -221,7 +221,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="7" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Lista500]]></text>
+					<text><![CDATA[Lista C]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="162" y="41" width="40" height="20" uuid="c9c66375-3e1f-4938-9929-46c73dbaadf2"/>
@@ -231,7 +231,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="7" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Lista 2]]></text>
+					<text><![CDATA[Lista D]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="217" y="41" width="40" height="20" uuid="00b9859b-f292-4566-8ce3-76d08fdffaab"/>
@@ -291,7 +291,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Lista500]]></text>
+					<text><![CDATA[Lista C]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="394" y="41" width="40" height="20" uuid="94f6529c-8691-4e89-b23c-fc7eba98d271"/>
@@ -301,7 +301,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Lista 5]]></text>
+					<text><![CDATA[Lista B]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="480" y="41" width="40" height="20" uuid="acac6b8b-2bf2-4ff9-aa67-8db263a06c2b"/>
@@ -311,7 +311,7 @@ ORDER BY L.DENOMINACION,E.MESA::INT]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="8" isBold="true"/>
 					</textElement>
-					<text><![CDATA[Lista 2]]></text>
+					<text><![CDATA[Lista D]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="523" y="41" width="40" height="20" uuid="6e095e62-54c3-46b8-8004-4af3519c07b3"/>
