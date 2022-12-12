@@ -26,12 +26,14 @@
                             <!-- <br> -->
                             <h5 class="widget-user-desc" style="font-weight: normal;">
                                 <b>Bienvenido {{ request.user.first_name }}</b><br>
-                                <!-- Tu último acceso fue {{ request.user.last_login }} -->
+                                <!-- Tu último acceso fue {#{ request.user.last_login }} -->
                             </h5>
-
+                            <!-- Solo veedor visualizan el boton de +CARGAR -->
+                            {% if request.user.id == 6 or request.user.id == 13 %}    
                             <a href="{{ create_url }}" class="btn btn-dark btn-lg">
                                 <i class="fas fa-plus"></i> CARGAR
                             </a>
+                            {% endif %}
                         </div>
                         <img class="img-fluid mx-auto p-3" style="width: 500px; height: 500px;"
                              src="{{ company.get_image }}" alt="User Avatar">
