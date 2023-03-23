@@ -2,6 +2,7 @@ from config import conn, settings
 from crum import get_current_user
 from django.http import FileResponse
 from pyreportjasper import PyReportJasper
+from core.base.models import Parametro
 from core.user.models import User
 
 
@@ -37,13 +38,20 @@ class JasperReportBase():
 		"""
 		Este metodo sera implementado por cada uno de nuestros reportes
 		"""	
-		params = {  'P_TITULO1': settings.REPORT_TITULO1,
-                    'P_TITULO2': settings.REPORT_TITULO2,
-                    'P_TITULO3': settings.REPORT_TITULO3,
-                    'P_TITULO4': self.report_title,
+		params = {  'P_TITULO1': Parametro.objects.filter(parametro='TR1').first().valor,
+                    'P_TITULO2': Parametro.objects.filter(parametro='TR2').first().valor,
+                    'P_TITULO3': Parametro.objects.filter(parametro='TR3').first().valor,
+                    'P_TITULO4': Parametro.objects.filter(parametro='TR4').first().valor,
 					'P_REPORTE': self.report_name,
 					'P_USUARIO': str(get_current_user().username),
                     'P_RUTA': settings.REPORTS_DIR }
+		# params = {  'P_TITULO1': settings.REPORT_TITULO1,
+        #             'P_TITULO2': settings.REPORT_TITULO2,
+        #             'P_TITULO3': settings.REPORT_TITULO3,
+        #             'P_TITULO4': self.report_title,
+		# 			'P_REPORTE': self.report_name,
+		# 			'P_USUARIO': str(get_current_user().username),
+        #             'P_RUTA': settings.REPORTS_DIR }
 		# Concatenamos parametros locales y los enviados 
 		return dict(params, **self.params)
 		
