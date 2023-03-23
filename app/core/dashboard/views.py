@@ -16,8 +16,6 @@ from core.pos.models import Company
 from core.electoral.models import Elector
 from core.security.models import Dashboard
 
-
-
 class DashboardView(LoginRequiredMixin, TemplateView):
 
     @method_decorator(csrf_exempt)
@@ -78,7 +76,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             elif action == 'get_graph_control_preferencia_votos':
                 info = []
                 for i in Elector.objects.values('tipo_voto__denominacion') \
-                                        .filter(distrito=distrito,pasoxmv='S')\
+                                        .filter(distrito=distrito,local_votacion=1,pasoxmv='S')\
                                         .annotate(tot_votos=Count(True)) \
                                         .order_by('-tot_votos'):
                                         info.append({'name' : i['tipo_voto__denominacion'] if i['tipo_voto__denominacion'] else 'SIN PREFERENCIA',
@@ -192,7 +190,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Panel de administración'
         context['company'] = company
-        context['distrito'] = usu_distrito.denominacion
+        context['distrito'] = usu_distrito.denominacion  if usu_distrito.denominacion else 'FALTA DEFINIR DISTRITO PARA EL USUARIO'
         context['total_padron'] = Elector.objects.filter(distrito=usu_distrito).count()
         context['total_ubicados'] = Elector.objects.exclude(barrio__id__in=[0])\
                                                    .exclude(barrio__isnull=True)\
