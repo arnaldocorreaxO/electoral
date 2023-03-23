@@ -495,7 +495,7 @@ ELE.ORDEN::INT]]>
 					<subreportParameterExpression><![CDATA[$P{P_RUTA}]]></subreportParameterExpression>
 				</subreportParameter>
 				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-				<subreportExpression><![CDATA[$P{P_RUTA}+"sub_rpt_top_vertical.jasper"]]></subreportExpression>
+				<subreportExpression><![CDATA[($P{P_RUTA}!=null?$P{P_RUTA}+"sub_rpt_top_vertical.jasper":"sub_rpt_top_vertical.jasper")]]></subreportExpression>
 			</subreport>
 		</band>
 	</pageHeader>
