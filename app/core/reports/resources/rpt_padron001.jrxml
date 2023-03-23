@@ -320,7 +320,8 @@ ELE.ORDEN::INT]]>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="6" isBold="true"/>
 					</textElement>
-					<text><![CDATA[FECHA AFIL.]]></text>
+					<text><![CDATA[FECHA 
+AFILIACION]]></text>
 				</staticText>
 				<staticText>
 					<reportElement stretchType="ElementGroupHeight" x="226" y="0" width="20" height="21" uuid="bebcb2ec-825f-4dcc-ad71-90d2eea43fda"/>
