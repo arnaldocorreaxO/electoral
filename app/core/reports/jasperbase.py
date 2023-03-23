@@ -38,10 +38,10 @@ class JasperReportBase():
 		"""
 		Este metodo sera implementado por cada uno de nuestros reportes
 		"""	
-		params = {  'P_TITULO1': Parametro.objects.filter(parametro='TR1').first().valor,
-                    'P_TITULO2': Parametro.objects.filter(parametro='TR2').first().valor,
-                    'P_TITULO3': Parametro.objects.filter(parametro='TR3').first().valor,
-                    'P_TITULO4': Parametro.objects.filter(parametro='TR4').first().valor,
+		params = {  'P_TITULO1': Parametro.objects.filter(parametro='TR1').first().valor if Parametro.objects.filter(parametro='TR1').first().valor else None,
+                    'P_TITULO2': Parametro.objects.filter(parametro='TR2').first().valor if Parametro.objects.filter(parametro='TR2').first().valor else None,
+                    'P_TITULO3': Parametro.objects.filter(parametro='TR3').first().valor if Parametro.objects.filter(parametro='TR3').first().valor else None,
+                    'P_TITULO4': Parametro.objects.filter(parametro='TR4').first().valor if Parametro.objects.filter(parametro='TR4').first().valor else None,
 					'P_REPORTE': self.report_name,
 					'P_USUARIO': str(get_current_user().username),
                     'P_RUTA': settings.REPORTS_DIR }
