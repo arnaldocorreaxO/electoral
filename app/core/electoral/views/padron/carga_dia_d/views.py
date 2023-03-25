@@ -393,13 +393,35 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
 					info += '<b>=====> YA PASÓ POR PC <===== </b> <br>'              
 					data['error'] = info
 				else:
-					elector.pasoxpc='S'
+					elector.pasoxpc = 'S'
 					elector.save()
+
+					local_votacion_alerts_class = 'alert alert-danger'
+
+					if elector.local_votacion.id == 1:
+						local_votacion_alerts_class = 'alert alert-ligth'
+					if elector.local_votacion.id == 2:
+						local_votacion_alerts_class = 'alert alert-warning'
+					if elector.local_votacion.id == 3:
+						local_votacion_alerts_class = 'alert alert-success'
+					if elector.local_votacion.id == 4:
+						local_votacion_alerts_class = 'alert alert-secondary'
+					if elector.local_votacion.id == 5:
+						local_votacion_alerts_class = 'alert alert-primary'
+					if elector.local_votacion.id == 6:
+						local_votacion_alerts_class = 'alert alert-info'
+					if elector.local_votacion.id == 7:
+						local_votacion_alerts_class = 'alert alert-dark'
+
+					local_votacion_alerts = f'<div class="{local_votacion_alerts_class}" role="alert">\
+					{elector.local_votacion}\
+					</div>'
+
 					info = f"CI: <b> {elector.ci} </b> <br>"
 					info += f"{elector.nombre}, {elector.apellido} <br>"
-					info += '<b> VOTA EN </b>  <br> ' 
-					info += f"{elector.local_votacion} <br> <br>"
-					info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"                
+					info += '<b> VOTA EN </b>  <br> '
+					info += f"{local_votacion_alerts}"
+					info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"
 					data['info'] = info
 					
 
@@ -530,15 +552,37 @@ class CargaDiaDElectorViewGs(PermissionMixin, FormView):
 					info += "<b>=====> YA PASÓ  POR PC <i class='fas fa-dollar-sign'></i> <===== </b> <br>"
 					data['error'] = info
 				else:
-					elector.pasoxpc='S'
-					elector.pasoxgs='S'
+					elector.pasoxpc = 'S'
+					elector.pasoxgs = 'S'
 					elector.monto = monto
 					elector.save()
+
+					local_votacion_alerts_class = 'alert alert-danger'
+
+					if elector.local_votacion.id == 1:
+						local_votacion_alerts_class = 'alert alert-ligth'
+					if elector.local_votacion.id == 2:
+						local_votacion_alerts_class = 'alert alert-warning'
+					if elector.local_votacion.id == 3:
+						local_votacion_alerts_class = 'alert alert-success'
+					if elector.local_votacion.id == 4:
+						local_votacion_alerts_class = 'alert alert-secondary'
+					if elector.local_votacion.id == 5:
+						local_votacion_alerts_class = 'alert alert-primary'
+					if elector.local_votacion.id == 6:
+						local_votacion_alerts_class = 'alert alert-info'
+					if elector.local_votacion.id == 7:
+						local_votacion_alerts_class = 'alert alert-dark'
+
+					local_votacion_alerts = f'<div class="{local_votacion_alerts_class}" role="alert">\
+					{elector.local_votacion}\
+					</div>'
+
 					info = f"CI: <b> {elector.ci} </b> <br>"
 					info += f"{elector.nombre}, {elector.apellido} <br>"
-					info += '<b> VOTA EN </b>  <br> ' 
-					info += f"{elector.local_votacion} <br> <br>"
-					info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"                
+					info += '<b> VOTA EN </b>  <br> '
+					info += f"{local_votacion_alerts}"
+					info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"
 					data['info'] = info
 					
 
