@@ -527,7 +527,7 @@ class CargaDiaDElectorViewGs(PermissionMixin, FormView):
 					info += f"{elector.nombre}, {elector.apellido} <br>"
 					info += '<b> VOTA EN </b>  <br> ' 
 					info += f"{elector.local_votacion} <br> <br>"                    
-					info += '<b>=====> YA PASÓ  POR PC INCENTIVADO <===== </b> <br>'              
+					info += "<b>=====> YA PASÓ  POR PC <i class='fas fa-dollar-sign'></i> <===== </b> <br>"
 					data['error'] = info
 				else:
 					elector.pasoxpc='S'
