@@ -82,7 +82,9 @@ function getData(all) {
 
 function addElector(id) {
     // monto = $("input[type=radio][name=monto]:checked").val();    
-    monto = $("[name=monto]:checked").val();    
+    // monto = $("[name=monto]:checked").val();    
+    monto = $('select[name="monto"]').val();   
+    
     if (monto===undefined){
         message_warning('Debe seleccionar monto');
         return false;    

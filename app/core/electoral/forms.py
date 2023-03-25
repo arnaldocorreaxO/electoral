@@ -431,8 +431,10 @@ class ShearchForm(forms.Form):
     (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('denominacion')])
     
     # Monto Gs
-    monto = forms.ChoiceField(widget=forms.RadioSelect,choices=[
+    monto = forms.ChoiceField(choices=[
     (item.valor,item.parametro) for item in Parametro.objects.filter(activo__exact=True,grupo__exact='MTO_GS_DIA_D').order_by('id')])
+    # monto = forms.ChoiceField(widget=forms.RadioSelect,choices=[
+    # (item.valor,item.parametro) for item in Parametro.objects.filter(activo__exact=True,grupo__exact='MTO_GS_DIA_D').order_by('id')])
 
     
 
@@ -465,7 +467,8 @@ class ShearchForm(forms.Form):
     tipo_voto.widget.attrs.update({'class': 'form-control select2'})
     pasoxmv.widget.attrs.update({'class': 'form-control select2'})
     pasoxpc.widget.attrs.update({'class': 'form-control select2'})
-    # monto.widget.attrs.update({'class': 'inline'})
+    pasoxgs.widget.attrs.update({'class': 'form-control select2'})
+    monto.widget.attrs.update({'class': 'form-control select2'})
     
 ''' 
 ====================
