@@ -39,7 +39,8 @@ class ModeloBase(models.Model):
 
 '''PARAMETROS GENERALES'''
 class Parametro(ModeloBase):
-	parametro = models.CharField(max_length=25, unique=True)
+	grupo	  = models.CharField(max_length=25,default='SIN_GRUPO')
+	parametro = models.CharField(max_length=25)
 	descripcion = models.CharField(max_length=100, unique=True)
 	valor = models.CharField(max_length=100)
 
@@ -51,6 +52,7 @@ class Parametro(ModeloBase):
 		db_table = 'base_parametro'
 		verbose_name = 'Parametro'
 		verbose_name_plural = 'Parametros'
+		unique_together = ('grupo','parametro')
 
 
 '''MODULOS'''

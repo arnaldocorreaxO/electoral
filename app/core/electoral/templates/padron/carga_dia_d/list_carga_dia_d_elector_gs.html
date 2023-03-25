@@ -1,10 +1,10 @@
 {% extends 'list.html' %}
 {% load static %}
 {% block head_list %}
-    <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/spanish.js' %}"></script>
+    <!-- <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/spanish.js' %}"></script>
     <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.js' %}"></script>
-    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.css' %}"/>
-    <script src="{% static 'padron/carga_dia_d/js/list_carga_dia_d_elector_pc.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.css' %}"/> -->
+    <script src="{% static 'padron/carga_dia_d/js/list_carga_dia_d_elector_gs.js' %}"></script>
 {% endblock %}
 
 {% block box_header %}{% endblock %}
@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block javascript_list %}
-    
+
 {% endblock %}
 
 {% block content_list_before %}
@@ -49,5 +49,28 @@
                         </div>
                     </div>                 
                 </div>
-            </div> 
+            </div>     
+            <!-- <div class="row">
+          
+                        <label>Monto:</label>
+                        {#{ form.monto }}
+           
+                </div>
+            </div>           -->
+
+            <div class="btn-group btn-group-toggle btn-group-lg mb-3" data-toggle="buttons">
+                <label class="btn btn-secondary">
+                    <input type="radio" name="monto" id="id_monto_1" autocomplete="off" value="50000"> 50.000
+                </label>
+                <label class="btn btn-secondary active">
+                    <input type="radio" name="monto" id="id_monto_2" autocomplete="off" value="100000" checked> 100.000
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="monto" id="id_monto_3" autocomplete="off" value="150000"> 150.000
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="monto" id="id_monto_4" autocomplete="off" value="150000"> 200.000
+                </label>
+            </div>
+
 {% endblock %}

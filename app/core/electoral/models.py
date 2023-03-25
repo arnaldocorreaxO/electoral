@@ -238,14 +238,16 @@ class Elector(ModeloBase):
     voto4 = models.CharField(max_length=1,default='N')
     voto5 = models.CharField(max_length=1,default='N')
     local_votacion = models.ForeignKey(LocalVotacion, on_delete=models.PROTECT,null=True, blank=True)    
-    pasoxpc = models.CharField(max_length=1,default='N')    
-    pasoxmv = models.CharField(max_length=1,default='N')    
+    pasoxpc = models.CharField(max_length=1,default='N')    # Puesto de Control
+    pasoxmv = models.CharField(max_length=1,default='N')    # Mesa de Votacion
+    pasoxgs = models.CharField(max_length=1,default='N')    # Paso el Cuarto Oscuro GS :)
     ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT,null=True,blank=True) 
     barrio = models.ForeignKey(Barrio, on_delete=models.PROTECT,null=True,blank=True) 
     manzana = models.ForeignKey(Manzana, on_delete=models.PROTECT,null=True,blank=True) 
     nro_casa = models.IntegerField(null=True,blank=True)
     telefono = models.CharField(max_length=120,null=True,blank=True)
-    operador = models.ForeignKey(Operador, on_delete=models.PROTECT,null=True,blank=True)    
+    operador = models.ForeignKey(Operador, on_delete=models.PROTECT,null=True,blank=True)   
+    monto = models.IntegerField(null=True,blank=True,default=0) 
 
     def __str__(self):
         return f"{self.apellido} {self.nombre}"
@@ -295,7 +297,7 @@ class PreElector(models.Model):
     ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT,null=True,blank=True) 
     barrio = models.ForeignKey(Barrio, on_delete=models.PROTECT,null=True,blank=True) 
     manzana = models.ForeignKey(Manzana, on_delete=models.PROTECT,null=True,blank=True) 
-    nro_casa = models.IntegerField(null=True,blank=True)
+    nro_casa = models.IntegerField(null=True,blank=True)    
     telefono = models.CharField(max_length=120,null=True,blank=True)
     
 
