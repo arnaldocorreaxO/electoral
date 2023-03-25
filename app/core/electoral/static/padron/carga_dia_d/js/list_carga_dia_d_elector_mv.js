@@ -68,7 +68,7 @@ function getData(all) {
                     var buttons = '';
                     // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
                     buttons += '<b>' + row.mesa +'</b> - ' + '<b>' + row.orden +'</b>';
-                    buttons += '<br><a href="/electoral/carga_dia_d/update/' + row.id + '/edit_mv/S/0" data-toggle="tooltip" title="Editar registro" class="btn btn-dark btn-lg btn-flat"><i class="fas fa-plus"></i></a>';
+                    buttons += '<br><a href="/electoral/carga_dia_d/update/' + row.id + '/edit_mv/S/0/" data-toggle="tooltip" title="Editar registro" class="btn btn-dark btn-lg btn-flat"><i class="fas fa-plus"></i></a>';
                     // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
                     return buttons;
                 }
@@ -139,7 +139,7 @@ function getData2(all) {
                 render: function (data, type, row) {
                     var buttons = '';
                     // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
-                    buttons += '<a href="/electoral/carga_dia_d/update/' + row.id + '/edit_mv/N/" data-toggle="tooltip" title="Deshacer registro" class="btn btn-danger btn-flat"><i class="fas fa-trash"></i></a>';
+                    buttons += '<a href="/electoral/carga_dia_d/update/' + row.id + '/edit_mv/N/0/" data-toggle="tooltip" title="Deshacer registro" class="btn btn-danger btn-flat"><i class="fas fa-trash"></i></a>';
                     // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
                     return buttons;
                 }

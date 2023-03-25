@@ -202,6 +202,8 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
 		self.monto  = kwargs['monto']
 		if self.opcion =='edit_pc':
 			self.success_url = reverse_lazy('carga_dia_d_list_pc')
+		if self.opcion =='edit_gs':
+			self.success_url = reverse_lazy('carga_dia_d_list_gs')
 		return super().dispatch(request, *args, **kwargs)
 
 	def validate_data(self):
@@ -224,16 +226,14 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
 			if action == 'edit':
 				elector = self.object
 				if self.opcion == 'edit_pc':
-					elector.pasoxpc = self.valor
-					self.success_url = reverse_lazy('carga_dia_d_list_pc')    
+					elector.pasoxpc = self.valor					
 				elif self.opcion == 'edit_mv':
-					elector.pasoxmv = self.valor
-					self.success_url = reverse_lazy('carga_dia_d_list_mv')    
+					elector.pasoxmv = self.valor				
 				elif self.opcion == 'edit_gs':
 					elector.pasoxpc = self.valor
 					elector.pasoxgs = self.valor
 					elector.monto = self.monto
-					self.success_url = reverse_lazy('carga_dia_d_list_gs')    
+					
 				elector.save()
 			elif action == 'validate_data':
 				return self.validate_data()
