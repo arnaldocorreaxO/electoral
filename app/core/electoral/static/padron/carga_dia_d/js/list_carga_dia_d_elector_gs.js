@@ -125,7 +125,6 @@ $(function () {
     //     console.log( "monto value: " + $("[name=monto]:checked").val())
     //   })
 
-
     input_searchElector = $('input[name="searchElector"]');
 
     input_searchElector.autocomplete({
