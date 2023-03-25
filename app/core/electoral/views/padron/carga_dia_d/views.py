@@ -199,6 +199,7 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
 		self.object = self.get_object()
 		self.opcion = kwargs['opcion']
 		self.valor  = kwargs['valor']
+		self.monto  = kwargs['monto']
 		if self.opcion =='edit_pc':
 			self.success_url = reverse_lazy('carga_dia_d_list_pc')
 		return super().dispatch(request, *args, **kwargs)
@@ -224,8 +225,15 @@ class CargaDiaDUpdateView(PermissionMixin, UpdateView):
 				elector = self.object
 				if self.opcion == 'edit_pc':
 					elector.pasoxpc = self.valor
+					self.success_url = reverse_lazy('carga_dia_d_list_pc')    
 				elif self.opcion == 'edit_mv':
 					elector.pasoxmv = self.valor
+					self.success_url = reverse_lazy('carga_dia_d_list_mv')    
+				elif self.opcion == 'edit_gs':
+					elector.pasoxpc = self.valor
+					elector.pasoxgs = self.valor
+					elector.monto = self.monto
+					self.success_url = reverse_lazy('carga_dia_d_list_gs')    
 				elector.save()
 			elif action == 'validate_data':
 				return self.validate_data()
@@ -408,52 +416,141 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
 		context['distrito'] = self.request.user.distrito.denominacion
 		return context
 
-# class CargaDiaDElectorView(ModuleMixin, TemplateView):
-#     template_name = 'padron/carga_dia_d/list_carga_dia_d_elector_pc.html'
 
-#     @method_decorator(csrf_exempt)
-#     def dispatch(self, request, *args, **kwargs):
-#         return super().dispatch(request, *args, **kwargs)
-
-#     def post(self, request, *args, **kwargs):
-#         data = {}
-#         action = request.POST['action']
-#         try:
-#             if action == 'search_elector':
-#                 data = []
-#                 # ids = json.loads(request.POST['ids'])
-#                 term = request.POST['term']
-#                 # search = Elector.objects.exclude(id__in=ids).order_by('apellido','nombre')
-#                 if len(term):
-#                     term1 = 0
-#                     if term.isnumeric():
-#                         term1 = term
-#                     else:
-#                         term = '%' + term.replace(' ','%') + '%'
-
-#                     search = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
-#                                             .extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
-#                                             .order_by('fullname')[0:10]
+class CargaDiaDElectorViewGs(PermissionMixin, FormView):
+	# model = Elector
+	template_name = 'padron/carga_dia_d/list_carga_dia_d_elector_gs.html'
+	permission_required = 'view_elector'
+	form_class = ShearchForm
+ 
+	@method_decorator(csrf_exempt)
+	def dispatch(self, request, *args, **kwargs):
+		return super().dispatch(request, *args, **kwargs)
+	
+	def post(self, request, *args, **kwargs):
+		data = {}
+		action = request.POST['action']
+		try:
+			if action == 'search_elector':
+				data = []
+				term = request.POST['term']
 				 
-#                 for i in search:
-#                     item = i.toJSON()
-#                     item['value'] = '{} , {}'.format(i.nombre, i.apellido)
-#                     data.append(item)
-#             elif action == 'create':
-#                 with transaction.atomic():
-#                     electoresjson = json.loads(request.POST['electores'])
-#                     print(electoresjson)
-#                     for e in electoresjson:
-#                         elector = Elector.objects.get(pk=e['id'])
-#                         elector.pasoxpc = 'S'
-#                         elector.save()
-#             else:
-#                 data['error'] = 'No ha ingresado una opción'
-#         except Exception as e:
-#             data['error'] = str(e)
-#         return HttpResponse(json.dumps(data), content_type='application/json')
+				if len(term):
+					term1 = 0
+					if term.isnumeric():
+						term1 = term
+					else:
+						term = '%' + term.replace(' ','%') + '%'
+					position = 1    
+					
+					qs = Elector.objects.annotate(fullname=Concat('nombre', Value(' '), 'apellido')) \
+									 .filter(distrito=request.user.distrito)\
+									 .extra(where=["ci = %s OR upper(nombre||' '|| apellido) LIKE upper(%s)"], params=[term1,term]) \
+									 .order_by('fullname')[0:10]
+					# print(qs.query)
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['title'] = 'Carga Día D Puesto de Control'
-#         return context
+					for i in qs:
+						item = i.toJSON()
+						item['position'] = position
+						item['fullname'] = f"{item['apellido']}, {item['nombre']}"
+						item['value'] = '{} , {}'.format(i.nombre, i.apellido)
+						data.append(item)
+						position += 1
+					# print(data)
+			elif action == 'search_pasoxgs':
+				data = []          
+				_start = request.POST['start']
+				_length = request.POST['length']
+				_search = request.POST['search[value]']
+
+				_order = []
+				
+				for i in range(4):
+					_column_order = f'order[{i}][column]'
+					# print('Column Order:',_column_order)
+					if _column_order in request.POST:					
+						_column_number = request.POST[_column_order]
+						# print('Column Number:',_column_number)					
+						if _column_number == '3': #Hacemos esto por que en el datatable está fullname
+							_order.append('apellido')
+							_order.append('nombre')
+						else:
+							_order.append(request.POST[f'columns[{_column_number}][data]'].split(".")[0])
+					if f'order[{i}][dir]' in request.POST:
+						_dir = request.POST[f'order[{i}][dir]']
+						if (_dir=='desc'):
+							_order[i] = f"-{_order[i]}"
+	
+						  
+				_where = "'' = %s"
+				if len(_search):
+					if _search.isnumeric():
+						_where = " ci = %s"
+					else:
+						_search = '%' + _search.replace(' ','%') + '%'
+						_where = " upper(nombre||' '|| apellido) LIKE upper(%s)"  
+				
+				qs = Elector.objects.filter(distrito=request.user.distrito,pasoxgs='S',usu_modificacion=request.user)\
+									.extra(where=[_where], params=[_search])\
+									.order_by(*_order) 
+				total = qs.count()   
+
+				if _start and _length:
+					start = int(_start)
+					length = int(_length)
+					page = math.ceil(start / length) + 1
+					per_page = length 
+
+					qs = qs[start:start + length]                    
+				
+				for i in qs:
+					item = i.toJSON()
+					# item['position'] = position
+					item['fullname'] = f"{item['apellido']}, {item['nombre']}"
+					data.append(item)
+					# position += 1   
+				data = {'data': data,
+						'page': page,  # [opcional]
+						'per_page': per_page,  # [opcional]
+						'recordsTotal': total,
+						'recordsFiltered': total, }
+			   
+				# return JsonResponse(data,safe=False)
+			
+			elif action == 'edit_pasoxgs':                                
+				id = request.POST['id']
+				monto = request.POST['monto']
+				elector = Elector.objects.get(id=id)
+				if elector.pasoxgs=='S':
+					info =  f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b> <br>" 
+					info += f"CI: <b> {elector.ci} </b> <br>"
+					info += f"{elector.nombre}, {elector.apellido} <br>"
+					info += '<b> VOTA EN </b>  <br> ' 
+					info += f"{elector.local_votacion} <br> <br>"                    
+					info += '<b>=====> YA PASÓ  POR PC INCENTIVADO <===== </b> <br>'              
+					data['error'] = info
+				else:
+					elector.pasoxpc='S'
+					elector.pasoxgs='S'
+					elector.monto = monto
+					elector.save()
+					info = f"CI: <b> {elector.ci} </b> <br>"
+					info += f"{elector.nombre}, {elector.apellido} <br>"
+					info += '<b> VOTA EN </b>  <br> ' 
+					info += f"{elector.local_votacion} <br> <br>"
+					info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"                
+					data['info'] = info
+					
+
+			else:
+				data['error'] = 'No ha ingresado una opción'
+		except Exception as e:
+			data['error'] = str(e)
+		return HttpResponse(json.dumps(data), content_type='application/json')
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['create_url'] = reverse_lazy('elector_create')
+		context['title'] = 'Carga de Electores Puesto de Control GS'
+		context['distrito'] = self.request.user.distrito.denominacion
+		return context

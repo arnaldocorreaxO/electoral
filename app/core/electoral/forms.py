@@ -1,5 +1,7 @@
 from django.forms import *
 from django import forms
+
+from core.base.models import Parametro
 from .models import *
 from core.base.forms import *
 
@@ -373,6 +375,7 @@ class ShearchForm(forms.Form):
     manzana = forms.ChoiceField()
     operador = forms.ChoiceField()
     tipo_voto = forms.ChoiceField()
+    monto = forms.ChoiceField()
     def __init__(self, *args, **kwargs):
         usuario = kwargs.pop('usuario', None)
         # print(usuario)
@@ -426,6 +429,12 @@ class ShearchForm(forms.Form):
     # Tipo de Voto
     tipo_voto = forms.ChoiceField(choices=[
     (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('denominacion')])
+    
+    # Monto Gs
+    monto = forms.ChoiceField(widget=forms.RadioSelect,choices=[
+    (item.valor,item.parametro) for item in Parametro.objects.filter(activo__exact=True,grupo__exact='MTO_GS_DIA_D').order_by('id')])
+
+    
 
     PASOXPC_CHOICES = [
         ('','Todos'),
@@ -442,12 +451,21 @@ class ShearchForm(forms.Form):
     
     pasoxmv = forms.ChoiceField(choices=PASOXMV_CHOICES)
 
+    PASOXGS_CHOICES = [
+        ('','Todos'),
+        ('S','YA Pasaron'),
+        ('N','NO Pasaron'),
+    ]
+    
+    pasoxgs = forms.ChoiceField(choices=PASOXGS_CHOICES)
+
     date_range.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
     ciudad.widget.attrs.update({'class': 'form-control select2'})    
     tipo_voto.widget.attrs.update({'class': 'form-control select2'})
     pasoxmv.widget.attrs.update({'class': 'form-control select2'})
     pasoxpc.widget.attrs.update({'class': 'form-control select2'})
+    # monto.widget.attrs.update({'class': 'inline'})
     
 ''' 
 ====================

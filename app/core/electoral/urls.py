@@ -74,8 +74,9 @@ urlpatterns = [
     #Carga de Votos
     path('carga_dia_d_list_mv', CargaDiaDListView.as_view(), name='carga_dia_d_list_mv'),
     path('carga_dia_d_list_pc', CargaDiaDElectorView.as_view(), name='carga_dia_d_list_pc'),
+    path('carga_dia_d_list_gs', CargaDiaDElectorViewGs.as_view(), name='carga_dia_d_list_gs'),
     path('carga_dia_d/add/', CargaDiaDCreateView.as_view(), name='carga_dia_d_create'),
-    path('carga_dia_d/update/<int:pk>/<opcion>/<valor>/', CargaDiaDUpdateView.as_view(), name='carga_dia_d_update'),
+    path('carga_dia_d/update/<int:pk>/<opcion>/<valor>/<monto>/', CargaDiaDUpdateView.as_view(), name='carga_dia_d_update'),
     path('carga_dia_d/delete/<int:pk>/', CargaDiaDDeleteView.as_view(), name='carga_dia_d_delete'),
 
 
