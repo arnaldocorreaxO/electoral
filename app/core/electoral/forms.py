@@ -1,5 +1,6 @@
 from django.forms import *
 from django import forms
+from django.db.models import Q
 
 from core.base.models import Parametro
 from .models import *
@@ -432,7 +433,7 @@ class ShearchForm(forms.Form):
     
     # Monto Gs
     monto = forms.ChoiceField(choices=[
-    (item.valor,item.parametro) for item in Parametro.objects.filter(activo__exact=True,grupo__exact='MTO_GS_DIA_D').order_by('id')])
+    (item.valor,item.parametro) for item in Parametro.objects.filter(Q(activo__exact=True) & Q(grupo__exact='MTO_GS_DIA_D')).order_by('id')])
     # monto = forms.ChoiceField(widget=forms.RadioSelect,choices=[
     # (item.valor,item.parametro) for item in Parametro.objects.filter(activo__exact=True,grupo__exact='MTO_GS_DIA_D').order_by('id')])
 
