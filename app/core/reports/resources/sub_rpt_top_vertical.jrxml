@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.1.final using JasperReports Library version 6.20.1-7584acb244139816654f64e2fd57a00d3e31921e  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="sub_rpt_top_vertical" pageWidth="595" pageHeight="936" whenNoDataType="AllSectionsNoDetail" columnWidth="595" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ba0f302e-7940-4e06-a588-1bee7ec99b04">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="1000"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NO_DATA_ADAPTER"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="P_REPORTE" class="java.lang.String"/>
+	<parameter name="P_USUARIO" class="java.lang.String"/>
+	<parameter name="P_TITULO1" class="java.lang.String"/>
+	<parameter name="P_TITULO2" class="java.lang.String"/>
+	<parameter name="P_TITULO3" class="java.lang.String"/>
+	<parameter name="P_TITULO4" class="java.lang.String"/>
+	<parameter name="P_RUTA" class="java.lang.String"/>
+	<parameter name="P_FECHA_DESDE" class="java.lang.String"/>
+	<parameter name="P_FECHA_HASTA" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<variable name="V_HOY" class="java.util.Date" resetType="None">
+		<variableExpression><![CDATA[NOW( )]]></variableExpression>
+	</variable>
+	<pageHeader>
+		<band height="63">
+			<textField>
+				<reportElement x="68" y="4" width="432" height="18" uuid="c90e11db-aa81-4780-b751-a4d623570501">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{P_TITULO1}!=null?$P{P_TITULO1}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="68" y="22" width="432" height="14" uuid="fa40376d-3b58-4e17-bec4-485484e2aae1">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{P_TITULO2}!=null?$P{P_TITULO2}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="68" y="48" width="432" height="14" uuid="84bbd460-3007-4467-9a0c-2e10b951c0bf">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{P_TITULO4}!=null?$P{P_TITULO4}:"")]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="68" y="36" width="432" height="12" uuid="26d8dbb7-c737-4b0c-847b-9a98f244562e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{P_TITULO3}!=null?$P{P_TITULO3}:"")]]></textFieldExpression>
+			</textField>
+			<image onErrorType="Icon">
+				<reportElement x="10" y="4" width="60" height="59" uuid="b0312ba4-0922-41f9-bd0c-e8c99988ccd3"/>
+				<imageExpression><![CDATA[$P{P_RUTA} +  "logo_empresa.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement stretchType="ContainerHeight" x="500" y="9" width="90" height="50" uuid="ec6b5d4d-e404-4c4d-a110-465dd06dc84d"/>
+				<textElement textAlignment="Right">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Impresión\n"
++ $P{P_REPORTE} 
++"\nFecha: " + DATEFORMAT($V{V_HOY},"dd/MM/yyyy") 
++"\nHora: " + DATEFORMAT($V{V_HOY},"HH:mm:ss")
++"\nUsuario: " + $P{P_USUARIO}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout"/>
+			<textField>
+				<reportElement x="69" y="2" width="431" height="22" uuid="1924b4c0-da16-4173-ab98-3b58655c66cf"/>
+				<textElement textAlignment="Center">
+					<font size="4"/>
+				</textElement>
+				<textFieldExpression><![CDATA["NO BORRAR DETALLE: Sin la seccion detalle muestra vacio"]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
