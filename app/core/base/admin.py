@@ -15,9 +15,10 @@ class ModeloAdminBase(admin.ModelAdmin):
                     'fec_modificacion',
                     ]
 class ParametroModelAdmin(ModeloAdminBase):
-    list_display = ['parametro','descripcion','valor']
-    search_fields = ['parametro','descripcion','valor']
+    list_display = ['grupo','parametro','descripcion','valor']
+    search_fields = ['grupo','parametro','descripcion','valor']
     
 
 admin.site.register(Parametro,ParametroModelAdmin)
 admin.site.register(Modulo,ModeloAdminBase)
+admin.site.register(Reporte,ModeloAdminBase)

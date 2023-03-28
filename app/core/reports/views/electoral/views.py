@@ -99,7 +99,6 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 				report.report_url = reverse_lazy(report.report_name)
 				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
 				#PARAMETROS
-				report.params['P_TITULO3'] ='VOTA LISTA "1" SANTI PEÑA PRESIDENTE'
 				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=[''] else None
 				report.params['P_BARRIO_ID'] =",".join(barrio) if barrio!=[''] else None
 				report.params['P_TIPO_VOTO_ID'] = ",".join(tipo_voto) if tipo_voto!=[''] else None

@@ -1,9 +1,10 @@
 from config import conn, settings
 from crum import get_current_user
 from django.http import FileResponse
+from django.db.models import Q
 from pyreportjasper import PyReportJasper
-from core.base.models import Parametro
-from core.user.models import User
+from core.base.models import Parametro, Reporte
+
 
 
 class JasperReportBase():
@@ -38,21 +39,29 @@ class JasperReportBase():
 		"""
 		Este metodo sera implementado por cada uno de nuestros reportes
 		"""	
-		params = {  'P_TITULO1': Parametro.objects.filter(parametro='TR1').first().valor if Parametro.objects.filter(parametro='TR1').first() else None,
-                    'P_TITULO2': Parametro.objects.filter(parametro='TR2').first().valor if Parametro.objects.filter(parametro='TR2').first() else None,
-                    'P_TITULO3': Parametro.objects.filter(parametro='TR3').first().valor if Parametro.objects.filter(parametro='TR3').first() else None,
-                    'P_TITULO4': Parametro.objects.filter(parametro='TR4').first().valor if Parametro.objects.filter(parametro='TR4').first() else None,
+		# PRIMERO ASIGNAMOS EL TITULO GENERAL DEL REPORTE Y LUEGO SI TIENE, EL TITULO ESPECIFICO
+		reporte = Reporte.objects.filter(nombre=self.report_name).first()
+		rptgral = Parametro.objects.filter(grupo__iexact='REPORTE_GENERAL')
+		TITULO=[]
+		TITULO.append(rptgral.filter(parametro__iexact='TR1').first().valor if rptgral.filter(parametro__iexact='TR1').first() else '')
+		TITULO.append(rptgral.filter(parametro__iexact='TR2').first().valor if rptgral.filter(parametro__iexact='TR2').first() else '')
+		TITULO.append(rptgral.filter(parametro__iexact='TR3').first().valor if rptgral.filter(parametro__iexact='TR3').first() else '')
+		TITULO.append(rptgral.filter(parametro__iexact='TR4').first().valor if rptgral.filter(parametro__iexact='TR4').first() else '')
+
+		if reporte:			
+			TITULO[0] = reporte.titulo1 if reporte.titulo1 else TITULO[0]			
+			TITULO[1] = reporte.titulo2 if reporte.titulo2 else TITULO[1]			
+			TITULO[2] = reporte.titulo3 if reporte.titulo3 else TITULO[2]			
+			TITULO[3] = reporte.titulo4 if reporte.titulo4 else TITULO[3]			
+
+		params = {  'P_TITULO1': TITULO[0],					
+                    'P_TITULO2': TITULO[1],                    
+                    'P_TITULO3': TITULO[2],                    
+                    'P_TITULO4': TITULO[3],                    
 					'P_REPORTE': self.report_name,
 					'P_USUARIO': str(get_current_user().username),
                     'P_RUTA': settings.REPORTS_DIR }
-		# params = {  'P_TITULO1': settings.REPORT_TITULO1,
-        #             'P_TITULO2': settings.REPORT_TITULO2,
-        #             'P_TITULO3': settings.REPORT_TITULO3,
-        #             'P_TITULO4': self.report_title,
-		# 			'P_REPORTE': self.report_name,
-		# 			'P_USUARIO': str(get_current_user().username),
-        #             'P_RUTA': settings.REPORTS_DIR }
-		# Concatenamos parametros locales y los enviados 
+		
 		return dict(params, **self.params)
 		
 
