@@ -22,7 +22,7 @@ $(function () {
 
     $('select[name="barrio"]').on('change', function () {
         var id = $(this).val();
-        var options = '<option value="">--------------</option>';
+        var options = '<option value="">(Todos)</option>';
         if (id === '') {
             select_manzanas.html(options);
             return false;
