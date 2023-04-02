@@ -201,7 +201,7 @@ class ElectorCreateView(PermissionMixin, CreateView):
 				return self.validate_data()
 
 			elif action == 'search_manzana_id':
-				data = [{'id': '', 'text': '------------'}]	
+				data = [{'id': '', 'text': '(Todos)'}]	
 				barrio_list = None	
 				# print(request.POST)				
 				if 'id' in request.POST:
@@ -218,7 +218,7 @@ class ElectorCreateView(PermissionMixin, CreateView):
 				# print(data)
 			
 			elif action == 'search_mesa_id':
-				data = [{'id': '', 'text': '------------'}]				
+				data = [{'id': '', 'text': '(Todos)'}]				
 				local_votacion_list = [request.POST['id'] if 'id' in request.POST else None]
 				if local_votacion_list is None:
 					local_votacion_list = [request.POST.getlist('id[]') if 'id[]' in request.POST else '']	
