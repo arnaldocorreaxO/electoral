@@ -84,7 +84,7 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		action = request.POST['action']
 		data = {}
-		print(request.POST)
+		# print(request.POST)
 		try:
 			if action == 'report':
 				data = []
@@ -97,7 +97,7 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 				report = JasperReportBase()  
 				report.report_name  = 'rpt_padron001'
 				report.report_url = reverse_lazy(report.report_name)
-				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				report.report_title = Module.objects.filter(url=report.report_url).first().name                        
 				#PARAMETROS
 				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=[''] else None
 				report.params['P_BARRIO_ID'] =",".join(barrio) if barrio!=[''] else None
@@ -131,7 +131,7 @@ class RptElectoral001ReportView(ModuleMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		action = request.POST['action']
 		data = {}
-		print(request.POST)
+		# print(request.POST)
 		try:
 			if action == 'report':
 				data = []
@@ -146,7 +146,7 @@ class RptElectoral001ReportView(ModuleMixin, FormView):
 				report.report_name  = 'rpt_electoral001'				
 				
 				report.report_url = reverse_lazy(report.report_name)
-				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				report.report_title = Module.objects.filter(url=report.report_url).first().name                        
 				if len(titulo_extra):
 					report.report_title = titulo_extra[0]
 				#PARAMETROS                        
@@ -184,6 +184,7 @@ class RptElectoral002ReportView(ModuleMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		action = request.POST['action']
 		data = {}
+		# print(request.POST)
 		try:
 			if action == 'report':
 				data = []
@@ -237,6 +238,7 @@ class RptElectoral003ReportView(ModuleMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		action = request.POST['action']
 		data = {}
+		# print(request.POST)
 		try:
 			if action == 'report':
 				data = []
@@ -302,7 +304,7 @@ class RptEstadistica001ReportView(ModuleMixin, FormView):
 				report = JasperReportBase()  
 				report.report_name  = 'rpt_estadistica001'
 				report.report_url = reverse_lazy(report.report_name)
-				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				report.report_title =  Module.objects.filter(url=report.report_url).first().name                        
 				#PARAMETROS 
 				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=['']  else None	
 				
@@ -318,5 +320,61 @@ class RptEstadistica001ReportView(ModuleMixin, FormView):
 		context = super().get_context_data(**kwargs)
 		context['form']=ReportForm(usuario=self.request.user)
 		context['title'] = 'Reporte de Estadisticas Votos Positivos vs Negativos'
+		context['action'] = 'report'
+		return context
+	
+
+	'''Electores por Barrios y Manzanas Planilla Visita Casa por Casa'''
+class RptElectoral004ReportView(ModuleMixin, FormView):
+	template_name = 'electoral/reports/rpt_electoral004.html'
+	form_class = ReportForm
+
+	@method_decorator(csrf_exempt)
+	def dispatch(self, request, *args, **kwargs):
+		return super().dispatch(request, *args, **kwargs)
+
+	def post(self, request, *args, **kwargs):
+		action = request.POST['action']
+		data = {}
+		# print(request.POST)
+		try:
+			if action == 'report':
+				data = []
+				tipo = request.POST['tipo']
+				local_votacion = request.POST.getlist('local_votacion') if 'local_votacion' in request.POST else None
+				barrio = request.POST.getlist('barrio') if 'barrio' in request.POST else None
+				manzana = request.POST.getlist('manzana') if 'manzana' in request.POST else None
+				salto_pagina = request.POST.getlist('salto_pagina') if 'salto_pagina' in request.POST else None
+				titulo_extra = request.POST.getlist('titulo_extra') if 'titulo_extra' in request.POST else ''						 
+				filas = request.POST.getlist('filas') if 'filas' in request.POST else None						 
+				#CONFIG				 
+				report = JasperReportBase() 
+				report.report_name  = 'rpt_electoral004'				
+				
+				report.report_url = reverse_lazy(report.report_name)
+				report.report_title = Module.objects.filter(url=report.report_url).first().name                        
+				if len(titulo_extra):
+					report.report_title = titulo_extra[0]
+				#PARAMETROS                        
+				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=['']  else None
+				report.params['P_BARRIO_ID']= ",".join(barrio) if barrio!=['']  else None
+				report.params['P_MANZANA_ID']= ",".join(manzana) if manzana!=['']  else None
+				report.params['P_FILAS']= ",".join(filas) if filas!=['']  else None
+				
+				if not salto_pagina: 
+					report.report_name  = 'rpt_electoral001_ss'
+
+				return report.render_to_response(tipo)			   
+
+			else:
+				data['error'] = 'No ha ingresado una opción'
+		except Exception as e:
+			data['error'] = str(e)
+		return HttpResponse(json.dumps(data), content_type='application/json')
+
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['form']=ReportForm(usuario=self.request.user)
+		context['title'] = 'Planilla de Electores para Visita Casa x Casa'
 		context['action'] = 'report'
 		return context

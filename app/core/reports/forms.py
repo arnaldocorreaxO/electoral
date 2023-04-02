@@ -1,3 +1,4 @@
+from core.base.utils import choiceNumbers
 from core.electoral.models import Barrio, LocalVotacion, Manzana, Operador, Seccional, TipoVoto
 from django import forms
 
@@ -43,5 +44,9 @@ class ReportForm(forms.Form):
 
     salto_pagina = forms.BooleanField(initial=True,required=False)
     titulo_extra = forms.CharField(required=False)
+    filas = forms.ChoiceField(choices=choiceNumbers(),initial=3)
     #WIDGET
     titulo_extra.widget.attrs.update({'class': 'form-control'})   
+    # salto_pagina.widget.attrs.update({'class': 'form-control'})   
+    filas.widget.attrs.update({'class': 'form-control select2'})   
+    
