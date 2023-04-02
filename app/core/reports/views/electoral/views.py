@@ -84,7 +84,7 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		action = request.POST['action']
 		data = {}
-		print(request.POST)
+		# print(request.POST)
 		try:
 			if action == 'report':
 				data = []
@@ -97,7 +97,7 @@ class RptPadron001ReportView(ModuleMixin, FormView):
 				report = JasperReportBase()  
 				report.report_name  = 'rpt_padron001'
 				report.report_url = reverse_lazy(report.report_name)
-				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				report.report_title = Module.objects.filter(url=report.report_url).first().name                        
 				#PARAMETROS
 				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=[''] else None
 				report.params['P_BARRIO_ID'] =",".join(barrio) if barrio!=[''] else None
@@ -131,7 +131,7 @@ class RptElectoral001ReportView(ModuleMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		action = request.POST['action']
 		data = {}
-		print(request.POST)
+		# print(request.POST)
 		try:
 			if action == 'report':
 				data = []
@@ -146,7 +146,7 @@ class RptElectoral001ReportView(ModuleMixin, FormView):
 				report.report_name  = 'rpt_electoral001'				
 				
 				report.report_url = reverse_lazy(report.report_name)
-				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				report.report_title = Module.objects.filter(url=report.report_url).first().name                        
 				if len(titulo_extra):
 					report.report_title = titulo_extra[0]
 				#PARAMETROS                        
@@ -184,6 +184,7 @@ class RptElectoral002ReportView(ModuleMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		action = request.POST['action']
 		data = {}
+		# print(request.POST)
 		try:
 			if action == 'report':
 				data = []
@@ -237,6 +238,7 @@ class RptElectoral003ReportView(ModuleMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		action = request.POST['action']
 		data = {}
+		# print(request.POST)
 		try:
 			if action == 'report':
 				data = []
@@ -302,7 +304,7 @@ class RptEstadistica001ReportView(ModuleMixin, FormView):
 				report = JasperReportBase()  
 				report.report_name  = 'rpt_estadistica001'
 				report.report_url = reverse_lazy(report.report_name)
-				report.report_title = report_title = Module.objects.filter(url=report.report_url).first().name                        
+				report.report_title =  Module.objects.filter(url=report.report_url).first().name                        
 				#PARAMETROS 
 				report.params['P_LOCAL_VOTACION_ID']= ",".join(local_votacion) if local_votacion!=['']  else None	
 				
@@ -322,8 +324,6 @@ class RptEstadistica001ReportView(ModuleMixin, FormView):
 		return context
 	
 
-
-
 	'''Electores por Barrios y Manzanas Planilla Visita Casa por Casa'''
 class RptElectoral004ReportView(ModuleMixin, FormView):
 	template_name = 'electoral/reports/rpt_electoral004.html'
@@ -336,7 +336,7 @@ class RptElectoral004ReportView(ModuleMixin, FormView):
 	def post(self, request, *args, **kwargs):
 		action = request.POST['action']
 		data = {}
-		print(request.POST)
+		# print(request.POST)
 		try:
 			if action == 'report':
 				data = []
