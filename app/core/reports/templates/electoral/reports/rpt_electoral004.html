@@ -1,0 +1,63 @@
+{% extends 'report2.html' %}
+{% load widget_tweaks %}
+{% load security_extras %}
+{% load static %}
+{% block head_report %}
+<script src="{% static '/js/select2_barrio_manzana.js' %}"></script>
+{% endblock %}
+
+{% block params_report %}
+<div class="row">
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Local de Votacion</label>
+            <div class="input-group mb-3">
+                {{ form.local_votacion }}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Barrio</label>
+            <div class="input-group mb-3">
+                {{ form.barrio }}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="form-group">
+            <label>Por Manzana</label>
+            <div class="input-group mb-3">
+                {{ form.manzana }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-8">
+        <div class="form-group">
+            <label>Titulo Extra</label>
+            <div class="input-group mb-3">
+                {{ form.titulo_extra }}
+            </div>
+        </div>
+    </div>   
+    <div class="col-lg-2">
+        <div class="form-group">
+            <label>Salto de Página</label>
+            <div class="input-group mb-3">
+                {{ form.salto_pagina }}
+            </div>
+        </div>
+    </div>   
+    <div class="col-lg-2">
+        <div class="form-group">
+            <label>Filas en Blanco Adicionales</label>
+            <div class="input-group mb-3">
+                {{ form.filas }}
+            </div>
+        </div>
+    </div>   
+</div>
+
+{% endblock %}
