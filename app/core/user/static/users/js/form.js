@@ -172,7 +172,7 @@ $(function () {
     });
 
     $('input[name="username"]').keypress(function (e) {
-        return validate_form_text('letters_spaceless', e, null);
+        // return validate_form_text('letters_spaceless', e, null);
     });
 
     $('input[name="dni"]').keypress(function (e) {
