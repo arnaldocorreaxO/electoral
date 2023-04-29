@@ -14,7 +14,7 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         fields = 'first_name', 'last_name', 'username', 'password', 'dni', \
-                 'email', 'groups', 'image','is_active', 'is_staff', 'is_superuser','distrito'
+                 'email', 'groups', 'image','is_active', 'is_staff', 'is_superuser','distrito','pc'
         widgets = {
             'first_name': forms.TextInput(attrs={'placeholder': 'Ingrese sus nombres'}),
             'last_name': forms.TextInput(attrs={'placeholder': 'Ingrese sus apellidos'}),
