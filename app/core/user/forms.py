@@ -24,6 +24,8 @@ class UserForm(ModelForm):
             'password': forms.PasswordInput(render_value=True, attrs={'placeholder': 'Ingrese un password'}),
             'groups': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple', 'style': 'width:100%'}),
             'distrito': forms.Select(attrs={'class': 'select2', 'style': 'width:100%'}),
+            'pc': forms.TextInput(attrs={'placeholder': 'Ingrese Sector PC'}),
+            
         }
         exclude = ['is_change_password', 'user_permissions', 'date_joined',
                    'last_login', 'token']

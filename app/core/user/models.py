@@ -17,6 +17,7 @@ class User(AbstractUser):
     is_change_password = models.BooleanField(default=False)
     token = models.UUIDField(primary_key=False, editable=False, null=True, blank=True, default=uuid.uuid4, unique=True)
     distrito = models.ForeignKey(Distrito, verbose_name='Distrito', on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_distrito',blank=True,null=True)
+    pc = models.CharField(max_length=4, verbose_name='PC',null=True,blank=True,default="PC01")
     def toJSON(self):
         item = model_to_dict(self, exclude=['last_login', 'token', 'password', 'user_permissions'])
         item['image'] = self.get_image()
