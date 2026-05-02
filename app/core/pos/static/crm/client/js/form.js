@@ -40,34 +40,34 @@ document.addEventListener('DOMContentLoaded', function (e) {
                         //     message: 'Debe ingresar sus dos apellidos y solo utilizando caracteres alfabéticos'
                         // },
                     }
-                },
-                dni: {
-                    validators: {
-                        notEmpty: {},
-                        stringLength: {
-                            min: 10
-                        },
-                        digits: {},
-                        callback: {
-                            message: 'Introduce un número de cedula válido',
-                            callback: function (input) {
-                                return validate_dni_ruc(input.value) || input.value === '9999999999';
-                            }
-                        },
-                        remote: {
-                            url: pathname,
-                            data: function () {
-                                return {
-                                    obj: form.querySelector('[name="dni"]').value,
-                                    type: 'dni',
-                                    action: 'validate_data'
-                                };
-                            },
-                            message: 'El número de cedula ya se encuentra registrado',
-                            method: 'POST'
-                        }
-                    }
-                },
+                },/*
+                // dni: {
+                //     validators: {
+                //         notEmpty: {},
+                //         stringLength: {
+                //             min: 10
+                //         },
+                //         digits: {},
+                //         callback: {
+                //             message: 'Introduce un número de cedula válido',
+                //             callback: function (input) {
+                //                 return validate_dni_ruc(input.value) || input.value === '9999999999';
+                //             }
+                //         },
+                //         remote: {
+                //             url: pathname,
+                //             data: function () {
+                //                 return {
+                //                     obj: form.querySelector('[name="dni"]').value,
+                //                     type: 'dni',
+                //                     action: 'validate_data'
+                //                 };
+                //             },
+                //             message: 'El número de cedula ya se encuentra registrado',
+                //             method: 'POST'
+                //         }
+                //     }
+                // },*/
                 mobile: {
                     validators: {
                         notEmpty: {},
@@ -199,9 +199,9 @@ $(function () {
         return validate_form_text('letters', e, null);
     });
 
-    $('input[name="dni"]').keypress(function (e) {
-        return validate_form_text('numbers', e, null);
-    });
+    // $('input[name="dni"]').keypress(function (e) {
+    //     return validate_form_text('numbers', e, null);
+    // });
 
     $('input[name="mobile"]').keypress(function (e) {
         return validate_form_text('numbers', e, null);

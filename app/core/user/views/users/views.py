@@ -85,10 +85,10 @@ class UserCreateView(PermissionMixin, CreateView):
                 if User.objects.filter(dni=obj):
                     data['valid'] = False
             elif type == 'username':
-                if User.objects.filter(username__icontains=obj):
+                if User.objects.filter(username__iexact=obj):
                     data['valid'] = False
             elif type == 'email':
-                if User.objects.filter(email=obj):
+                if User.objects.filter(email__iexact=obj):
                     data['valid'] = False
         except:
             pass
@@ -138,10 +138,10 @@ class UserUpdateView(PermissionMixin, UpdateView):
                 if User.objects.filter(dni=obj).exclude(id=id):
                     data['valid'] = False
             elif type == 'username':
-                if User.objects.filter(username__icontains=obj).exclude(id=id):
+                if User.objects.filter(username__iexact=obj).exclude(id=id):
                     data['valid'] = False
             elif type == 'email':
-                if User.objects.filter(email=obj).exclude(id=id):
+                if User.objects.filter(email__iexact=obj).exclude(id=id):
                     data['valid'] = False
         except:
             pass
