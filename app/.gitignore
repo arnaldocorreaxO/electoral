@@ -478,3 +478,4 @@ venv.bak/
 # KDE Directory file
 .directory
 
+../logs/
