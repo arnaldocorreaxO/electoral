@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,vscode,python,django
 
 ### Django ###
+logs/
 *.log
 *.pot
 *.pyc
@@ -260,6 +261,9 @@ config/*
 staticfiles/*
 factora.sqlite3
 db/factora.sqlite3
+db/db.sqlite3
+db/db2.sqlite3
+db/db3.sqlite3
 media
 
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
@@ -474,3 +478,4 @@ venv.bak/
 # KDE Directory file
 .directory
 
+../logs/
