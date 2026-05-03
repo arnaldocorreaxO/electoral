@@ -83,14 +83,6 @@ function getData(all) {
         lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
         pagingType: "full_numbers",
         pageLength: 10,
-        preDrawCallback: function (settings) {
-            // Guardar el scroll antes de redibujar (dentro del contenedor si tiene scroll interno)
-            this.scrollPos = $(window).scrollTop();
-        },
-            drawCallback: function (settings) {
-            // Restaurar el scroll después de redibujar
-            $(window).scrollTop(this.scrollPos);
-        },
         ajax: {
             url: pathname,
             type: 'POST',
@@ -263,16 +255,30 @@ function getData(all) {
                             'data-id="' + row.id + '" data-field="nro_casa" value="' + (data ? data : '') + '">';
                     }
                 },
-            {
-                targets: [-1],
+          {
+                targets: [-1], // Columna de Opciones
                 class: 'text-center',
                 render: function (data, type, row) {
-                    var buttons = '';                    
-                    buttons += '<button type="button" class="btn btn-warning js-update" data-url="/electoral/elector/update/' + row.id + '/"><i class="fas fa-edit"></i></button>';
+                    var buttons = '<div class="btn-group">';
+                    
+                    // El botón de Info cambia de color dinámicamente
+                    buttons += '<button type="button" class="btn ' + row.btn_class + ' btn-md" ' +
+                            'data-toggle="tooltip" data-html="true" data-placement="left" ' +
+                            'title="' + row.tooltip_votos + '">' +
+                            '<i class="fas fa-info-circle"></i></button>';
+
+                    // Botón Editar (Warning / Amarillo de Bootstrap)
+                    buttons += '<button type="button" class="btn btn-warning btn-md js-update" ' +
+                            'data-url="/electoral/elector/update/' + row.id + '/"><i class="fas fa-edit"></i></button>';
+                    
+                    buttons += '</div>';
                     return buttons;
                 }
-            },
-        ],       
+            }
+        ],
+        drawCallback: function (settings) {
+            $('[data-toggle="tooltip"]').tooltip();
+        },       
         rowCallback: function (row, data, index) {
 
         },

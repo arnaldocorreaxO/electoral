@@ -143,3 +143,27 @@ table.table-bordered.dataTable tbody td {
 .dataTables_scrollHeadInner table {
     width: 100% !important;
 }
+
+
+/* Voto 3: Naranja */
+.btn-orange {
+    background-color: #fd7e14;
+    border-color: #fd7e14;
+    color: #fff;
+}
+.btn-orange:hover { color: #fff; background-color: #e96b02; }
+
+/* Voto 1: Rojo Fuerte / Oscuro */
+.btn-danger-dark {
+    background-color: #a10000;
+    border-color: #800000;
+    color: #fff;
+}
+.btn-danger-dark:hover { color: #fff; background-color: #7a0000; }
+
+/* Voto 0 / Sin Historial: Negro */
+.btn-dark {
+    background-color: #000000;
+    border-color: #000000;
+    color: #fff;
+}

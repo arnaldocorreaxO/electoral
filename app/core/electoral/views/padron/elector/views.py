@@ -1,4 +1,5 @@
 import math
+from core.base.models import Parametro
 from core.reports.jasperbase import JasperReportBase
 from core.electoral.models import Barrio, Manzana, TipoVoto
 from datetime import date, datetime
@@ -141,12 +142,56 @@ class ElectorListView(PermissionMixin, FormView):
 				else:
 					qs = qs[start:start + length]
 
-				position = start + 1
+				# position = start + 1
+				
+				# 1. Obtenemos las descripciones de los parámetros una sola vez
+				# Creamos un diccionario: {'VOTO1': 'Elecciones 2018', 'VOTO2': 'Municipales 2021', ...}
+				nombres_votos = {p.parametro: p.descripcion for p in Parametro.objects.filter(parametro__in=['VOTO1', 'VOTO2', 'VOTO3', 'VOTO4', 'VOTO5'])}
+				data = []
+
 				for i in qs:
 					item = i.toJSON()
-					# item['position'] = position					
+					
+					# Definimos las clases de color para el botón
+					# btn-dark es negro, btn-danger-dark es el rojo fuerte que definiremos en CSS
+					colores_config = {
+						'voto5': 'btn-success',      # Verde
+						'voto4': 'btn-warning',      # Amarillo
+						'voto3': 'btn-orange',       # Naranja
+						'voto2': 'btn-danger',       # Rojizo
+						'voto1': 'btn-danger-dark',  # Rojo fuerte
+					}
+					
+					btn_class = 'btn-dark'  # Por defecto: Voto 0 (Negro / Sin historial)
+					historial = []
+
+					# AGREGAR ENCABEZADO AL HISTORIAL
+					# Usamos una clase o estilo para que parezca un header
+					header_html = "<div style='border-bottom: 1px solid #ccc; margin-bottom: 5px; padding-bottom: 3px;'><b>HISTORIAL DE VOTOS</b></div>"
+		
+					# Buscamos de mayor a menor
+					for n in range(5, 0, -1):
+						cod_campo = f'voto{n}'
+						valor = getattr(i, cod_campo, None)
+						
+						# Obtenemos la descripción real desde nuestro diccionario (si no existe, usamos el código)
+						nombre_eleccion = nombres_votos.get(cod_campo.upper(), cod_campo.upper())
+
+						if valor == 'S':
+							# Si es el primer 'S' que encontramos, define el color del botón
+							if btn_class == 'btn-dark':
+								btn_class = colores_config.get(cod_campo)
+							# Añadimos al historial con color VERDE
+							historial.append(f"<span style='color: #28a745;'>●</span> <b>{nombre_eleccion}:</b> SI")
+							
+						elif valor == 'N':
+							# Añadimos al historial con color ROJO (pero no afecta al color del botón)
+							historial.append(f"<span style='color: #dc3545;'>●</span> <b>{nombre_eleccion}:</b> NO")
+
+					item['btn_class'] = btn_class
+					item['tooltip_votos'] = header_html + "<br>".join(historial) if historial else "Sin historial de votos"
+					
 					data.append(item)
-					# position += 1
 
 				data = {'data': data,
 						'page': page,  # [opcional]
