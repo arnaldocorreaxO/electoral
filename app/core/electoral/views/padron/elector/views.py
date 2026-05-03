@@ -1,10 +1,10 @@
 import math
 from core.reports.jasperbase import JasperReportBase
-from core.electoral.models import Manzana
+from core.electoral.models import Barrio, Manzana, TipoVoto
 from datetime import date, datetime
 from core.reports.forms import ReportForm
 import json
-
+from django.db.models import Q
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -81,6 +81,7 @@ class ElectorListView(PermissionMixin, FormView):
 						if (_dir=='desc'):
 							_order[i] = f"-{_order[i]}"
 				# print('Order:', _order)
+				_order.append('id') # Siempre ordenamos por id para evitar problemas con la paginación y manterner un orden consistente aunque se repitan valores en los campos ordenados
 				if len(term):
 					_search = term
 
@@ -143,15 +144,83 @@ class ElectorListView(PermissionMixin, FormView):
 				position = start + 1
 				for i in qs:
 					item = i.toJSON()
-					item['position'] = position					
+					# item['position'] = position					
 					data.append(item)
-					position += 1
+					# position += 1
 
 				data = {'data': data,
 						'page': page,  # [opcional]
 						'per_page': per_page,  # [opcional]
 						'recordsTotal': total,
 						'recordsFiltered': total, }
+				
+			elif action == 'search_select2':
+				field = request.POST.get('field')
+				term = request.POST.get('term', '')
+				results = []
+				
+				if field == 'barrio':
+					# Buscamos por denominación O por ID exacto (si es numérico)
+					query = Q(denominacion__icontains=term)
+					if term.isdigit():
+						query |= Q(id=term)
+						
+					qs = Barrio.objects.filter(query)[:10]
+					# Usamos str(x) para que el texto mostrado sea el que define tu __str__ en el modelo
+					results = [{'id': x.id, 'text': str(x)} for x in qs]
+					
+				elif field == 'manzana':
+					barrio_id = request.POST.get('barrio_id')
+					
+					# Buscamos por denominación O por el campo 'cod' (o 'codigo')
+					query = Q(denominacion__icontains=term)
+					if term: # Si el término no está vacío
+						# Cambia 'cod' por el nombre exacto de tu campo en el modelo Manzana
+						query |= Q(cod__icontains=term) 
+						if term.isdigit():
+							query |= Q(id=term)
+
+					qs = Manzana.objects.filter(query)
+					
+					if barrio_id:
+						qs = qs.filter(barrio_id=barrio_id)
+						
+					results = [{'id': x.id, 'text': str(x)} for x in qs[:10]]
+
+				# No olvides mantener aquí tu bloque de tipo_voto
+				elif field == 'tipo_voto':
+					query = Q(cod__icontains=term)
+					if term.isdigit():
+						query |= Q(id=term)
+					qs = TipoVoto.objects.filter(query)[:15]
+					results = [{'id': x.id, 'text': str(x)} for x in qs]
+					
+				return JsonResponse(results, safe=False)
+			
+			elif action == 'quick_update':
+				try:
+					elector = Elector.objects.get(pk=request.POST.get('id'))
+					field = request.POST.get('field')
+					val = request.POST.get('value')
+					print(val)
+					if field == 'barrio':
+						# Si cambia el barrio, el ID de la manzana DEBE ser None
+						elector.barrio_id = val if val else None
+						elector.manzana_id = None 
+						
+					elif field == 'manzana':
+						elector.manzana_id = val if val else None
+						
+					elif field == 'tipo_voto':
+						elector.tipo_voto_id = val if val else None
+					
+					elif field == 'nro_casa':
+						elector.nro_casa = val if val else None
+						
+					elector.save()
+					return JsonResponse({'status': 'ok'})
+				except Exception as e:
+					return JsonResponse({'error': str(e)})
 			else:
 				data['error'] = 'No ha ingresado una opción'
 		except Exception as e:

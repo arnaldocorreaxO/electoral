@@ -79,25 +79,17 @@ function getData(all) {
         paging: true,
         ordering: true,
         searching: true,
-        // stateSave: true,      //Salva la seleccion de longitud de pagina lengthMenu  
+        // stateSave: true,      Salva la seleccion de longitud de pagina lengthMenu  
         lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"]],
         pagingType: "full_numbers",
         pageLength: 10,
-        preDrawCallback: function (settings) {
-            // Guardar el scroll antes de redibujar (dentro del contenedor si tiene scroll interno)
-            this.scrollPos = $(window).scrollTop();
-        },
-            drawCallback: function (settings) {
-            // Restaurar el scroll después de redibujar
-            $(window).scrollTop(this.scrollPos);
-        },
         ajax: {
             url: pathname,
             type: 'POST',
             data: parameters,
             // dataSrc: ""
         },
-        // order: [[4, 'asc'],[5, 'asc'],[6, 'asc'],[2, 'asc']],
+        order: [[4, 'asc'],[5, 'asc'],[6, 'asc'],[2, 'asc']],
         
         
         dom: 'Blfrtip',
@@ -205,64 +197,35 @@ function getData(all) {
                 }         
             },
             {
-                    targets: [3], // TIPO VOTO
-                    class: 'text-center',
-                    render: function (data, type, row) {
-                        // 1. Definir valores por defecto si no hay datos
-                        var id_actual = (row.tipo_voto && row.tipo_voto.id) ? row.tipo_voto.id : '';
-                        var texto_actual = data ? data : '---'; // data viene de la columna tipo_voto.cod
-                        var badgeClass = 'badge-light'; 
+                targets: [3],
+                class: 'text-center',
+                render: function (data, type, row) {                   
 
-                        // 2. Lógica de colores solo si el ID existe
-                        if (id_actual) {
-                            if (id_actual == 1) badgeClass = 'badge-danger';
-                            else if (id_actual == 2) badgeClass = 'badge-info';
-                            else if (id_actual == 3) badgeClass = 'badge-dark';
-                            else if (id_actual == 4) badgeClass = 'badge-success';
-                            else if (id_actual == 13) badgeClass = 'badge-warning';
-                            else if (id_actual == 11) badgeClass = 'badge-secondary';
+                        if (row.tipo_voto.id == 1) {
+                            return '<span class="badge badge-danger">' + data + '</span>'
                         }
-
-                        // 3. Retornar el HTML (ahora no fallará si row.tipo_voto es null)
-                        return '<div class="div-edit-display" style="cursor:pointer;">' +
-                                    '<span class="badge ' + badgeClass + '">' + texto_actual + '</span>' +
-                            '</div>' +
-                            '<div class="div-edit-input" style="display:none;">' +
-                                    '<select class="form-control select2-inline" data-id="' + row.id + '" data-field="tipo_voto">' +
-                                        '<option value="' + id_actual + '" selected>' + texto_actual + '</option>' +
-                                    '</select>' +
-                            '</div>';
-                    }
-                },
-                {
-                    targets: [4], // BARRIO
-                    class: 'text-center',
-                    render: function (data, type, row) {
-                        var display = data ? data : '---';
-                        return '<div class="div-edit-display" style="cursor:pointer;">' + display + '</div>' +
-                            '<div class="div-edit-input" style="display:none;">' +
-                            '<select class="form-control select2-inline" data-id="' + row.id + '" data-field="barrio">' +
-                            '<option value="' + (row.barrio ? row.barrio.id : '') + '" selected>' + display + '</option></select></div>';
-                    }
-                },
-                {
-                    targets: [5], // MANZANA
-                    class: 'text-center',
-                    render: function (data, type, row) {
-                        var display = data ? data : '---';
-                        return '<div class="div-edit-display" style="cursor:pointer;">' + display + '</div>' +
-                            '<div class="div-edit-input" style="display:none;">' +
-                            '<select class="form-control select2-inline select2-manzana" data-id="' + row.id + '" data-field="manzana">' +
-                            '<option value="' + (row.manzana ? row.manzana.id : '') + '" selected>' + display + '</option></select></div>';
-                    }
-                },
-                {
-                    targets: [6], // NRO CASA
-                    render: function (data, type, row) {
-                        return '<input type="text" class="form-control form-control-sm quick-edit-text" ' +
-                            'data-id="' + row.id + '" data-field="nro_casa" value="' + (data ? data : '') + '">';
-                    }
-                },
+                        if (row.tipo_voto.id == 2) {
+                            return '<span class="badge badge-info">' + data + '</span>'
+                        }
+                        if (row.tipo_voto.id == 3) {
+                            return '<span class="badge badge-dark">' + data + '</span>'
+                        }
+                        if (row.tipo_voto.id == 4) {
+                            return '<span class="badge badge-success">' + data + '</span>'
+                        }
+                        // Ausentes
+                        if (row.tipo_voto.id == 13){
+                            return '<span class="badge badge-warning">'+ data +'</span>';
+                         }   
+                        //  Fallecidos
+                         if (row.tipo_voto.id == 11){
+                            return '<span class="badge badge-secondary">'+ data +'</span>';
+                         }   
+                        //Otros
+                        return data;
+                        
+                }         
+            },
             {
                 targets: [-1],
                 class: 'text-center',
@@ -272,7 +235,7 @@ function getData(all) {
                     return buttons;
                 }
             },
-        ],       
+        ],
         rowCallback: function (row, data, index) {
 
         },
@@ -395,143 +358,6 @@ $(function () {
      select_barrio.val("").change();
      select_manzana.val("").change();
      select_tipo_voto.val("").change();
-
-     $(function () {
-    // --- EVENTOS DE LA TABLA ---
-
-    // 1. Activar edición al hacer clic en el display (Badge/Texto)
-    $('#data tbody').on('click', '.div-edit-display', function () {
-        var cell = $(this).closest('td');
-        var row = $(this).closest('tr');
-        
-        $(this).hide();
-        cell.find('.div-edit-input').show();
-
-        var selectElement = cell.find('select');
-        var fieldName = selectElement.data('field');
-
-        // Inicializar Select2
-        selectElement.select2({
-            theme: 'bootstrap4',
-            width: '100%',
-            allowClear: true,
-            placeholder: '',
-            dropdownAutoWidth: true,
-            ajax: {
-                url: pathname,
-                type: 'POST',
-                data: function (params) {
-                    return {
-                        'action': 'search_select2',
-                        'field': fieldName,
-                        'term': params.term,
-                        // Si es manzana, enviamos el ID del barrio de la misma fila para filtrar
-                        'barrio_id': (fieldName === 'manzana') ? row.find('select[data-field="barrio"]').val() : '',
-                        'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()
-                    };
-                },
-                processResults: function (data) {
-                    return { results: data };
-                }
-            }
-        }).select2('open');
-    });
-
-    // 2. Evento: Selección de una opción
-    $('#data tbody').on('select2:select', '.select2-inline', function (e) {
-        var id = $(this).data('id');
-        var field = $(this).data('field');
-        var value = e.params.data.id;
-        
-        cerrarYGuardar($(this), id, field, value);
-    });
-
-    // 3. Evento: Limpiar campo (clic en la "X")
-    $('#data tbody').on('select2:clearing', '.select2-inline', function (e) {
-        var id = $(this).data('id');
-        var field = $(this).data('field');
-        
-        cerrarYGuardar($(this), id, field, '');
-    });
-
-    // 4. Evento: Cierre sin cambios (clic fuera)
-    $('#data tbody').on('select2:close', '.select2-inline', function () {
-        var cell = $(this).closest('td');
-        // Pequeño delay para no interferir con los eventos de click/select
-        setTimeout(function() {
-            if (cell.find('.div-edit-input').is(':visible')) {
-                destruirSelect2(cell);
-            }
-        }, 150);
-    });
-});
-
-// --- FUNCIONES DE APOYO ---
-
-function destruirSelect2(cell) {
-    var select = cell.find('select');
-    if (select.data('select2')) {
-        select.select2('destroy');
-    }
-    cell.find('.div-edit-input').hide();
-    cell.find('.div-edit-display').show();
-}
-
-function cerrarYGuardar(elemento, id, field, value) {
-    var cell = elemento.closest('td');
-    
-    // 1. Destruir visualmente primero para evitar el lag de la UI
-    destruirSelect2(cell);
-    
-    // 2. Ejecutar Ajax
-    saveInlineUpdate(id, field, value);
-}
-
-
-// 3. Guardar cambios en inputs de texto (Nro Casa) al perder el foco o Enter
-$('#data tbody').on('change', '.quick-edit-text', function () {
-    var id = $(this).data('id');
-    var field = $(this).data('field');
-    var value = $(this).val();
-    saveInlineUpdate(id, field, value);
-});
-
-function saveInlineUpdate(id, field, value) {
-    // 1. Guardamos la posición actual del scroll del navegador
-    var scrollPos = $(window).scrollTop();
-
-    $.ajax({
-        url: pathname,
-        type: 'POST',
-        data: {
-            'action': 'quick_update',
-            'id': id,
-            'field': field,
-            'value': value,
-            'csrfmiddlewaretoken': $('[name="csrfmiddlewaretoken"]').val()
-        },
-        success: function (response) {
-            if (!response.hasOwnProperty('error')) {
-                // 2. El segundo parámetro 'false' mantiene la página (ej. pág 10)
-                tblData.ajax.reload(function() {
-                    // 3. Restauramos la posición del scroll después de que los datos carguen
-                    $(window).scrollTop(scrollPos);
-                    
-                    // Si es barrio, seguimos con el foco automático a manzana
-                    if (field === 'barrio' && value !== '') {
-                        var currentRow = $('#data').find('select[data-id="' + id + '"]').closest('tr');
-                        setTimeout(function() {
-                            currentRow.find('td:eq(5) .div-edit-display').click();
-                        }, 200);
-                    }
-                }, false); 
-            } else {
-                alert(response.error);
-            }
-        }
-    });
-};
-
      
 
 });
@@ -611,5 +437,3 @@ $(function () {
     $("#modal-elector").on("submit", ".js-update-form", saveForm);
   
   });
-
-  
