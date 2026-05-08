@@ -1,7 +1,7 @@
 import math
 from core.base.models import Parametro
 from core.reports.jasperbase import JasperReportBase
-from core.electoral.models import Barrio, Manzana, TipoVoto
+from core.electoral.models import Barrio, Ciudad, Manzana, TipoVoto
 from datetime import date, datetime
 from core.reports.forms import ReportForm
 import json
@@ -204,7 +204,17 @@ class ElectorListView(PermissionMixin, FormView):
 				term = request.POST.get('term', '')
 				results = []
 				
-				if field == 'barrio':
+				if field == 'ciudad':
+					# Buscamos por denominación O por ID exacto (si es numérico)
+					query = Q(denominacion__icontains=term)
+					if term.isdigit():
+						query |= Q(id=term)
+						
+					qs = Ciudad.objects.filter(query)[:10]
+					# Usamos str(x) para que el texto mostrado sea el que define tu __str__ en el modelo
+					results = [{'id': x.id, 'text': str(x)} for x in qs]
+
+				elif field == 'barrio':
 					# Buscamos por denominación O por ID exacto (si es numérico)
 					query = Q(denominacion__icontains=term)
 					if term.isdigit():
@@ -237,7 +247,7 @@ class ElectorListView(PermissionMixin, FormView):
 					query = Q(cod__icontains=term)
 					if term.isdigit():
 						query |= Q(id=term)
-					qs = TipoVoto.objects.filter(query)[:15]
+					qs = TipoVoto.objects.filter(query,activo__exact=True)[:15]
 					results = [{'id': x.id, 'text': str(x)} for x in qs]
 					
 				return JsonResponse(results, safe=False)
@@ -248,7 +258,11 @@ class ElectorListView(PermissionMixin, FormView):
 					field = request.POST.get('field')
 					val = request.POST.get('value')
 					print(val)
-					if field == 'barrio':
+					
+					if field == 'ciudad':
+						elector.ciudad_id = val if val else None
+
+					elif field == 'barrio':
 						# Si cambia el barrio, el ID de la manzana DEBE ser None
 						elector.barrio_id = val if val else None
 						elector.manzana_id = None 

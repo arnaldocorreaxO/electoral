@@ -162,8 +162,9 @@ function getData(all) {
             {data: "fullname"},
             // {data: "nombre"},
             {data: "tipo_voto.cod"},
-            {data: "barrio.denominacion"},
-            {data: "manzana.denominacion"},
+            {data: "ciudad_denominacion"},
+            {data: "barrio_fullname"},
+            {data: "manzana_fullname"},
             {data: "nro_casa"},            
             {data: "edad"},
             {data: "id"},
@@ -227,7 +228,18 @@ function getData(all) {
                     }
                 },
                 {
-                    targets: [4], // BARRIO
+                    targets: [4], // CIUDAD
+                    class: 'text-center',
+                    render: function (data, type, row) {
+                        var display = data ? data : '---';
+                        return '<div class="div-edit-display" style="cursor:pointer;">' + display + '</div>' +
+                            '<div class="div-edit-input" style="display:none;">' +
+                            '<select class="form-control select2-inline" data-id="' + row.id + '" data-field="ciudad">' +
+                            '<option value="' + (row.ciudad ? row.ciudad.id : '') + '" selected>' + display + '</option></select></div>';
+                    }
+                },
+                {
+                    targets: [5], // BARRIO
                     class: 'text-center',
                     render: function (data, type, row) {
                         var display = data ? data : '---';
@@ -238,7 +250,7 @@ function getData(all) {
                     }
                 },
                 {
-                    targets: [5], // MANZANA
+                    targets: [6], // MANZANA
                     class: 'text-center',
                     render: function (data, type, row) {
                         var display = data ? data : '---';
@@ -249,7 +261,7 @@ function getData(all) {
                     }
                 },
                 {
-                    targets: [6], // NRO CASA
+                    targets: [7], // NRO CASA
                     render: function (data, type, row) {
                         return '<input type="text" class="form-control form-control-sm quick-edit-text" ' +
                             'data-id="' + row.id + '" data-field="nro_casa" value="' + (data ? data : '') + '">';
@@ -527,7 +539,7 @@ function saveInlineUpdate(id, field, value) {
                     if (field === 'barrio' && value !== '') {
                         var currentRow = $('#data').find('select[data-id="' + id + '"]').closest('tr');
                         setTimeout(function() {
-                            currentRow.find('td:eq(5) .div-edit-display').click();
+                            currentRow.find('td:eq(6) .div-edit-display').click();
                         }, 200);
                     }
                 }, false); 
