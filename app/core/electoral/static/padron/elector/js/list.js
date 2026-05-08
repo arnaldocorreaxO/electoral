@@ -198,6 +198,17 @@ function getData(all) {
                 }         
             },
             {
+                targets: [1], // Índice del campo Nro de Cédula
+                render: function (data, type, row) {
+                    if (type === 'display' && data) {
+                        // Formatea el número con puntos (ej: 5.962.221)
+                        return data.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    }
+                    return data;
+                },
+                className: "text-end" // Opcional: alinear a la derecha suele verse mejor para números
+            },
+            {
                     targets: [3], // TIPO VOTO
                     class: 'text-center',
                     render: function (data, type, row) {
