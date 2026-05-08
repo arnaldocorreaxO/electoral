@@ -369,107 +369,107 @@ class ElectorForm2(ModelForm):
 ===   SHEARCH    ===
 ==================== '''
 class ShearchForm(forms.Form):
-    mesa = forms.ChoiceField()
-    local_votacion = forms.ChoiceField()
-    seccional = forms.ChoiceField()
-    barrio = forms.ChoiceField()
-    manzana = forms.ChoiceField()
-    operador = forms.ChoiceField()
-    tipo_voto = forms.ChoiceField()
-    monto = forms.ChoiceField()
+    # 1. DEFINICIÓN DE CAMPOS (Sin choices fijos para evitar el congelamiento)
+    mesa = forms.ChoiceField(label="Mesa")
+    local_votacion = forms.ChoiceField(label="Local de Votación")
+    seccional = forms.ChoiceField(label="Seccional")
+    barrio = forms.ChoiceField(label="Barrio")
+    manzana = forms.ChoiceField(label="Manzana")
+    operador = forms.ChoiceField(label="Operador")
+    tipo_voto = forms.ChoiceField(label="Tipo de Voto")
+    monto = forms.ChoiceField(label="Monto Gs")
+    ciudad = forms.ChoiceField(label="Ciudad")
+    
+    # Campos de texto y fechas
+    date_range = forms.CharField(label="Rango de Fechas")
+    term = forms.CharField(label="Término de Búsqueda")
+
+    # Opciones estáticas (Estas no cambian, pueden ir aquí)
+    PASO_CHOICES = [('', 'Todos'), ('S', 'YA Pasaron'), ('N', 'NO Pasaron')]
+    VOTO_CHOICES = [('', 'Todos'), ('S', 'YA Votaron'), ('N', 'NO Votaron')]
+    
+    pasoxpc = forms.ChoiceField(choices=PASO_CHOICES, label="Paso por PC")
+    pasoxmv = forms.ChoiceField(choices=VOTO_CHOICES, label="Paso por MV")
+    pasoxgs = forms.ChoiceField(choices=PASO_CHOICES, label="Paso por GS")
+
     def __init__(self, *args, **kwargs):
+        # Extraemos el usuario para filtrar por su distrito
         usuario = kwargs.pop('usuario', None)
-        # print(usuario)
-        super().__init__(*args, **kwargs)        
+        super().__init__(*args, **kwargs)
+        
+        # Foco automático en el buscador
         self.fields['term'].widget.attrs['autofocus'] = True
 
+        # --- 2. CARGA DINÁMICA DE OPCIONES (Se ejecuta en cada petición) ---
+
+        # Opciones que dependen del Distrito del Usuario
         if usuario:
-            #Mesa
-            self.fields['mesa'] = forms.ChoiceField(choices=[
-            (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')\
-                                                                    .filter(distrito=usuario.distrito)\
-                                                                    .extra(select={'int_mesa':'CAST(mesa AS INTEGER)'})\
-                                                                    .distinct().order_by('int_mesa')])
-            # Local de Votacion
-            self.fields['local_votacion'] = forms.ChoiceField(choices=[
-            (item.id, item) for item in LocalVotacion.objects.filter(ciudad__distrito=usuario.distrito,activo__exact=True)\
-                                                             .order_by('id')])
-            # Seccionales
-            self.fields['seccional'] = forms.ChoiceField(choices=[
-            (item.id, item) for item in Seccional.objects.filter(ciudad__distrito=usuario.distrito,activo__exact=True).order_by('denominacion')])
-            # Barrios
-            self.fields['barrio'] = forms.ChoiceField(choices=[
-            (item.id, item.fullname) for item in Barrio.objects.filter(ciudad__distrito=usuario.distrito,activo__exact=True).order_by('id')])
-            # Manzana
-            self.fields['manzana'] = forms.ChoiceField(choices=[
-            (item.id, item.fullname) for item in Manzana.objects.filter(barrio__ciudad__distrito=usuario.distrito,activo__exact=True).order_by('barrio__id','id')])
-            # Operador
-            self.fields['operador'] = forms.ChoiceField(choices=[
-                (item.id, item) for item in Operador.objects.filter(distrito=usuario.distrito, activo__exact=True).order_by('denominacion')])
-            # Tipo de Voto
-            self.fields['tipo_voto'] = forms.ChoiceField(choices=[
-                (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('id')])
+            distrito = usuario.distrito
             
-            self.fields['local_votacion'].widget.attrs.update({'class': 'form-control select2'})
-            self.fields['mesa'].widget.attrs.update({'class': 'form-control select2'})
-            self.fields['seccional'].widget.attrs.update({'class': 'form-control select2'})
-            self.fields['barrio'].widget.attrs.update({'class': 'form-control select2'})
-            self.fields['manzana'].widget.attrs.update({'class': 'form-control select2'})
-            self.fields['operador'].widget.attrs.update({'class': 'form-control select2'})
-            self.fields['tipo_voto'].widget.attrs.update({'class': 'form-control select2'})
-    # Rango de fechas 
-    date_range = forms.CharField()
-    # Termino de busqueda 
-    term = forms.CharField()
-    
-    
-    # Ciudades
-    ciudad = forms.ChoiceField(choices=[
-    (item.id, item) for item in Ciudad.objects.filter(activo__exact=True).order_by('denominacion')])
-    
-    # Tipo de Voto
-    tipo_voto = forms.ChoiceField(choices=[
-    (item.id, item) for item in TipoVoto.objects.filter(activo__exact=True).order_by('denominacion')])
-    
-    # Monto Gs
-    monto = forms.ChoiceField(choices=[
-    (item.valor,item.parametro) for item in Parametro.objects.filter(Q(activo__exact=True) & Q(grupo__exact='MTO_GS_DIA_D')).order_by('id')])
-    # monto = forms.ChoiceField(widget=forms.RadioSelect,choices=[
-    # (item.valor,item.parametro) for item in Parametro.objects.filter(activo__exact=True,grupo__exact='MTO_GS_DIA_D').order_by('id')])
+            self.fields['mesa'].choices = [('', '---')] + [
+                (item['mesa'], item['mesa']) for item in Elector.objects.values('mesa')
+                .filter(distrito=distrito)
+                .extra(select={'int_mesa': 'CAST(mesa AS INTEGER)'})
+                .distinct().order_by('int_mesa')
+            ]
 
-    
+            self.fields['local_votacion'].choices = [('', '---')] + [
+                (item.id, str(item)) for item in LocalVotacion.objects.filter(
+                    ciudad__distrito=distrito, activo=True
+                ).order_by('id')
+            ]
 
-    PASOXPC_CHOICES = [
-        ('','Todos'),
-        ('S','YA Pasaron'),
-        ('N','NO Pasaron'),
-    ]
-    pasoxpc = forms.ChoiceField(choices=PASOXPC_CHOICES)
-    
-    PASOXMV_CHOICES = [
-        ('','Todos'),
-        ('S','YA Votaron'),
-        ('N','NO Votaron'),
-    ]
-    
-    pasoxmv = forms.ChoiceField(choices=PASOXMV_CHOICES)
+            self.fields['seccional'].choices = [('', '---')] + [
+                (item.id, str(item)) for item in Seccional.objects.filter(
+                    ciudad__distrito=distrito, activo=True
+                ).order_by('denominacion')
+            ]
 
-    PASOXGS_CHOICES = [
-        ('','Todos'),
-        ('S','YA Pasaron'),
-        ('N','NO Pasaron'),
-    ]
-    
-    pasoxgs = forms.ChoiceField(choices=PASOXGS_CHOICES)
+            self.fields['barrio'].choices = [('', '---')] + [
+                (item.id, item.fullname) for item in Barrio.objects.filter(
+                    ciudad__distrito=distrito, activo=True
+                ).order_by('id')
+            ]
 
-    date_range.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
-    term.widget.attrs.update({'class': 'form-control','autocomplete':'off'})
-    ciudad.widget.attrs.update({'class': 'form-control select2'})    
-    tipo_voto.widget.attrs.update({'class': 'form-control select2'})
-    pasoxmv.widget.attrs.update({'class': 'form-control select2'})
-    pasoxpc.widget.attrs.update({'class': 'form-control select2'})
-    pasoxgs.widget.attrs.update({'class': 'form-control select2'})
-    monto.widget.attrs.update({'class': 'form-control select2'})
+            self.fields['manzana'].choices = [('', '---')] + [
+                (item.id, item.fullname) for item in Manzana.objects.filter(
+                    barrio__ciudad__distrito=distrito, activo=True
+                ).order_by('barrio__id', 'id')
+            ]
+
+            self.fields['operador'].choices = [('', '---')] + [
+                (item.id, str(item)) for item in Operador.objects.filter(
+                    distrito=distrito, activo=True
+                ).order_by('denominacion')
+            ]
+
+        # Opciones Generales (Se actualizan sin reiniciar el servidor)
+        self.fields['ciudad'].choices = [('', '---')] + [
+            (item.id, str(item)) for item in Ciudad.objects.filter(activo=True).order_by('denominacion')
+        ]
+
+        self.fields['tipo_voto'].choices = [('', '---')] + [
+            (item.id, str(item)) for item in TipoVoto.objects.filter(activo=True).order_by('id')
+        ]
+
+        self.fields['monto'].choices = [('', '---')] + [
+            (item.valor, item.parametro) for item in Parametro.objects.filter(
+                activo=True, grupo='MTO_GS_DIA_D'
+            ).order_by('id')
+        ]
+
+        # --- 3. APLICACIÓN DE ESTILOS Y ATRIBUTOS ---
+        for name, field in self.fields.items():
+            if name in ['date_range', 'term']:
+                field.widget.attrs.update({
+                    'class': 'form-control',
+                    'autocomplete': 'off'
+                })
+            else:
+                field.widget.attrs.update({
+                    'class': 'form-control select2',
+                    'style': 'width: 100%;'
+                })
     
 ''' 
 ====================
