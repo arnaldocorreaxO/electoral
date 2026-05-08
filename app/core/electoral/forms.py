@@ -366,7 +366,7 @@ class ElectorForm2(ModelForm):
     
 ''' 
 ====================
-===   SHEARCH    ===
+===   SEARCH    ===
 ==================== '''
 class ShearchForm(forms.Form):
     # 1. DEFINICIÓN DE CAMPOS (Sin choices fijos para evitar el congelamiento)
@@ -382,7 +382,8 @@ class ShearchForm(forms.Form):
     
     # Campos de texto y fechas
     date_range = forms.CharField(label="Rango de Fechas")
-    term = forms.CharField(label="Término de Búsqueda")
+    term = forms.CharField(label="Término de Búsqueda", 
+                           widget=forms.TextInput(attrs={'placeholder': 'Buscar por CI, Nombre o Apellido'}))
 
     # Opciones estáticas (Estas no cambian, pueden ir aquí)
     PASO_CHOICES = [('', 'Todos'), ('S', 'YA Pasaron'), ('N', 'NO Pasaron')]
