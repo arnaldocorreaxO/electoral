@@ -70,7 +70,7 @@ class ElectorListView(PermissionMixin, FormView):
 					if _column_order in request.POST:					
 						_column_number = request.POST[_column_order]
 						# print('Column Number:',_column_number)
-						if _column_number == '9': #Hacemos esto por que en el datatable edad es un campo calculado
+						if _column_number == '8': #Hacemos esto por que en el datatable edad es un campo calculado
 							_order.append('fecha_nacimiento')
 						elif _column_number == '2': #Hacemos esto por que en el datatable fullname es un campo calculado
 							_order.append('apellido')

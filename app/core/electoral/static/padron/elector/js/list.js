@@ -97,9 +97,40 @@ function getData(all) {
             {
                 extend: 'excelHtml5',
                 text: 'Descargar Excel <i class="fas fa-file-excel"></i>',
-                titleAttr: 'Excel',
-                className: 'btn btn-success btn-flat btn-xs'
+                className: 'btn btn-success btn-flat btn-xs',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                    format: {
+                        body: function (data, row, column, node) {
+                            // 1. Si la celda tiene un INPUT (como Nro Casa), extraemos su valor actual
+                            if ($(node).find('input').length > 0) {
+                                return $(node).find('input').val();
+                            }
+                            
+                            // 2. Si la celda tiene nuestro sistema de edición (Select2)
+                            // Extraemos SOLO el texto del div que se muestra al usuario
+                            if ($(node).find('.div-edit-display').length > 0) {
+                                return $(node).find('.div-edit-display').text().trim();
+                            }
+
+                            // 3. Si la celda tiene Badges (Votó / No Votó)
+                            // Extraemos el texto de los badges
+                            if ($(node).find('.badge').length > 0) {
+                                return $(node).find('.badge').text().trim();
+                            }
+
+                            // 4. Para la cédula (Columna 1), quitamos los puntos para que Excel lo trate como número
+                            if (column === 1) {
+                                return data.replace(/\./g, '');
+                            }
+
+                            // Por defecto, limpiar cualquier tag HTML sobrante
+                            return typeof data === 'string' ? data.replace(/<[^>]+>/g, '').trim() : data;
+                        }
+                    }
+                }
             },
+
             {
                 extend: 'pdfHtml5',
                 text: 'Descargar Pdf <i class="fas fa-file-pdf"></i>',
@@ -108,6 +139,37 @@ function getData(all) {
                 download: 'open',
                 orientation: 'landscape',
                 pageSize: 'LEGAL',
+                exportOptions: {
+                    columns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+                    format: {
+                        body: function (data, row, column, node) {
+                            // 1. Si la celda tiene un INPUT (como Nro Casa), extraemos su valor actual
+                            if ($(node).find('input').length > 0) {
+                                return $(node).find('input').val();
+                            }
+                            
+                            // 2. Si la celda tiene nuestro sistema de edición (Select2)
+                            // Extraemos SOLO el texto del div que se muestra al usuario
+                            if ($(node).find('.div-edit-display').length > 0) {
+                                return $(node).find('.div-edit-display').text().trim();
+                            }
+
+                            // 3. Si la celda tiene Badges (Votó / No Votó)
+                            // Extraemos el texto de los badges
+                            if ($(node).find('.badge').length > 0) {
+                                return $(node).find('.badge').text().trim();
+                            }
+
+                            // 4. Para la cédula (Columna 1), quitamos los puntos para que Excel lo trate como número
+                            if (column === 1) {
+                                return data.replace(/\./g, '');
+                            }
+
+                            // Por defecto, limpiar cualquier tag HTML sobrante
+                            return typeof data === 'string' ? data.replace(/<[^>]+>/g, '').trim() : data;
+                        }
+                    }
+                },
                 customize: function (doc) {
                     doc.styles = {
                         header: {
@@ -162,9 +224,9 @@ function getData(all) {
             {data: "fullname"},
             // {data: "nombre"},
             {data: "tipo_voto.cod"},
-            {data: "ciudad_denominacion"},
-            {data: "barrio_fullname"},
-            {data: "manzana_fullname"},
+            {data: "ciudad"},
+            {data: "barrio"},
+            {data: "manzana"},
             {data: "nro_casa"},            
             {data: "edad"},
             {data: "id"},
@@ -175,27 +237,43 @@ function getData(all) {
                 targets: [0],
                 class: 'text-center',
                 render: function (data, type, row) {
-                   
-                   var badge_pc = '<span class="badge badge-warning">' + ' PC ' + '</span>';
-                   var badge_mv = '<span class="badge badge-success">' + ' SI ' + '</span>';
-                   var badge_no = '<span class="badge badge-danger"> NO </span>';
-                   var badges = badge_no; /*Default*/
+                    // 1. Asignación de Pesos (Lógica de prioridad)
+                    var peso = 0;
+                    var texto_excel = "";
+
+                    if (row.tipo_voto && row.tipo_voto.id == 11) {
+                        peso = 11;
+                        texto_excel = "F";
+                    } else {
+                        // Determinamos el estado de PC y MV
+                        var pc_si = (row.pasoxpc == 'S');
+                        var mv_si = (row.pasoxmv == 'S');
+
+                        if (pc_si && mv_si) { peso = 15; texto_excel = "PC SI / MV SI"; }
+                        else if (pc_si && !mv_si) { peso = 14; texto_excel = "PC SI / MV NO"; }
+                        else if (!pc_si && mv_si) { peso = 13; texto_excel = "PC NO / MV SI"; }
+                        else { peso = 12; texto_excel = "PC NO / MV NO"; }
+                    }
+
+                    // 2. Retornos para procesos internos
+                    if (type === 'sort') return peso; // Ordena por el número que pediste
+                    if (type === 'export') return texto_excel; // Texto limpio para Excel
+
+                    // 3. Lógica visual para la pantalla (Badges con <br>)
+                    if (peso === 11) {
+                        return '<span class="badge badge-secondary" style="width: 60px;">' + row.tipo_voto.cod + '</span>';
+                    }
+
+                    var badge_pc = (row.pasoxpc == 'S') 
+                        ? '<span class="badge badge-warning" style="width: 60px;">PC SI</span>' 
+                        : '<span class="badge badge-danger" style="width: 60px;">PC NO</span>';
                     
-                        if (row.pasoxpc =='S') {
-                            badges = badge_pc  + badge_no;
-                        }
-                        if (row.pasoxmv =='S') {
-                            badges = badge_mv;
-                            if (row.pasoxpc =='S') {
-                                badges = badge_pc  + badge_mv;
-                            }
-                        }     
-                        if (row.tipo_voto.id == 11){
-                           return '<span class="badge badge-secondary">'+ row.tipo_voto.cod +'</span>';
-                        }                  
-                     
-                     return badges;
-                }         
+                    var badge_mv = (row.pasoxmv == 'S') 
+                        ? '<span class="badge badge-success" style="width: 60px;">MV SI</span>' 
+                        : '<span class="badge badge-danger" style="width: 60px;">MV NO</span>';
+
+                    return '<div class="text-center">' + badge_pc + '<br>' + badge_mv + '</div>';
+                }     
             },
             {
                 targets: [1], // Índice del campo Nro de Cédula
@@ -208,41 +286,51 @@ function getData(all) {
                 },
                 className: "text-end" // Opcional: alinear a la derecha suele verse mejor para números
             },
-            {
-                    targets: [3], // TIPO VOTO
-                    class: 'text-center',
-                    render: function (data, type, row) {
-                        // 1. Definir valores por defecto si no hay datos
-                        var id_actual = (row.tipo_voto && row.tipo_voto.id) ? row.tipo_voto.id : '';
-                        var texto_actual = data ? data : '---'; // data viene de la columna tipo_voto.cod
-                        var badgeClass = 'badge-light'; 
+           {
+                targets: [3], // TIPO VOTO
+                class: 'text-center',
+                render: function (data, type, row) {
+                    // 1. Extraer los datos básicos
+                    var id_actual = (row.tipo_voto && row.tipo_voto.id) ? row.tipo_voto.id : '';
+                    var texto_actual = data ? data : '---'; 
 
-                        // 2. Lógica de colores solo si el ID existe
-                        if (id_actual) {
-                            if (id_actual == 1) badgeClass = 'badge-danger';
-                            else if (id_actual == 2) badgeClass = 'badge-info';
-                            else if (id_actual == 3) badgeClass = 'badge-dark';
-                            else if (id_actual == 4) badgeClass = 'badge-success';
-                            else if (id_actual == 13) badgeClass = 'badge-warning';
-                            else if (id_actual == 11) badgeClass = 'badge-secondary';
-                        }
-
-                        // 3. Retornar el HTML (ahora no fallará si row.tipo_voto es null)
-                        return '<div class="div-edit-display" style="cursor:pointer;">' +
-                                    '<span class="badge ' + badgeClass + '">' + texto_actual + '</span>' +
-                            '</div>' +
-                            '<div class="div-edit-input" style="display:none;">' +
-                                    '<select class="form-control select2-inline" data-id="' + row.id + '" data-field="tipo_voto">' +
-                                        '<option value="' + id_actual + '" selected>' + texto_actual + '</option>' +
-                                    '</select>' +
-                            '</div>';
+                    // 2. RETORNO PARA ORDENAR O FILTRAR (Texto plano)
+                    // Esto evita el "VOTANTEVOTANTE" en Excel y arregla el orden alfabético
+                    if (type === 'sort' || type === 'filter') {
+                        return texto_actual;
                     }
-                },
+
+                    // 3. Lógica visual para la pantalla (Badges)
+                    var badgeClass = 'badge-light'; 
+                    if (id_actual) {
+                        if (id_actual == 1) badgeClass = 'badge-danger';
+                        else if (id_actual == 2) badgeClass = 'badge-info';
+                        else if (id_actual == 3) badgeClass = 'badge-dark';
+                        else if (id_actual == 4) badgeClass = 'badge-success';
+                        else if (id_actual == 13) badgeClass = 'badge-warning';
+                        else if (id_actual == 11) badgeClass = 'badge-secondary';
+                    }
+
+                    // 4. Retorno del HTML para la tabla
+                    return '<div class="div-edit-display" style="cursor:pointer;">' +
+                                '<span class="badge ' + badgeClass + '">' + texto_actual + '</span>' +
+                        '</div>' +
+                        '<div class="div-edit-input" style="display:none;">' +
+                                '<select class="form-control select2-inline" data-id="' + row.id + '" data-field="tipo_voto">' +
+                                    '<option value="' + id_actual + '" selected>' + texto_actual + '</option>' +
+                                '</select>' +
+                        '</div>';
+                }
+            },
                 {
                     targets: [4], // CIUDAD
                     class: 'text-center',
                     render: function (data, type, row) {
-                        var display = data ? data : '---';
+                        var display = row.ciudad_denominacion ? row.ciudad_denominacion : '---';
+                        // SI ES PARA ORDENAR O EXPORTAR, DEVOLVEMOS SOLO TEXTO
+                        if (type === 'sort' || type === 'filter') {
+                            return display;
+                        }
                         return '<div class="div-edit-display" style="cursor:pointer;">' + display + '</div>' +
                             '<div class="div-edit-input" style="display:none;">' +
                             '<select class="form-control select2-inline" data-id="' + row.id + '" data-field="ciudad">' +
@@ -253,7 +341,11 @@ function getData(all) {
                     targets: [5], // BARRIO
                     class: 'text-center',
                     render: function (data, type, row) {
-                        var display = data ? data : '---';
+                        var display = row.barrio_fullname ? row.barrio_fullname : '---';
+                        // SI ES PARA ORDENAR O EXPORTAR, DEVOLVEMOS SOLO TEXTO
+                        if (type === 'sort' || type === 'filter') {
+                            return display;
+                        }
                         return '<div class="div-edit-display" style="cursor:pointer;">' + display + '</div>' +
                             '<div class="div-edit-input" style="display:none;">' +
                             '<select class="form-control select2-inline" data-id="' + row.id + '" data-field="barrio">' +
@@ -264,7 +356,11 @@ function getData(all) {
                     targets: [6], // MANZANA
                     class: 'text-center',
                     render: function (data, type, row) {
-                        var display = data ? data : '---';
+                        var display = row.manzana_fullname ? row.manzana_fullname : '---';
+                        // SI ES PARA ORDENAR O EXPORTAR, DEVOLVEMOS SOLO TEXTO
+                        if (type === 'sort' || type === 'filter') {
+                            return display;
+                        }
                         return '<div class="div-edit-display" style="cursor:pointer;">' + display + '</div>' +
                             '<div class="div-edit-input" style="display:none;">' +
                             '<select class="form-control select2-inline select2-manzana" data-id="' + row.id + '" data-field="manzana">' +
@@ -273,7 +369,13 @@ function getData(all) {
                 },
                 {
                     targets: [7], // NRO CASA
+                    class: 'text-center',
                     render: function (data, type, row) {
+                            var display = row.nro_casa ? row.nro_casa : '---';
+                            // SI ES PARA ORDENAR O EXPORTAR, DEVOLVEMOS SOLO TEXTO
+                            if (type === 'sort' || type === 'filter') {
+                                return display;
+                            }
                         return '<input type="text" class="form-control form-control-sm quick-edit-text" ' +
                             'data-id="' + row.id + '" data-field="nro_casa" value="' + (data ? data : '') + '">';
                     }
