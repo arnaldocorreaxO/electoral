@@ -24,7 +24,7 @@ function initTable() {
     $(this)
       .children("td:eq(0)")
       .html(idx + 1);
-    console.log(idx + 1);
+    // console.log(idx + 1);
   });
 }
 
@@ -567,7 +567,7 @@ $(function () {
   $(".drp-buttons").hide();
 
   initTable();
-  getData("filter");
+  //   getData("filter");
 
   $(".btnSearch").on("click", function () {
     getData("bday");

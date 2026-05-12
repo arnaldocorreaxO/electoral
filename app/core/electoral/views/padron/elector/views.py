@@ -300,9 +300,18 @@ class ElectorListView(PermissionMixin, FormView):
                             field_name = data_field.split(".")[0]
                             _order.append(f"{prefix}{field_name}")
 
-                # Orden secundario por ID para consistencia en paginación
-                if "id" not in [o.replace("-", "") for o in _order]:
-                    _order.append("id")
+                # 3. ORDEN POR DEFECTO (Si DataTables no envía un orden específico)
+                if not _order:
+                    # Forzamos las anotaciones para el orden por defecto
+                    annotation_kwargs["mesa_int"] = Cast("mesa", IntegerField())
+                    annotation_kwargs["orden_int"] = Cast("orden", IntegerField())
+
+                    # Definimos la jerarquía: Local -> Mesa -> Orden
+                    _order = ["local_votacion__nombre", "mesa_int", "orden_int", "id"]
+                else:
+                    # Si ya hay un orden, añadimos ID al final para consistencia
+                    if "id" not in [o.replace("-", "") for o in _order]:
+                        _order.append("id")
 
                 # 3. Construcción del QuerySet base
                 qs = Elector.objects.filter(distrito=request.user.distrito)
