@@ -1,3 +1,33 @@
 {
-    "python.pythonPath": "C:\\Users\\arnaldo\\proyectos\\electoral\\.env\\Scripts\\python.exe"
+    // Habilitar el formateo al guardar
+    "editor.formatOnSave": true,
+    // Configuración para Python
+    "python.formatting.provider": "none", // Deshabilitar el formateador por defecto
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "88"
+    ],
+    // Configuración para Prettier
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    // Configuración para Python
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit" // Organizar imports al guardar
+        },
+        "editor.defaultFormatter": "ms-python.black-formatter" // Usar Black como formateador por defecto
+    },
 }
