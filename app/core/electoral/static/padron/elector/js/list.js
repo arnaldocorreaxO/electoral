@@ -89,8 +89,8 @@ function getData(all) {
             data: parameters,
             // dataSrc: ""
         },
-        order: [[2, 'asc']], // Ordenar por Apellido y luego por Cédula
-        
+        order:[],
+        // order: [[2, 'asc']], // Ordenar por Apellido y luego por Cédula        
         
         dom: 'Blfrtip',
         buttons: [
