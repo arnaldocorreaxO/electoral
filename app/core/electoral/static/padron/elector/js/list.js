@@ -125,8 +125,8 @@ function getData(all) {
                 return $(node).find(".badge").text().trim();
               }
 
-              // 4. Para la cédula (Columna 1), quitamos los puntos para que Excel lo trate como número
-              if (column === 1) {
+              // 4. Para la cédula (Columna 3), quitamos los puntos para que Excel lo trate como número
+              if (column === 3) {
                 return data.replace(/\./g, "");
               }
 
@@ -169,7 +169,7 @@ function getData(all) {
               }
 
               // 4. Para la cédula (Columna 1), quitamos los puntos para que Excel lo trate como número
-              if (column === 1) {
+              if (column === 3) {
                 return data.replace(/\./g, "");
               }
 
@@ -205,7 +205,8 @@ function getData(all) {
               alignment: "center",
             },
           };
-          doc.content[1].table.widths = columns;
+          // Ajustamos los anchos de las columnas según lo que se definió en DataTables
+          // doc.content[1].table.widths = columns;
           doc.content[1].margin = [0, 35, 0, 0];
           doc.content[1].layout = {};
           doc["footer"] = function (page, pages) {
@@ -250,7 +251,6 @@ function getData(all) {
       {
         targets: [0],
         class: "text-center",
-        width: "2%",
         render: function (data, type, row) {
           // 1. Asignación de Pesos (Lógica de prioridad)
           var peso = 0;
@@ -314,12 +314,10 @@ function getData(all) {
       {
         targets: [1, 2], // MESA y ORDEN
         class: "text-center",
-        width: "2%",
       },
       {
         targets: [3], // Índice del campo Nro de Cédula
         class: "text-center",
-        width: "4%",
         render: function (data, type, row) {
           if (type === "display" && data) {
             // Formatea el número con puntos (ej: 5.962.221)
@@ -331,12 +329,10 @@ function getData(all) {
       {
         targets: [4], // NOMBRE COMPLETO
         class: "text-left",
-        width: "35%",
       },
       {
         targets: [5], // TIPO VOTO
         class: "text-center",
-        width: "2%",
         render: function (data, type, row) {
           // 1. Extraer los datos básicos
           var id_actual =
@@ -386,7 +382,6 @@ function getData(all) {
       {
         targets: [6], // CIUDAD
         class: "text-center",
-        width: "8%",
         render: function (data, type, row) {
           var display = row.ciudad_denominacion
             ? row.ciudad_denominacion
@@ -440,7 +435,6 @@ function getData(all) {
       {
         targets: [8], // MANZANA
         class: "text-center",
-        width: "20%",
         render: function (data, type, row) {
           var display = row.manzana_fullname ? row.manzana_fullname : "---";
           // SI ES PARA ORDENAR O EXPORTAR, DEVOLVEMOS SOLO TEXTO
@@ -466,7 +460,6 @@ function getData(all) {
       {
         targets: [9], // NRO CASA
         class: "text-center",
-        width: "2%",
         render: function (data, type, row) {
           var display = row.nro_casa ? row.nro_casa : "---";
           // SI ES PARA ORDENAR O EXPORTAR, DEVOLVEMOS SOLO TEXTO
@@ -486,12 +479,10 @@ function getData(all) {
       {
         targets: [10], // EDAD
         class: "text-center",
-        width: "2%",
       },
       {
         targets: [-1], // Columna de Opciones
         class: "text-center",
-        width: "3%",
         render: function (data, type, row) {
           var buttons = '<div class="btn-group">';
 
