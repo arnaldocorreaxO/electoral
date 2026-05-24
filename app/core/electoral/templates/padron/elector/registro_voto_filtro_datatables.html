@@ -1,0 +1,237 @@
+{% extends 'list.html' %}
+{% load static %}
+
+{% block head_list %}
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" />
+  <script src="{% static '/js/select2_local_votacion_mesas.js' %}"></script>
+  <style>
+    /* 1. OCULTAR LA LISTA TRADICIONAL Y SUS COMPONENTES */
+    #data_list,
+    .dataTables_wrapper .row:first-child,
+    .card-footer {
+      display: none !important;
+    }
+    
+    /* 2. DISEÑO DE LA GRILLA INTERACTIVA */
+    .tabla-interactiva td {
+      padding: 4px !important;
+      vertical-align: middle !important;
+    }
+    .btn-orden {
+      width: 100%;
+      font-weight: bold;
+      font-size: 0.95rem;
+      padding: 8px 0;
+      transition: all 0.15s ease;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    .btn-orden:hover {
+      transform: scale(1.04);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+    .celda-vacia {
+      background-color: #f8f9fa;
+      min-height: 40px;
+      border-radius: 4px;
+    }
+  </style>
+{% endblock %}
+
+{% block columns %}
+  <div class="card shadow-sm mb-4 d-none" id="contenedor-grilla">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+      <div>
+        <h5 class="mb-0 text-uppercase font-weight-bold" id="txt-nombre-local">LOCAL DE VOTACIÓN</h5>
+      </div>
+      <div class="bg-light text-dark px-4 py-1 rounded text-center border">
+        <span class="d-block small text-uppercase font-weight-bold" style="font-size: 0.7rem; line-height: 1;">Mesa</span>
+        <h4 class="mb-0 font-weight-bold" id="txt-numero-mesa">0</h4>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table id="grid-cuadricula-datatables" class="table table-bordered text-center m-0 tabla-interactiva" style="table-layout: fixed;">
+          <thead class="bg-info text-white">
+            <tr>
+              {% for i in "12345678901234567890" %}
+                <th style="width: 5%;">C{{ forloop.counter }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content_list_before %}
+  <form method="POST" action="." id="form-filtros-electoral">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="{{ action }}" />
+
+    <div class="row bg-light p-3 rounded border mb-3">
+      <div class="col-lg-5">
+        <div class="form-group mb-0">
+          <label class="font-weight-bold">Local de Votación:</label>
+          <div class="input-group">{{ form.local_votacion }}</div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="form-group mb-0">
+          <label class="font-weight-bold">Mesa:</label>
+          <div class="input-group">{{ form.mesa }}</div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 d-flex align-items-end">
+        <div class="form-group w-100 mb-0">
+          <button class="btn btn-primary btn-block font-weight-bold" type="button" id="btnCargarCuadricula">
+            <i class="fas fa-sync-alt"></i> Cargar Cuadrícula
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  
+{% endblock %}
+
+{% block javascript_list %}
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
+
+  <script>
+    let tablaGrid = null;
+
+    $(document).ready(function () {
+      
+      // Evento de escucha para el botón Cargar Cuadrícula
+      $('#btnCargarCuadricula').on('click', function() {
+          const localId = $('select[name="local_votacion"]').val();
+          const mesaNum = $('select[name="mesa"]').val();
+          const localTexto = $('select[name="local_votacion"] option:selected').text();
+
+          if (!localId || !mesaNum) {
+              alert("Por favor seleccione un Local y una Mesa.");
+              return;
+          }
+
+          // Actualizamos los textos informativos superiores
+          $('#txt-nombre-local').text(localTexto.toUpperCase());
+          $('#txt-numero-mesa').text(mesaNum);
+          $('#contenedor-grilla').removeClass('d-none');
+
+          // Si la tabla ya estaba inicializada, la destruimos para cargar los nuevos datos limpios
+          if (tablaGrid !== null) {
+              tablaGrid.destroy();
+          }
+
+          // Inicialización de DataTables alimentada por AJAX mediante POST
+          tablaGrid = $('#grid-cuadricula-datatables').DataTable({
+              "processing": true,
+              "serverSide": false, // Procesamiento del lado del cliente para permitir búsquedas instantáneas
+              "ajax": {
+                  "url": window.location.pathname,
+                  "type": "POST",
+                  "data": {
+                      "action": "generate_grid",
+                      "local_votacion": localId,
+                      "mesa": mesaNum,
+                      "csrfmiddlewaretoken": "{{ csrf_token }}"
+                  },
+                  "dataSrc": "matriz" // Campo del JSON devuelto por Django
+              },
+              "columns": [
+                  // Mapeamos las 20 columnas del JSON. Cada celda renderiza su respectivo botón.
+                  {% for i in "12345678901234567890" %}
+                  { 
+                      "data": "col_{{ forloop.counter0 }}",
+                      "render": function(data, type, row) {
+                          if (data && data.id) {
+                              const tooltipTexto = `${data.elector}`;
+                              const claseBoton = data.pasoxmv ? 'btn-success' : 'btn-secondary';
+                              return `<button type="button" 
+                                          class="btn btn-block btn-orden ${claseBoton}" 
+                                          data-id="${data.id}" 
+                                          data-orden="${data.orden}" 
+                                          data-toggle="tooltip"
+                                          datea-placement="top"
+                                          title="${tooltipTexto}"
+                                          onclick="quickUpdateVoto(this)">
+                                          ${data.orden}
+                                      </button>`;
+                          }
+                          return '<div class="celda-vacia"></div>';
+                      }
+                  }{% if not forloop.last %},{% endif %}
+                  {% endfor %}
+              ],
+              "paging": true,
+              "pageLength": 10, // 200 órdenes por pantalla
+              "searching": true,
+              "ordering": false,
+              "lengthChange": false,
+              "drawCallback": function(settings) {
+                    // Esto vuelve a escanear la grilla y activa los tooltips de Bootstrap en cada cambio
+                    $('[data-toggle="tooltip"]').tooltip({
+                        container: 'body',
+                        trigger: 'hover'
+                    });
+                },
+              "language": {
+                  "search": "<b>Buscar N° de Orden:</b>",
+                  "zeroRecords": "No se encontraron números de orden",
+                  "info": "Mostrando filas de la cuadrícula electoral",
+                  "infoEmpty": "Sin registros disponibles",
+                  "paginate": {
+                      "next": "Siguiente",
+                      "previous": "Anterior"
+                  }
+              }
+              
+          });
+      });
+    });
+    
+    // Función de Quick Update asíncrona
+    function quickUpdateVoto(boton) {
+      const electorId = boton.getAttribute('data-id');
+      boton.disabled = true;
+    
+      const url = "{% url 'quick_update_voto' %}"; // Asegurate si lleva namespace o no
+    
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ elector_id: electorId })
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            if (data.nuevo_estado) {
+              boton.classList.remove('btn-secondary');
+              boton.classList.add('btn-success');
+            } else {
+              boton.classList.remove('btn-success');
+              boton.classList.add('btn-secondary');
+            }
+          } else {
+            alert('Error al registrar: ' + data.error);
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('Error de comunicación con el servidor.');
+        })
+        .finally(() => {
+          boton.disabled = false;
+        });
+    }
+  </script>
+{% endblock %}

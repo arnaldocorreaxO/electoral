@@ -19,8 +19,8 @@ from django.views.generic.edit import FormView
 # 3. Local Apps imports (Core / Base / Electoral / Reports)
 from core.base.models import Parametro
 from core.electoral.forms import Elector, ElectorForm, ShearchForm
-from core.electoral.models import Barrio, Ciudad, Manzana, TipoVoto
-from core.reports.forms import ReportForm
+from core.electoral.models import Barrio, Ciudad, LocalVotacion, Manzana, TipoVoto
+from core.reports.forms import FormFilterGenerarPDFMesa, ReportForm
 from core.reports.jasperbase import JasperReportBase
 from core.security.mixins import PermissionMixin
 
@@ -724,3 +724,148 @@ def test_reporte(request):
     report = JasperReportBase()
     report.report_name = "rpt_001"
     return report.render_to_response()
+
+
+class RegistroVotoRapidoView(FormView):
+    template_name = "padron/elector/registro_voto_filtro_datatables.html"
+    form_class = FormFilterGenerarPDFMesa
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get("action")
+
+        if action == "generate_grid":
+            local_id = request.POST.get("local_votacion")
+            mesa_num = request.POST.get("mesa")
+
+            # Buscamos los electores de la mesa ordenada
+            electores = Elector.objects.filter(
+                local_votacion_id=local_id, mesa=mesa_num
+            ).order_by(Cast("orden", IntegerField()))
+
+            columnas = 20
+            lista_electores = list(electores)
+
+            # Armamos la matriz plana estructurada en filas con nombres de columnas
+            matriz_json = []
+            for i in range(0, len(lista_electores), columnas):
+                bloque = lista_electores[i : i + columnas]
+                fila_dict = {}
+
+                for idx in range(columnas):
+                    if idx < len(bloque) and bloque[idx] is not None:
+                        elector = bloque[idx]
+                        fila_dict[f"col_{idx}"] = {
+                            "id": elector.id,
+                            "orden": elector.orden,
+                            "pasoxmv": True if elector.pasoxmv == "S" else False,
+                            "elector": elector.get_fullname(),
+                        }
+                    else:
+                        fila_dict[f"col_{idx}"] = None
+
+                matriz_json.append(fila_dict)
+
+            # Le respondemos directo al AJAX de DataTables
+            return JsonResponse({"matriz": matriz_json}, safe=False)
+
+        # Comportamiento por defecto
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = self.form_class(usuario=self.request.user)
+        context["title"] = "Carga Rápida de Votos por Mesa"
+        context["action"] = "generate_grid"
+        return context
+
+
+@csrf_exempt  # O usá el middleware normal ya que pasamos el X-CSRFToken en el header
+def quick_update_voto_endpoint(request):
+    if request.method == "POST":
+        try:
+            # Al venir de un fetch con JSON, cargamos el body así:
+            data = json.loads(request.body)
+            elector_id = data.get("elector_id")
+
+            elector = Elector.objects.get(id=elector_id)
+
+            # Invertimos el estado del campo progreso (pasoxmv)
+            nuevo_estado_char = "N" if elector.pasoxmv == "S" else "S"
+            # Guardamos ÚNICAMENTE este campo de forma aislada
+            Elector.objects.filter(id=elector_id).update(pasoxmv=nuevo_estado_char)
+
+            return JsonResponse(
+                # Retornamos al JS un booleano (True/False) para que pinte el botón fácil
+                {"success": True, "nuevo_estado": (nuevo_estado_char == "S")}
+            )
+        except Elector.DoesNotExist:
+            return JsonResponse(
+                {"success": False, "error": "Elector no encontrado"}, status=404
+            )
+        except Exception as e:
+            return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+    return JsonResponse({"success": False, "error": "Método no permitido"}, status=405)
+
+
+class RegistroVotoMovilView(FormView):
+    template_name = "padron/elector/registro_voto_movil.html"
+    form_class = FormFilterGenerarPDFMesa
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get("action")
+
+        if action == "generate_grid":
+            local_id = request.POST.get("local_votacion")
+            mesa_num = request.POST.get("mesa")
+
+            if not local_id or not mesa_num:
+                return JsonResponse({"error": "Faltan datos de consulta"}, status=400)
+
+            electores = Elector.objects.filter(
+                local_votacion_id=local_id, mesa=mesa_num
+            ).order_by(Cast("orden", IntegerField()))
+
+            # REDISEÑO CLAVE: Estructura de 5 columnas para pantallas móviles
+            columnas = 5
+            lista_electores = list(electores)
+
+            matriz_json = []
+            for i in range(0, len(lista_electores), columnas):
+                bloque = lista_electores[i : i + columnas]
+                fila_dict = {}
+
+                for idx in range(columnas):
+                    if idx < len(bloque):
+                        elector = bloque[idx]
+                        nombre_completo = f"{elector.apellido}, {elector.nombre}"
+
+                        fila_dict[f"col_{idx}"] = {
+                            "id": elector.id,
+                            "orden": elector.orden,
+                            "pasoxmv": (elector.pasoxmv == "S"),
+                            "elector": nombre_completo.upper(),
+                        }
+                    else:
+                        fila_dict[f"col_{idx}"] = None
+
+                matriz_json.append(fila_dict)
+
+            return JsonResponse({"matriz": matriz_json}, safe=False)
+
+        return self.render_to_response(self.get_context_data())
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = self.form_class(usuario=self.request.user)
+        context["title"] = "Control Móvil de Votos (Veedores)"
+        context["action"] = "generate_grid"
+        return context
