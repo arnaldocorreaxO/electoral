@@ -797,10 +797,20 @@ def quick_update_voto_endpoint(request):
             nuevo_estado_char = "N" if elector.pasoxmv == "S" else "S"
             # Guardamos ÚNICAMENTE este campo de forma aislada
             Elector.objects.filter(id=elector_id).update(pasoxmv=nuevo_estado_char)
+            # NUEVO: Contamos cuántos ya votaron en esta mesa específica
+            total_votos = Elector.objects.filter(
+                local_votacion_id=elector.local_votacion_id,
+                mesa=elector.mesa,
+                pasoxmv="S",
+            ).count()
 
             return JsonResponse(
                 # Retornamos al JS un booleano (True/False) para que pinte el botón fácil
-                {"success": True, "nuevo_estado": (nuevo_estado_char == "S")}
+                {
+                    "success": True,
+                    "nuevo_estado": (nuevo_estado_char == "S"),
+                    "total_votos_mesa": total_votos,
+                }
             )
         except Elector.DoesNotExist:
             return JsonResponse(
@@ -823,6 +833,17 @@ class RegistroVotoMovilView(FormView):
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
 
+        if action == "get_mesa_stats":
+            local_id = request.POST.get("local_votacion")
+            mesa_num = request.POST.get("mesa")
+            try:
+                total_votos = Elector.objects.filter(
+                    local_votacion_id=local_id, mesa=mesa_num, pasoxmv="S"
+                ).count()
+                return JsonResponse({"success": True, "total_votos_mesa": total_votos})
+            except Exception as e:
+                return JsonResponse({"success": False, "error": str(e)})
+
         if action == "get_elector_info":
             local_id = request.POST.get("local_votacion")
             mesa_num = request.POST.get("mesa")
@@ -833,10 +854,15 @@ class RegistroVotoMovilView(FormView):
                 elector = Elector.objects.get(
                     local_votacion_id=local_id, mesa=mesa_num, orden=orden_num
                 )
+                # NUEVO: Contamos cuántos ya votaron en esta mesa específica
+                total_votos = Elector.objects.filter(
+                    local_votacion_id=local_id, mesa=mesa_num, pasoxmv="S"
+                ).count()
 
                 return JsonResponse(
                     {
                         "success": True,
+                        "total_votos_mesa": total_votos,  # <-- ENVIAMOS AL FRONT
                         "elector": {
                             "id": elector.id,
                             "nombre": f"{elector.apellido}, {elector.nombre}".upper(),

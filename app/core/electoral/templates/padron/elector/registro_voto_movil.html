@@ -66,12 +66,11 @@
       color: #721c24 !important; /* Forzamos texto bordó */
       border: 1px solid #f5c6cb !important;
     }
-    .btn-buscar-elector {
-      background-color: #007bff !important;
-      color: #ffffff !important; /* Forzamos ícono blanco */
-      border: 1px solid #0069d9 !important;
-    }
     
+    .btn-buscar-elector {
+      color: #ffffff !important; /* Forzamos que el ícono sea siempre blanco */
+      border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    }
     /* Forzar tamaño y visibilidad de los íconos dentro del botón */
     .btn-teclado i {
       font-size: 1.5rem !important;
@@ -93,6 +92,9 @@
       <h6 class="mb-1 text-uppercase font-weight-bold" id="txt-nombre-local" style="font-size: 0.85rem; line-height: 1.2;">-</h6>
       <div class="badge badge-mesa-info px-3 py-1 font-weight-bold">
         MESA: <span id="txt-numero-mesa">0</span>
+      </div>
+      <div class="badge badge-success px-3 py-1 font-weight-bold" style="font-size: 1.1rem;">
+        VOTOS: <span id="txt-total-votos">0</span>
       </div>
     </div>
 
@@ -135,7 +137,7 @@
           </div>
 
           <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-buscar-elector" id="btnBuscarOrden" onclick="buscarElectorPorOrden()"><i class="fas fa-search"></i></button>
+            <button type="button" class="btn btn-teclado btn-buscar-elector btn-info" id="btnBuscarOrden" onclick="controlAccionBotonDinamico()"><i class="fas fa-sync-alt" id="icono-buscar-dinamico"></i></button>
           </div>
           <div class="col-4">
             <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('0')">0</button>
@@ -171,6 +173,10 @@
   </form>
 {% endblock %}
 
+{% block box_header_buttons %}
+
+{% endblock %}
+
 {% block javascript_list %}
   <script>
     let ordenMarcado = ''
@@ -187,30 +193,126 @@
           $('#txt-numero-mesa').text(mesaNum)
           $('#contenedor-marcador').removeClass('d-none')
           resetMarcador()
+          // 2. NUEVO: Traer el conteo real de la mesa desde el backend al recuperar/seleccionar la mesa
+          fetch(window.location.pathname, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: new URLSearchParams({
+              action: 'get_mesa_stats',
+              local_votacion: localId,
+              mesa: mesaNum
+            })
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                $('#txt-total-votos').text(data.total_votos_mesa)
+              } else {
+                $('#txt-total-votos').text('0')
+                console.error(data.error)
+              }
+            })
+            .catch((error) => {
+              $('#txt-total-votos').text('0')
+              console.error('Error al recuperar estadísticas de la mesa:', error)
+            })
         }
       })
     })
     
-    // Control táctil de números
+    // NUEVO: Función que centraliza la acción del botón de la esquina inferior izquierda
+    function controlAccionBotonDinamico() {
+      if (ordenMarcado === '' || ordenMarcado === '0') {
+        // ACCIÓN 1: Refrescar los datos de la mesa (Hace lo mismo que el change)
+        const localId = $('select[name="local_votacion"]').val()
+        const mesaNum = $('select[name="mesa"]').val()
+    
+        if (!localId || !mesaNum) return
+    
+        // Animación sutil de rotación en el ícono para que el veedor note el click
+        const icono = $('#icono-buscar-dinamico')
+        icono.addClass('fa-spin')
+        $('#txt-total-votos').text('...')
+    
+        fetch(window.location.pathname, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          body: new URLSearchParams({
+            action: 'get_mesa_stats',
+            local_votacion: localId,
+            mesa: mesaNum
+          })
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              $('#txt-total-votos').text(data.total_votos_mesa)
+            } else {
+              $('#txt-total-votos').text('0')
+            }
+          })
+          .catch((error) => {
+            $('#txt-total-votos').text('0')
+            console.error(error)
+          })
+          .finally(() => {
+            // Quitamos la animación de giro al terminar
+            setTimeout(() => {
+              icono.removeClass('fa-spin')
+            }, 400)
+          })
+      } else {
+        // ACCIÓN 2: Buscar al elector normal porque ya hay un número tipeado
+        buscarElectorPorOrden()
+      }
+    }
+    
+    // Modificá tu función original de marcar para que cambie el ícono a Lupa
     function marcarNumero(num) {
-      // Evitamos que pongan ceros a la izquierda innecesarios al inicio
       if (ordenMarcado === '' && num === '0') return
     
-      // Límite lógico de 4 dígitos para números de orden
       if (ordenMarcado.length < 4) {
         ordenMarcado += num
+        $('#display-orden').val(ordenMarcado)
+    
+        // Si ya tiene números, muta a buscador (Lupa)
+        if (ordenMarcado.length > 0) {
+          // Cambiamos ícono
+          $('#icono-buscar-dinamico').removeClass('fa-sync-alt').addClass('fa-search')
+          // Cambiamos color: sacamos celeste (info) y ponemos azul (primary)
+          $('#btnBuscarOrden').removeClass('btn-info').addClass('btn-primary')
+        }
+      }
+    }
+    
+    // Al borrar: Si queda vacío, vuelve a Sincronizar (Celeste)
+    function borrarNumero() {
+      ordenMarcado = ordenMarcado.slice(0, -1)
+    
+      if (ordenMarcado === '' || ordenMarcado === '0') {
+        $('#display-orden').val('0')
+        // Cambiamos ícono
+        $('#icono-buscar-dinamico').removeClass('fa-search').addClass('fa-sync-alt')
+        // Cambiamos color: sacamos azul y devolvemos celeste
+        $('#btnBuscarOrden').removeClass('btn-primary').addClass('btn-info')
+      } else {
         $('#display-orden').val(ordenMarcado)
       }
     }
     
-    function borrarNumero() {
-      ordenMarcado = ordenMarcado.slice(0, -1)
-      $('#display-orden').val(ordenMarcado === '' ? '0' : ordenMarcado)
-    }
-    
+    // Al resetear o cambiar de mesa: Restaura el botón a Sincronizar (Celeste)
+    html
     function resetMarcador() {
       ordenMarcado = ''
       $('#display-orden').val('0')
+      $('#icono-buscar-dinamico').removeClass('fa-search').addClass('fa-sync-alt')
+      $('#btnBuscarOrden').removeClass('btn-primary').addClass('btn-info')
     }
     
     // Petición para Buscar los Datos del Elector antes de Confirmar
@@ -249,6 +351,9 @@
             $('#mdl-orden').text(ordenMarcado)
             $('#mdl-elector').text(data.elector.nombre)
             $('#mdl-ci').text(data.elector.ci)
+    
+            // Actualizamos el contador con el dato que viene del servidor
+            $('#txt-total-votos').text(data.total_votos_mesa)
     
             // Configuramos el botón de confirmación interno del modal
             const btnConfirmar = $('#btnConfirmarVotoModal')
@@ -309,9 +414,14 @@
       })
         .then((response) => response.json())
         .then((data) => {
+          console.log('Respuesta del Servidor:', data)
           if (data.success) {
             $('#modal-confirmacion-tactil').modal('hide')
             resetMarcador()
+            // NUEVO: Actualiza el contador gigante de la cabecera en tiempo real
+            if (data.total_votos_mesa !== undefined) {
+              $('#txt-total-votos').text(data.total_votos_mesa)
+            }
     
             // LANZAR NOTIFICACIÓN ELEGANTE EN LA PARTE SUPERIOR
             if (data.nuevo_estado) {
@@ -380,7 +490,7 @@
 
         <div class="modal-footer p-2 bg-light flex-column">
           <button type="button" class="btn btn-success btn-block btn-lg font-weight-bold py-3 mb-2" id="btnConfirmarVotoModal" onclick="procesarVotoDesdeModal(this)"><i class="fas fa-check"></i> CONFIRMAR VOTO</button>
-          <button type="button" class="btn btn-outline-secondary btn-block btn-sm" data-dismiss="modal" onclick="resetMarcador()">CANCELAR</button>
+          <button type="button" class="btn btn-secondary btn-block btn-lg" data-dismiss="modal" onclick="resetMarcador()">CANCELAR</button>
         </div>
       </div>
     </div>
