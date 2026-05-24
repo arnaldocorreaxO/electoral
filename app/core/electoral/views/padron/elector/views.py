@@ -597,7 +597,9 @@ class ElectorCreateView(PermissionMixin, CreateView):
                     .distinct()
                     .order_by("int_mesa")
                 ):
-                    data.append({"id": i["mesa"], "text": i["mesa"], "data": i})
+                    data.append(
+                        {"id": i["mesa"], "text": f"Mesa N° {i['mesa']}", "data": i}
+                    )
 
             else:
                 data["error"] = "No ha seleccionado ninguna opción"

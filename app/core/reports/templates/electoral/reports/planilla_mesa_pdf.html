@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Planillas Electorales</title>
+    <style>
+      /* CONFIGURACIÓN DE PÁGINA NATIVA */
+      @page {
+        size: A4 portrait;
+        margin: 8mm 8mm 8mm 15mm; /* Ajustamos márgenes para ganar área de impresión */
+      }
+      
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        color: #000000;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .bloque-mesa {
+        page-break-after: always;
+        height: 100%; /* Forzamos a que el contenedor intente usar la página entera */
+      }
+      .bloque-mesa:last-child {
+        page-break-after: avoid;
+      }
+      
+      /* ESTRUCTURA DEL ENCABEZADO */
+      .header-container {
+        border-bottom: 3px solid #000; /* Un poco más grueso para presencia */
+        padding-bottom: 10px;
+        margin-bottom: 8px;
+        width: 100%;
+      }
+      
+      .header-left {
+        width: 75%;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      
+      .header-right {
+        width: 24%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: right;
+      }
+      
+      .titulo-local {
+        font-size: 16pt; /* Más grande */
+        font-weight: bold;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      
+      .subtitulo-planilla {
+        font-size: 10pt;
+        color: #444;
+        font-weight: bold;
+      }
+      
+      /* CUADRO NÚMERO DE MESA */
+      .caja-mesa {
+        border: 3px solid #000;
+        border-radius: 6px;
+        display: inline-block;
+        text-align: center;
+        min-width: 100px;
+        padding: 5px;
+      }
+      
+      .caja-mesa-label {
+        display: block;
+        font-size: 9pt;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+      
+      .caja-mesa-numero {
+        font-size: 20pt; /* Más imponente */
+        font-weight: bold;
+        line-height: 1;
+      }
+      
+      .info-footer {
+        font-size: 11pt;
+        font-weight: bold;
+        text-align: right;
+        margin-top: 5px;
+        margin-bottom: 12px;
+      }
+      
+      /* CUADRÍCULA AGRANDADA */
+      .tabla-cuadricula {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        margin-top: 5px;
+      }
+      
+      .tabla-cuadricula td {
+        border: 1.5px solid #000; /* Bordes más definidos para fotocopia */
+        text-align: center;
+        vertical-align: middle;
+        background-color: #fff;
+        padding: 0;
+      }
+      
+      .celda-vacia {
+        background-color: #e0e0e0 !important; /* Gris un toque más oscuro para contraste */
+      }
+      
+      /* ============================================================
+                                                                                 NUEVAS ESCALAS DINÁMICAS MAXIMIZADAS
+                                                        ============================================================ */
+      /* Escala Normal (Hasta 200 electores - 10 filas aprox) */
+      .escala-normal .tabla-cuadricula td {
+        font-size: 9.5pt;
+        height: 62px; /* Super alta para llenar la hoja */
+      }
+      
+      /* Escala Chica (De 200 a 300 electores - 15 filas aprox) */
+      .escala-chica .tabla-cuadricula td {
+        font-size: 9.5pt;
+        height: 44px;
+      }
+      
+      /* Escala Micro (Para 400 electores - Genera 20 filas exactas) */
+      .escala-micro .tabla-cuadricula td {
+        font-size: 9.5pt; /* Subimos de 8pt a 11.5pt */
+        height: 33px; /* Subimos de 21px a 33px (Gana un 55% más de alto total) */
+      }
+      
+      /* SECCIÓN FIRMAS CON MÁS AIRE */
+      .seccion-firmas {
+        margin-top: 45px; /* Separación prudencial de la tabla */
+        width: 100%;
+      }
+      
+      .col-firma {
+        width: 32%;
+        display: inline-block;
+        text-align: center;
+      }
+      
+      .linea-firma {
+        border-top: 1.5px solid #000;
+        margin: 0 12px;
+        padding-top: 6px;
+        font-size: 9pt;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    {% for mesa in mesas %}
+      <div class="bloque-mesa {{ mesa.escala_css }}">
+        <div class="header-container">
+          <div class="header-left">
+            <h5 class="titulo-local">{{ nombre_local }}</h5>
+            <span class="subtitulo-planilla">Planilla de Control y Registro Electoral</span>
+          </div>
+          <div class="header-right">
+            <div class="caja-mesa">
+              <span class="caja-mesa-label">Mesa</span>
+              <span class="caja-mesa-numero">{{ mesa.numero_mesa }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-footer">Órdenes del 1 al {{ mesa.max_orden }}</div>
+
+        <table class="tabla-cuadricula">
+          <tbody>
+            {% for fila in mesa.matriz %}
+              <tr>
+                {% for celda in fila %}
+                  {% if celda %}
+                    <td>{{ celda }}</td>
+                  {% else %}
+                    <td class="celda-vacia">&nbsp;</td>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endfor %}
+  </body>
+</html>

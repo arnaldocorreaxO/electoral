@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Planillas Electorales</title>
+    <style>
+      /* CONFIGURACIÓN DE PÁGINA NATIVA */
+      @page {
+        size: A4 portrait;
+        margin: 8mm 8mm 8mm 15mm; /* Márgenes ajustados para maximizar el doble bloque */
+      }
+      
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #ffffff;
+        color: #000000;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .bloque-mesa {
+        page-break-after: always;
+        height: 100%;
+      }
+      .bloque-mesa:last-child {
+        page-break-after: avoid;
+      }
+      
+      /* ESTRUCTURA DEL ENCABEZADO */
+      .header-container {
+        border-bottom: 2px solid #000;
+        padding-bottom: 6px;
+        margin-bottom: 4px;
+        width: 100%;
+      }
+      
+      .header-left {
+        width: 75%;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      
+      .header-right {
+        width: 24%;
+        display: inline-block;
+        vertical-align: middle;
+        text-align: right;
+      }
+      
+      .titulo-local {
+        font-size: 13pt;
+        font-weight: bold;
+        margin: 0;
+        text-transform: uppercase;
+      }
+      
+      .subtitulo-planilla {
+        font-size: 9pt;
+        color: #444;
+      }
+      
+      /* CUADRO NÚMERO DE MESA */
+      .caja-mesa {
+        border: 2px solid #000;
+        border-radius: 4px;
+        display: inline-block;
+        text-align: center;
+        min-width: 80px;
+        padding: 2px;
+      }
+      
+      .caja-mesa-label {
+        display: block;
+        font-size: 7pt;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+      
+      .caja-mesa-numero {
+        font-size: 14pt;
+        font-weight: bold;
+        line-height: 1;
+      }
+      
+      /* CONTENEDOR DE CADA SECCIÓN (VOTO / VEEDOR) */
+      .seccion-reporte {
+        margin-top: 6px;
+        margin-bottom: 12px;
+        border: 1px dashed #666;
+        padding: 6px;
+        border-radius: 4px;
+        background-color: #fafafa;
+      }
+      
+      .titulo-seccion-tabla {
+        font-size: 10pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin: 0 0 4px 0;
+        color: #000;
+        border-left: 4px solid #000;
+        padding-left: 6px;
+      }
+      
+      /* CUADRÍCULA COMPACTADA PARA DOBLE TABLA */
+      .tabla-cuadricula {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+      }
+      
+      .tabla-cuadricula td {
+        border: 1px solid #000;
+        text-align: center;
+        vertical-align: middle;
+        background-color: #fff;
+        padding: 0;
+      }
+      
+      .celda-vacia {
+        background-color: #e0e0e0 !important;
+      }
+      
+      /* ============================================================
+                                      ESCALAS AJUSTADAS PARA QUE ENTREN DOS TABLAS POR HOJA
+                                      ============================================================ */
+      /* Hasta 200 electores (Aprox 10 filas x 2 tablas = 20 filas totales) */
+      .escala-normal .tabla-cuadricula td {
+        font-size: 9.5pt;
+        height: 28px;
+      }
+      
+      /* De 200 a 300 electores (Aprox 15 filas x 2 tablas = 30 filas totales) */
+      .escala-chica .tabla-cuadricula td {
+        font-size: 9.5pt;
+        height: 25px;
+      }
+      
+      /* Para 400 electores (20 filas x 2 tablas = 40 filas exactas en la hoja) */
+      .escala-micro .tabla-cuadricula td {
+        font-size: 9.5pt;
+        height: 22px; /* Altura matemática perfecta para WeasyPrint en 40 filas */
+      }
+      
+      /* SECCIÓN FIRMAS AL FINAL DE LA HOJA */
+      .seccion-firmas {
+        margin-top: 10px;
+        width: 100%;
+      }
+      
+      .col-firma {
+        width: 32%;
+        display: inline-block;
+        text-align: center;
+      }
+      
+      .linea-firma {
+        border-top: 1.5px solid #000;
+        margin: 0 12px;
+        padding-top: 4px;
+        font-size: 8pt;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    {% for mesa in mesas %}
+      <div class="bloque-mesa {{ mesa.escala_css }}">
+        <div class="header-container">
+          <div class="header-left">
+            <h5 class="titulo-local">{{ nombre_local }}</h5>
+            <span class="subtitulo-planilla">Planilla de Control y Registro Electoral | Órdenes del 1 al {{ mesa.max_orden }}</span>
+          </div>
+          <div class="header-right">
+            <div class="caja-mesa">
+              <span class="caja-mesa-label">Mesa</span>
+              <span class="caja-mesa-numero">{{ mesa.numero_mesa }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="seccion-reporte">
+          <h6 class="titulo-seccion-tabla">1. Registro de Votantes (Tachar N° de Orden al votar)</h6>
+          <table class="tabla-cuadricula">
+            <tbody>
+              {% for fila in mesa.matriz %}
+                <tr>
+                  {% for celda in fila %}
+                    {% if celda %}
+                      <td>{{ celda }}</td>
+                    {% else %}
+                      <td class="celda-vacia">&nbsp;</td>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="seccion-reporte">
+          <h6 class="titulo-seccion-tabla">2. Cuantificación del Veedor Electoral (Votantes / Cantidad)</h6>
+          <table class="tabla-cuadricula">
+            <tbody>
+              {% for fila in mesa.matriz %}
+                <tr>
+                  {% for celda in fila %}
+                    {% if celda %}
+                      <td>{{ celda }}</td>
+                    {% else %}
+                      <td class="celda-vacia">&nbsp;</td>
+                    {% endif %}
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endfor %}
+  </body>
+</html>

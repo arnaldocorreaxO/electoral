@@ -1,0 +1,29 @@
+{% extends 'report2.html' %}
+{% load widget_tweaks %}
+{% load security_extras %}
+{% load static %}
+{% block head_report %}
+  <script src="{% static '/js/select2_local_votacion_mesas.js' %}"></script>
+{% endblock %}
+
+{% block params_report %}
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label>Por Local de Votacion</label>
+        <div class="input-group mb-3">{{ form.local_votacion }}</div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label>Por Mesa</label>
+        <div class="input-group mb-3">{{ form.mesa }}</div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="form-group">
+        <label>Tipo de Planilla</label>
+        <div class="input-group mb-3">{{ form.tipo_planilla }}</div>
+      </div>
+  </div>
+{% endblock %}
