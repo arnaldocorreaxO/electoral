@@ -2,102 +2,148 @@
 {% load static %}
 
 {% block head_list %}
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap4.min.css" />
   <script src="{% static '/js/select2_local_votacion_mesas.js' %}"></script>
   <style>
-    /* 1. OCULTAR LA LISTA TRADICIONAL Y COMPONENTES EXTRAS */
+    /* 1. OCULTAR LA LISTA TRADICIONAL POR COMPLETO */
     #data_list,
-    .dataTables_wrapper .row:first-child,
     .card-footer,
-    #btnCargarCuadricula,
-    .dataTables_paginate {
-      /* OCULTAMOS la paginación vieja chiquita */
+    .dataTables_wrapper {
       display: none !important;
     }
     
-    /* 2. DISEÑO ADAPTADO A MÓVILES (5 COLUMNAS ENTRAN PERFECTO) */
-    .tabla-interactiva td {
-      padding: 6px 3px !important;
-      vertical-align: middle !important;
-    }
-    .btn-orden {
-      width: 100%;
-      font-weight: bold;
-      font-size: 1.1rem;
-      padding: 12px 0;
-      transition: all 0.15s ease;
-      border: 1px solid rgba(0, 0, 0, 0.1);
-    }
-    .celda-vacia {
+    /* 2. DISEÑO DEL TECLADO NUMÉRICO TIPO TELÉFONO - VERSIÓN ULTRA COMPATIBLE */
+    .display-orden-container {
       background-color: #f8f9fa;
-      min-height: 48px;
-      border-radius: 4px;
-    }
-    
-    /* Customización del buscador para móviles */
-    .dataTables_filter input {
-      width: 100% !important;
-      margin-left: 0 !important;
-      font-size: 1.1rem;
-    }
-    
-    /* 3. BOTONES GIGANTES FIJOS ABAJO PARA PASAR PÁGINAS */
-    .contenedor-paginacion-movil {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #ffffff;
-      box-shadow: 0 -3px 10px rgba(0, 0, 0, 0.15);
-      padding: 10px;
-      z-index: 1030;
-    }
-    .btn-nav-gigante {
-      font-size: 1.2rem;
-      font-weight: bold;
-      padding: 15px 0;
+      border: 2px solid #ced4da;
       border-radius: 8px;
+      padding: 10px;
     }
-    /* Espacio extra al final del body para que la tabla no tape los botones */
-    body {
-      padding-bottom: 85px !important;
+    .input-orden-gigante {
+      font-size: 2.2rem !important;
+      font-weight: bold;
+      text-align: center;
+      letter-spacing: 2px;
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      color: #212529 !important; /* Forzamos color oscuro */
+    }
+    .teclado-contenedor {
+      max-width: 280px;
+      margin: 0 auto;
+    }
+    .btn-teclado {
+      /* Forzamos el tamaño del círculo sin dejar que herede paddings del sistema */
+      width: 65px !important;
+      height: 65px !important;
+      padding: 0 !important;
+      margin: 0 auto 15px auto !important;
+      border-radius: 50% !important;
+    
+      /* FLEXBOX PURO: Obliga al texto o ícono a clavarse en el medio exacto */
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    
+      /* Tipografía grande y visible */
+      font-size: 1.8rem !important;
+      font-weight: bold !important;
+    
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.1s ease;
+    }
+    .btn-teclado:active {
+      transform: scale(0.92);
+      box-shadow: none;
+    }
+    .btn-numero {
+      background-color: #ffffff !important;
+      color: #212529 !important; /* Forzamos texto negro */
+      border: 1px solid #dee2e6 !important;
+    }
+    .btn-borrar {
+      background-color: #f8d7da !important;
+      color: #721c24 !important; /* Forzamos texto bordó */
+      border: 1px solid #f5c6cb !important;
+    }
+    .btn-buscar-elector {
+      background-color: #007bff !important;
+      color: #ffffff !important; /* Forzamos ícono blanco */
+      border: 1px solid #0069d9 !important;
+    }
+    
+    /* Forzar tamaño y visibilidad de los íconos dentro del botón */
+    .btn-teclado i {
+      font-size: 1.5rem !important;
+      display: inline-block !important;
+      line-height: 1 !important;
+    }
+    /* Pequeño ajuste para el badge de mesa */
+    .badge-mesa-info {
+      font-size: 1.1rem;
+      background-color: #e9ecef;
+      color: #495057;
     }
   </style>
 {% endblock %}
 
 {% block columns %}
-  <div class="card shadow-sm mb-4 d-none" id="contenedor-grilla">
-    <div class="card-header bg-dark text-white p-2">
-      <div class="text-center">
-        <h6 class="mb-1 text-uppercase font-weight-bold style-small" id="txt-nombre-local" style="font-size: 0.85rem;">LOCAL DE VOTACIÓN</h6>
-        <div class="badge badge-light px-3 py-1" style="font-size: 1rem;">
-          MESA: <span id="txt-numero-mesa" class="font-weight-bold">0</span>
-        </div>
+  <div class="card shadow-sm mb-4 d-none" id="contenedor-marcador">
+    <div class="card-header bg-dark text-white p-2 text-center">
+      <h6 class="mb-1 text-uppercase font-weight-bold" id="txt-nombre-local" style="font-size: 0.85rem; line-height: 1.2;">-</h6>
+      <div class="badge badge-mesa-info px-3 py-1 font-weight-bold">
+        MESA: <span id="txt-numero-mesa">0</span>
       </div>
     </div>
-    <div class="card-body p-2">
-      <div class="table-responsive">
-        <table id="grid-cuadricula-datatables" class="table table-bordered text-center m-0 tabla-interactiva" style="table-layout: fixed;">
-          <thead class="bg-info text-white">
-            <tr>
-              {% for i in "12345" %}
-                <th style="width: 20%;">C{{ forloop.counter }}</th>
-              {% endfor %}
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 
-  <div class="contenedor-paginacion-movil d-none" id="barra-navegacion-fija">
-    <div class="row no-gutters">
-      <div class="col-6 pr-1">
-        <button type="button" class="btn btn-secondary btn-block btn-nav-gigante" id="btnPageAnterior"><i class="fas fa-chevron-left"></i> ATRÁS</button>
+    <div class="card-body p-3">
+      <div class="display-orden-container text-center mb-3 shadow-sm">
+        <small class="text-muted d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">NÚMERO DE ORDEN</small>
+        <input type="text" id="display-orden" class="form-control input-orden-gigante" readonly placeholder="0" />
       </div>
-      <div class="col-6 pl-1">
-        <button type="button" class="btn btn-secondary btn-block btn-nav-gigante" id="btnPageSiguiente">ADELANTE <i class="fas fa-chevron-right"></i></button>
+
+      <div class="teclado-contenedor">
+        <div class="row no-gutters text-center">
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('1')">1</button>
+          </div>
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('2')">2</button>
+          </div>
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('3')">3</button>
+          </div>
+
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('4')">4</button>
+          </div>
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('5')">5</button>
+          </div>
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('6')">6</button>
+          </div>
+
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('7')">7</button>
+          </div>
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('8')">8</button>
+          </div>
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('9')">9</button>
+          </div>
+
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-buscar-elector" id="btnBuscarOrden" onclick="buscarElectorPorOrden()"><i class="fas fa-search"></i></button>
+          </div>
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('0')">0</button>
+          </div>
+          <div class="col-4">
+            <button type="button" class="btn btn-teclado btn-borrar" onclick="borrarNumero()"><i class="fas fa-backspace"></i></button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -115,7 +161,6 @@
           <div class="input-group input-group-sm">{{ form.local_votacion }}</div>
         </div>
       </div>
-
       <div class="col-12">
         <div class="form-group mb-0">
           <label class="font-weight-bold text-xs">Mesa:</label>
@@ -127,115 +172,132 @@
 {% endblock %}
 
 {% block javascript_list %}
-  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap4.min.js"></script>
-
   <script>
-    let tablaGrid = null;
-
+    let ordenMarcado = ''
+    
     $(document).ready(function () {
-      
-      // CARGA AUTOMÁTICA AL CAMBIAR LA MESA
-      $('select[name="mesa"]').on('change', function() {
-          ejecutarCargaCuadricula();
-      });
-
-      // ACCIONES PARA LOS BOTONES GIGANTES DE PULGAR
-      $('#btnPageAnterior').on('click', function () {
-          if (tablaGrid !== null) {
-              tablaGrid.page('previous').draw('page');
-          }
-      });
-
-      $('#btnPageSiguiente').on('click', function () {
-          if (tablaGrid !== null) {
-              tablaGrid.page('next').draw('page');
-          }
-      });
-
-      function ejecutarCargaCuadricula() {
-          const localId = $('select[name="local_votacion"]').val();
-          const mesaNum = $('select[name="mesa"]').val();
-          const localTexto = $('select[name="local_votacion"] option:selected').text();
-
-          if (!localId || !mesaNum) {
-              return;
-          }
-
-          $('#txt-nombre-local').text(localTexto.toUpperCase());
-          $('#txt-numero-mesa').text(mesaNum);
-          
-          // Mostramos la grilla y la barra de navegación gigante
-          $('#contenedor-grilla').removeClass('d-none');
-          $('#barra-navegacion-fija').removeClass('d-none');
-
-          if (tablaGrid !== null) {
-              tablaGrid.destroy();
-          }
-
-          tablaGrid = $('#grid-cuadricula-datatables').DataTable({
-              "processing": true,
-              "serverSide": false,
-              "ajax": {
-                  "url": window.location.pathname,
-                  "type": "POST",
-                  "data": {
-                      "action": "generate_grid",
-                      "local_votacion": localId,
-                      "mesa": mesaNum,
-                      "csrfmiddlewaretoken": "{{ csrf_token }}"
-                  },
-                  "dataSrc": "matriz"
-              },
-              // Removimos la 'p' de paginación e 'i' de info para dejar la tabla limpia
-              "dom": "<'row mb-2'<'col-12'f>>" + "<'row'<'col-12'tr>>",
-              "columns": [
-                  {% for i in "12345" %}
-                  { 
-                      "data": "col_{{ forloop.counter0 }}",
-                      "render": function(data, type, row) {
-                          if (data && data.id) {
-                              const claseBoton = data.pasoxmv ? 'btn-success' : 'btn-secondary';
-                              return `<button type="button" 
-                                          class="btn btn-block btn-orden ${claseBoton}" 
-                                          data-id="${data.id}" 
-                                          data-orden="${data.orden}"
-                                          data-local="${localTexto}"
-                                          data-mesa="${mesaNum}"
-                                          data-elector="${data.elector}"
-                                          onclick="quickUpdateVotoMovil(this)">
-                                          ${data.orden}
-                                      </button>`;
-                          }
-                          return '<div class="celda-vacia"></div>';
-                      }
-                  }{% if not forloop.last %},{% endif %}
-                  {% endfor %}
-              ],
-              "paging": true,
-              "pageLength": 20, // 20 filas × 5 columnas = 100 números exactos por página
-              "searching": true,
-              "ordering": false,
-              "lengthChange": false,
-              "language": {
-                  "search": "",
-                  "searchPlaceholder": "Buscar N° de Orden...",
-                  "zeroRecords": "No encontrado"
-              }
-          });
+      // Activar la interfaz al cambiar la mesa
+      $('select[name="mesa"]').on('change', function () {
+        const localId = $('select[name="local_votacion"]').val()
+        const mesaNum = $('select[name="mesa"]').val()
+        const localTexto = $('select[name="local_votacion"] option:selected').text()
+    
+        if (localId && mesaNum) {
+          $('#txt-nombre-local').text(localTexto.toUpperCase())
+          $('#txt-numero-mesa').text(mesaNum)
+          $('#contenedor-marcador').removeClass('d-none')
+          resetMarcador()
+        }
+      })
+    })
+    
+    // Control táctil de números
+    function marcarNumero(num) {
+      // Evitamos que pongan ceros a la izquierda innecesarios al inicio
+      if (ordenMarcado === '' && num === '0') return
+    
+      // Límite lógico de 4 dígitos para números de orden
+      if (ordenMarcado.length < 4) {
+        ordenMarcado += num
+        $('#display-orden').val(ordenMarcado)
       }
-    });
-
-    // La función quickUpdateVotoMovil se mantiene igual que antes (lanza el modal y altera el botón)
-    function quickUpdateVotoMovil(boton) {
-      const electorId = boton.getAttribute('data-id');
-      const orden = boton.getAttribute('data-orden');
-      const local = boton.getAttribute('data-local');
-      const mesa = boton.getAttribute('data-mesa');
-      const electorNombre = boton.getAttribute('data-elector');
-      
-      boton.disabled = true;
-      const url = "{% url 'quick_update_voto' %}"; 
+    }
+    
+    function borrarNumero() {
+      ordenMarcado = ordenMarcado.slice(0, -1)
+      $('#display-orden').val(ordenMarcado === '' ? '0' : ordenMarcado)
+    }
+    
+    function resetMarcador() {
+      ordenMarcado = ''
+      $('#display-orden').val('0')
+    }
+    
+    // Petición para Buscar los Datos del Elector antes de Confirmar
+    function buscarElectorPorOrden() {
+      const localId = $('select[name="local_votacion"]').val()
+      const mesaNum = $('select[name="mesa"]').val()
+    
+      if (!ordenMarcado) {
+        alert('Por favor ingrese un número de orden primero.')
+        return
+      }
+    
+      const btnBuscar = $('#btnBuscarOrden')
+      btnBuscar.prop('disabled', true)
+    
+      // Reutilizamos la URL principal de la vista con una nueva acción
+      fetch(window.location.pathname, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: new URLSearchParams({
+          action: 'get_elector_info',
+          local_votacion: localId,
+          mesa: mesaNum,
+          orden: ordenMarcado
+        })
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            // Rellenamos el modal con los datos exactos que devolvió Django
+            $('#mdl-local').text($('select[name="local_votacion"] option:selected').text().toUpperCase())
+            $('#mdl-mesa').text(mesaNum)
+            $('#mdl-orden').text(ordenMarcado)
+            $('#mdl-elector').text(data.elector.nombre)
+            $('#mdl-ci').text(data.elector.ci)
+    
+            // Configuramos el botón de confirmación interno del modal
+            const btnConfirmar = $('#btnConfirmarVotoModal')
+            btnConfirmar.attr('data-id', data.elector.id)
+    
+            // Cambiamos el color de la alerta según el estado actual en la BD
+            if (data.elector.pasoxmv) {
+              $('#mdl-alerta-estado').html('<div class="alert alert-warning text-center font-weight-bold mb-2"><i class="fas fa-exclamation-triangle"></i> ESTE ELECTOR YA FIGURA CON VOTO REGISTRADO</div>')
+              btnConfirmar.removeClass('btn-success').addClass('btn-danger').html('<i class="fas fa-undo"></i> ANULAR VOTO')
+            } else {
+              $('#mdl-alerta-estado').html('<div class="alert alert-info text-center font-weight-bold mb-2"><i class="fas fa-user-check"></i> VERIFIQUE LOS DATOS ANTES DE CONFIRMAR</div>')
+              btnConfirmar.removeClass('btn-danger').addClass('btn-success').html('<i class="fas fa-check"></i> CONFIRMAR ASISTENCIA (VOTO)')
+            }
+    
+            // Desplegamos el modal
+            $('#modal-confirmacion-tactil').modal('show')
+          } else {
+            alert(data.error)
+            resetMarcador()
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+          alert('Error de red al buscar el elector.')
+        })
+        .finally(() => {
+          btnBuscar.prop('disabled', false)
+        })
+    }
+    
+    // Petición de confirmación definitiva desde el modal
+    function procesarVotoDesdeModal(boton) {
+      const electorId = boton.getAttribute('data-id')
+      $(boton).prop('disabled', true)
+    
+      const url = "{% url 'quick_update_voto' %}"
+    
+      // Configuración base del Toast de SweetAlert2
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top', // Lo muestra en la parte superior central
+        showConfirmButton: false,
+        timer: 2000, // Se cierra solo en 2 segundos
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      })
     
       fetch(url, {
         method: 'POST',
@@ -248,76 +310,77 @@
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
+            $('#modal-confirmacion-tactil').modal('hide')
+            resetMarcador()
+    
+            // LANZAR NOTIFICACIÓN ELEGANTE EN LA PARTE SUPERIOR
             if (data.nuevo_estado) {
-              boton.classList.remove('btn-secondary');
-              boton.classList.add('btn-success');
+              Toast.fire({
+                icon: 'success',
+                title: '¡Voto guardado exitosamente!'
+              })
             } else {
-              boton.classList.remove('btn-success');
-              boton.classList.add('btn-secondary');
+              Toast.fire({
+                icon: 'info',
+                title: '¡Voto anulado correctamente!'
+              })
             }
-
-            $('#mdl-local').text(local.toUpperCase());
-            $('#mdl-mesa').text(mesa);
-            $('#mdl-orden').text(orden);
-            $('#mdl-elector').text(electorNombre.toUpperCase());
-            
-            const estadoBadge = data.nuevo_estado 
-              ? '<span class="badge badge-success text-uppercase p-2 d-block">VOTO REGISTRADO</span>' 
-              : '<span class="badge badge-danger text-uppercase p-2 d-block">VOTO ANULADO / RETIRADO</span>';
-            $('#mdl-estado').html(estadoBadge);
-
-            $('#modal-notificacion-voto').modal('show');
-
-            setTimeout(function(){
-                $('#modal-notificacion-voto').modal('hide');
-            }, 10000);
-
           } else {
-            alert('Error al registrar: ' + data.error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error al guardar',
+              text: data.error,
+              confirmButtonColor: '#007bff'
+            })
           }
         })
         .catch((error) => {
-          console.error('Error:', error);
-          alert('Error de comunicación.');
+          console.error('Error:', error)
+          alert('Error de comunicación con el servidor.')
         })
         .finally(() => {
-          boton.disabled = false;
-        });
+          $(boton).prop('disabled', false)
+        })
     }
   </script>
 {% endblock %}
 
 {% block content_modals %}
-  <div class="modal fade" id="modal-notificacion-voto" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-      <div class="modal-content border-info shadow">
-        <div class="modal-header bg-info text-white py-2">
-          <h5 class="modal-title font-weight-bold" style="font-size: 1rem;"><i class="fas fa-check-circle"></i> Control de Voto</h5>
-          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+  <div class="modal fade" id="modal-confirmacion-tactil" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content border-primary shadow-lg">
+        <div class="modal-header bg-primary text-white py-2">
+          <h5 class="modal-title font-weight-bold"><i class="fas fa-id-card"></i> Validación del Elector</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" onclick="resetMarcador()"><span aria-hidden="true">&times;</span></button>
         </div>
+
         <div class="modal-body p-3">
-          <div class="text-center mb-2" id="mdl-estado"></div>
-          <small class="text-muted d-block mb-0 font-weight-bold">LOCAL:</small>
-          <div id="mdl-local" class="font-weight-bold text-truncate text-secondary mb-1" style="font-size: 0.9rem;">-</div>
-          
-          <div class="row text-center mb-1 bg-light py-1 mx-0 rounded border">
+          <div id="mdl-alerta-estado"></div>
+
+          <small class="text-muted d-block mb-0 font-weight-bold">LOCAL DE VOTACIÓN:</small>
+          <div id="mdl-local" class="font-weight-bold text-truncate text-secondary mb-2" style="font-size: 1rem;">-</div>
+
+          <div class="row text-center mb-3 bg-light py-2 mx-0 rounded border">
             <div class="col-6 border-right">
               <small class="text-muted d-block font-weight-bold">MESA</small>
-              <h5 id="mdl-mesa" class="font-weight-bold text-dark mb-0">0</h5>
+              <h4 id="mdl-mesa" class="font-weight-bold text-dark mb-0">0</h4>
             </div>
             <div class="col-6">
-              <small class="text-muted d-block font-weight-bold">ORDEN</small>
-              <h5 id="mdl-orden" class="font-weight-bold text-primary mb-0">0</h5>
+              <small class="text-muted d-block font-weight-bold">N° ORDEN</small>
+              <h4 id="mdl-orden" class="font-weight-bold text-primary mb-0">0</h4>
             </div>
           </div>
-          
-          <small class="text-muted d-block mb-0 font-weight-bold">ELECTOR:</small>
-          <div id="mdl-elector" class="font-weight-bold text-dark text-uppercase font-italic" style="line-height: 1.2;">-</div>
+
+          <small class="text-muted d-block mb-0 font-weight-bold">ELECTOR (APELLIDO Y NOMBRE):</small>
+          <div id="mdl-elector" class="font-weight-bold text-dark text-uppercase mb-2" style="font-size: 1.2rem; line-height: 1.3;">-</div>
+
+          <small class="text-muted d-block mb-0 font-weight-bold">CÉDULA DE IDENTIDAD:</small>
+          <div id="mdl-ci" class="font-weight-bold text-secondary text-uppercase mb-1" style="font-size: 1.1rem;">-</div>
         </div>
-        <div class="modal-footer p-1 bg-light">
-          <button type="button" class="btn btn-secondary btn-block btn-sm" data-dismiss="modal">ENTENDIDO</button>
+
+        <div class="modal-footer p-2 bg-light flex-column">
+          <button type="button" class="btn btn-success btn-block btn-lg font-weight-bold py-3 mb-2" id="btnConfirmarVotoModal" onclick="procesarVotoDesdeModal(this)"><i class="fas fa-check"></i> CONFIRMAR VOTO</button>
+          <button type="button" class="btn btn-outline-secondary btn-block btn-sm" data-dismiss="modal" onclick="resetMarcador()">CANCELAR</button>
         </div>
       </div>
     </div>

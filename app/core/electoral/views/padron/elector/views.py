@@ -823,44 +823,39 @@ class RegistroVotoMovilView(FormView):
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
 
-        if action == "generate_grid":
+        if action == "get_elector_info":
             local_id = request.POST.get("local_votacion")
             mesa_num = request.POST.get("mesa")
+            orden_num = request.POST.get("orden")
 
-            if not local_id or not mesa_num:
-                return JsonResponse({"error": "Faltan datos de consulta"}, status=400)
+            try:
+                # Buscamos exactamente el elector por su número de orden y mesa
+                elector = Elector.objects.get(
+                    local_votacion_id=local_id, mesa=mesa_num, orden=orden_num
+                )
 
-            electores = Elector.objects.filter(
-                local_votacion_id=local_id, mesa=mesa_num
-            ).order_by(Cast("orden", IntegerField()))
-
-            # REDISEÑO CLAVE: Estructura de 5 columnas para pantallas móviles
-            columnas = 5
-            lista_electores = list(electores)
-
-            matriz_json = []
-            for i in range(0, len(lista_electores), columnas):
-                bloque = lista_electores[i : i + columnas]
-                fila_dict = {}
-
-                for idx in range(columnas):
-                    if idx < len(bloque):
-                        elector = bloque[idx]
-                        nombre_completo = f"{elector.apellido}, {elector.nombre}"
-
-                        fila_dict[f"col_{idx}"] = {
+                return JsonResponse(
+                    {
+                        "success": True,
+                        "elector": {
                             "id": elector.id,
-                            "orden": elector.orden,
+                            "nombre": f"{elector.apellido}, {elector.nombre}".upper(),
+                            "ci": f"{elector.ci:,}".replace(",", "."),
                             "pasoxmv": (elector.pasoxmv == "S"),
-                            "elector": nombre_completo.upper(),
-                        }
-                    else:
-                        fila_dict[f"col_{idx}"] = None
+                        },
+                    }
+                )
+            except Elector.DoesNotExist:
+                return JsonResponse(
+                    {
+                        "success": False,
+                        "error": f"El N° de orden {orden_num} no existe para esta mesa.",
+                    }
+                )
+            except Exception as e:
+                return JsonResponse({"success": False, "error": str(e)})
 
-                matriz_json.append(fila_dict)
-
-            return JsonResponse({"matriz": matriz_json}, safe=False)
-
+        # Conservamos la acción anterior si se llega a requerir
         return self.render_to_response(self.get_context_data())
 
     def get_context_data(self, **kwargs):
