@@ -3,15 +3,17 @@
 
 {% block head_list %}
   <script src="{% static '/js/select2_local_votacion_mesas.js' %}"></script>
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
   <style>
-    /* 1. OCULTAR LA LISTA TRADICIONAL POR COMPLETO */
-    #data_list,
-    .card-footer,
-    .dataTables_wrapper {
+    /* 1. OCULTAR LISTAS TRADICIONALES DE DATATABLES Y COMPONENTES EXTRAS */
+    #data_list, .card-footer, .dataTables_wrapper, #btnCargarCuadricula {
       display: none !important;
     }
     
-    /* 2. DISEÑO DEL TECLADO NUMÉRICO TIPO TELÉFONO - VERSIÓN ULTRA COMPATIBLE */
+    /* 2. DISEÑO DEL TECLADO NUMÉRICO TIPO TELÉFONO - ULTRA COMPATIBLE CON BOOTSTRAP 4 */
     .display-orden-container {
       background-color: #f8f9fa;
       border: 2px solid #ced4da;
@@ -26,30 +28,27 @@
       background: transparent !important;
       border: none !important;
       box-shadow: none !important;
-      color: #212529 !important; /* Forzamos color oscuro */
+      color: #212529 !important;
     }
     .teclado-contenedor {
-      max-width: 280px;
+      max-width: 280px; 
       margin: 0 auto;
     }
     .btn-teclado {
-      /* Forzamos el tamaño del círculo sin dejar que herede paddings del sistema */
-      width: 65px !important;
-      height: 65px !important;
-      padding: 0 !important;
-      margin: 0 auto 15px auto !important;
-      border-radius: 50% !important;
-    
-      /* FLEXBOX PURO: Obliga al texto o ícono a clavarse en el medio exacto */
+      width: 65px !important;         
+      height: 65px !important;        
+      padding: 0 !important; 
+      margin: 0 auto 15px auto !important; 
+      border-radius: 50% !important; 
+      
+      /* FLEXBOX PURO: Obliga al texto o ícono a centrarse en BS4 */
       display: flex !important;
       align-items: center !important;
       justify-content: center !important;
-    
-      /* Tipografía grande y visible */
+      
       font-size: 1.8rem !important;
       font-weight: bold !important;
-    
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       transition: all 0.1s ease;
     }
     .btn-teclado:active {
@@ -58,92 +57,147 @@
     }
     .btn-numero {
       background-color: #ffffff !important;
-      color: #212529 !important; /* Forzamos texto negro */
+      color: #212529 !important; 
       border: 1px solid #dee2e6 !important;
     }
     .btn-borrar {
       background-color: #f8d7da !important;
-      color: #721c24 !important; /* Forzamos texto bordó */
+      color: #721c24 !important; 
       border: 1px solid #f5c6cb !important;
     }
-    
     .btn-buscar-elector {
-      color: #ffffff !important; /* Forzamos que el ícono sea siempre blanco */
+      color: #ffffff !important; 
       border: 1px solid rgba(0, 0, 0, 0.1) !important;
     }
-    /* Forzar tamaño y visibilidad de los íconos dentro del botón */
     .btn-teclado i {
       font-size: 1.5rem !important;
       display: inline-block !important;
       line-height: 1 !important;
     }
-    /* Pequeño ajuste para el badge de mesa */
+
+    /* 3. ESTILOS DE CABECERA Y BADGES */
     .badge-mesa-info {
       font-size: 1.1rem;
       background-color: #e9ecef;
       color: #495057;
     }
+
+    /* 4. ESTILOS PARA EL FILTRO MODAL FULL SCREEN */
+    #modal-selector-electoral .modal-content {
+      min-height: 100vh;
+    }
+    .btn-item-local {
+      background-color: #ffffff;
+      border: 1px solid #dee2e6 !important;
+      border-radius: 8px !important;
+      margin-bottom: 10px;
+      font-size: 1.1rem !important;
+      color: #212529;
+      text-align: left;
+      padding: 16px !important;
+      font-weight: bold;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        /* FUERZA COLOR OSCURO A TODO LO QUE ESTÉ ADENTRO */
+      color: #818385 !important; 
+    }
+
+    /* Por si el sistema mete estilos globales a los textos dentro de botones */
+    .btn-item-local span, .btn-item-local i {
+      color: #212529 !important;
+    }
+    .btn-grid-mesa {
+      width: 70px !important;
+      height: 70px !important;
+      font-size: 1rem !important;
+      font-weight: bold !important;
+      margin: 0 auto 15px auto !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 12px !important; 
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    .style-scroll-movil {
+      max-height: calc(100vh - 160px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .style-gap {
+      gap: 10px;
+    }
   </style>
+{% endblock %}
+
+{% block content_list_before %}
+  <form method="POST" action="." id="form-filtros-electoral" class="d-none">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="{{ action }}" />
+    {{ form.local_votacion }}
+    {{ form.mesa }}
+  </form>
+
+  <div class="row mb-3 mx-0">
+    <div class="col-12 p-1">
+      <button type="button" class="btn btn-light btn-block text-left shadow-sm border p-3" id="btn-disparador-filtro" onclick="abrirSelectorLocal()">
+        <small class="text-muted d-block font-weight-bold text-uppercase" style="font-size: 0.65rem;">Ubicación de Trabajo</small>
+        <div class="d-flex justify-content-between align-items-center mt-1">
+          <span id="lbl-filtro-combinado" class="font-weight-bold text-dark" style="font-size: 1.05rem;">
+            <i class="fas fa-map-marker-alt text-danger mr-2"></i> TOCAR PARA SELECCIONAR MESA
+          </span>
+          <i class="fas fa-chevron-right text-muted"></i>
+        </div>
+      </button>
+    </div>
+  </div>
+{% endblock %}
+{% block box_header_buttons %}
+
 {% endblock %}
 
 {% block columns %}
   <div class="card shadow-sm mb-4 d-none" id="contenedor-marcador">
     <div class="card-header bg-dark text-white p-2 text-center">
       <h6 class="mb-1 text-uppercase font-weight-bold" id="txt-nombre-local" style="font-size: 0.85rem; line-height: 1.2;">-</h6>
-      <div class="badge badge-mesa-info px-3 py-1 font-weight-bold">
-        MESA: <span id="txt-numero-mesa">0</span>
-      </div>
-      <div class="badge badge-success px-3 py-1 font-weight-bold" style="font-size: 1.1rem;">
-        VOTOS: <span id="txt-total-votos">0</span>
+      <div class="d-flex justify-content-center align-items-center style-gap">
+        <div class="badge badge-mesa-info px-3 py-1 font-weight-bold">
+          MESA: <span id="txt-numero-mesa">0</span>
+        </div>
+        <div class="badge badge-success px-3 py-1 font-weight-bold" style="font-size: 1.1rem;">
+          VOTOS: <span id="txt-total-votos">0</span>
+        </div>
       </div>
     </div>
-
+    
     <div class="card-body p-3">
       <div class="display-orden-container text-center mb-3 shadow-sm">
         <small class="text-muted d-block font-weight-bold text-uppercase" style="font-size: 0.7rem;">NÚMERO DE ORDEN</small>
-        <input type="text" id="display-orden" class="form-control input-orden-gigante" readonly placeholder="0" />
+        <input type="text" id="display-orden" class="form-control input-orden-gigante" readonly placeholder="0">
       </div>
 
       <div class="teclado-contenedor">
         <div class="row no-gutters text-center">
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('1')">1</button></div>
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('2')">2</button></div>
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('3')">3</button></div>
+          
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('4')">4</button></div>
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('5')">5</button></div>
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('6')">6</button></div>
+          
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('7')">7</button></div>
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('8')">8</button></div>
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('9')">9</button></div>
+          
           <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('1')">1</button>
+            <button type="button" class="btn btn-teclado btn-buscar-elector btn-info" id="btnBuscarOrden" onclick="controlAccionBotonDinamico()">
+              <i class="fas fa-sync-alt" id="icono-buscar-dinamico"></i>
+            </button>
           </div>
+          <div class="col-4"><button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('0')">0</button></div>
           <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('2')">2</button>
-          </div>
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('3')">3</button>
-          </div>
-
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('4')">4</button>
-          </div>
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('5')">5</button>
-          </div>
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('6')">6</button>
-          </div>
-
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('7')">7</button>
-          </div>
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('8')">8</button>
-          </div>
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('9')">9</button>
-          </div>
-
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-buscar-elector btn-info" id="btnBuscarOrden" onclick="controlAccionBotonDinamico()"><i class="fas fa-sync-alt" id="icono-buscar-dinamico"></i></button>
-          </div>
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-numero" onclick="marcarNumero('0')">0</button>
-          </div>
-          <div class="col-4">
-            <button type="button" class="btn btn-teclado btn-borrar" onclick="borrarNumero()"><i class="fas fa-backspace"></i></button>
+            <button type="button" class="btn btn-teclado btn-borrar" onclick="borrarNumero()">
+              <i class="fas fa-backspace"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -151,325 +205,55 @@
   </div>
 {% endblock %}
 
-{% block content_list_before %}
-  <form method="POST" action="." id="form-filtros-electoral">
-    {% csrf_token %}
-    <input type="hidden" name="action" value="{{ action }}" />
-
-    <div class="row bg-light p-2 rounded border mb-2">
-      <div class="col-12 mb-2">
-        <div class="form-group mb-0">
-          <label class="font-weight-bold text-xs">Local de Votación:</label>
-          <div class="input-group input-group-sm">{{ form.local_votacion }}</div>
+{% block content_modals %}
+  <div class="modal fade" id="modal-selector-electoral" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg m-0 h-100" role="document" style="max-width: 100%;">
+      <div class="modal-content border-0 rounded-0 h-100">
+        <div class="modal-header bg-dark text-white rounded-0 py-3">
+          <h5 class="modal-title font-weight-bold" id="selector-titulo">Seleccionar Local</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" style="font-size: 1.8rem;">&times;</span>
+          </button>
         </div>
-      </div>
-      <div class="col-12">
-        <div class="form-group mb-0">
-          <label class="font-weight-bold text-xs">Mesa:</label>
-          <div class="input-group input-group-sm">{{ form.mesa }}</div>
+        <div class="modal-body bg-light p-3">
+          
+          <div id="pantalla-local">
+            <div class="input-group mb-3 shadow-sm">
+              <div class="input-group-prepend">
+                <span class="input-group-text bg-white border-right-0"><i class="fas fa-search text-muted"></i></span>
+              </div>
+              <input type="text" id="buscar-local-input" class="form-control border-left-0 form-control-lg font-weight-bold" style="font-size: 1.1rem;" placeholder="Filtrar locales...">
+            </div>
+            <div id="lista-locales-botones" class="list-group style-scroll-movil"></div>
+          </div>
+
+          <div id="pantalla-mesa" class="d-none">
+            <button type="button" class="btn btn-secondary btn-sm mb-3 font-weight-bold" onclick="volverALocales()">
+              <i class="fas fa-arrow-left"></i> Volver a Locales
+            </button>
+            <h6 class="text-secondary font-weight-bold mb-3 text-uppercase" id="lbl-local-seleccionado-interno">Local: -</h6>
+            <div class="row no-gutters text-center" id="grilla-mesas-botones"></div>
+          </div>
+
         </div>
       </div>
     </div>
-  </form>
-{% endblock %}
+  </div>
 
-{% block box_header_buttons %}
-
-{% endblock %}
-
-{% block javascript_list %}
-  <script>
-    let ordenMarcado = ''
-    
-    $(document).ready(function () {
-      // Activar la interfaz al cambiar la mesa
-      $('select[name="mesa"]').on('change', function () {
-        const localId = $('select[name="local_votacion"]').val()
-        const mesaNum = $('select[name="mesa"]').val()
-        const localTexto = $('select[name="local_votacion"] option:selected').text()
-    
-        if (localId && mesaNum) {
-          $('#txt-nombre-local').text(localTexto.toUpperCase())
-          $('#txt-numero-mesa').text(mesaNum)
-          $('#contenedor-marcador').removeClass('d-none')
-          resetMarcador()
-          // 2. NUEVO: Traer el conteo real de la mesa desde el backend al recuperar/seleccionar la mesa
-          fetch(window.location.pathname, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: new URLSearchParams({
-              action: 'get_mesa_stats',
-              local_votacion: localId,
-              mesa: mesaNum
-            })
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                $('#txt-total-votos').text(data.total_votos_mesa)
-              } else {
-                $('#txt-total-votos').text('0')
-                console.error(data.error)
-              }
-            })
-            .catch((error) => {
-              $('#txt-total-votos').text('0')
-              console.error('Error al recuperar estadísticas de la mesa:', error)
-            })
-        }
-      })
-    })
-    
-    // NUEVO: Función que centraliza la acción del botón de la esquina inferior izquierda
-    function controlAccionBotonDinamico() {
-      if (ordenMarcado === '' || ordenMarcado === '0') {
-        // ACCIÓN 1: Refrescar los datos de la mesa (Hace lo mismo que el change)
-        const localId = $('select[name="local_votacion"]').val()
-        const mesaNum = $('select[name="mesa"]').val()
-    
-        if (!localId || !mesaNum) return
-    
-        // Animación sutil de rotación en el ícono para que el veedor note el click
-        const icono = $('#icono-buscar-dinamico')
-        icono.addClass('fa-spin')
-        $('#txt-total-votos').text('...')
-    
-        fetch(window.location.pathname, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': '{{ csrf_token }}'
-          },
-          body: new URLSearchParams({
-            action: 'get_mesa_stats',
-            local_votacion: localId,
-            mesa: mesaNum
-          })
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              $('#txt-total-votos').text(data.total_votos_mesa)
-            } else {
-              $('#txt-total-votos').text('0')
-            }
-          })
-          .catch((error) => {
-            $('#txt-total-votos').text('0')
-            console.error(error)
-          })
-          .finally(() => {
-            // Quitamos la animación de giro al terminar
-            setTimeout(() => {
-              icono.removeClass('fa-spin')
-            }, 400)
-          })
-      } else {
-        // ACCIÓN 2: Buscar al elector normal porque ya hay un número tipeado
-        buscarElectorPorOrden()
-      }
-    }
-    
-    // Modificá tu función original de marcar para que cambie el ícono a Lupa
-    function marcarNumero(num) {
-      if (ordenMarcado === '' && num === '0') return
-    
-      if (ordenMarcado.length < 4) {
-        ordenMarcado += num
-        $('#display-orden').val(ordenMarcado)
-    
-        // Si ya tiene números, muta a buscador (Lupa)
-        if (ordenMarcado.length > 0) {
-          // Cambiamos ícono
-          $('#icono-buscar-dinamico').removeClass('fa-sync-alt').addClass('fa-search')
-          // Cambiamos color: sacamos celeste (info) y ponemos azul (primary)
-          $('#btnBuscarOrden').removeClass('btn-info').addClass('btn-primary')
-        }
-      }
-    }
-    
-    // Al borrar: Si queda vacío, vuelve a Sincronizar (Celeste)
-    function borrarNumero() {
-      ordenMarcado = ordenMarcado.slice(0, -1)
-    
-      if (ordenMarcado === '' || ordenMarcado === '0') {
-        $('#display-orden').val('0')
-        // Cambiamos ícono
-        $('#icono-buscar-dinamico').removeClass('fa-search').addClass('fa-sync-alt')
-        // Cambiamos color: sacamos azul y devolvemos celeste
-        $('#btnBuscarOrden').removeClass('btn-primary').addClass('btn-info')
-      } else {
-        $('#display-orden').val(ordenMarcado)
-      }
-    }
-    
-    // Al resetear o cambiar de mesa: Restaura el botón a Sincronizar (Celeste)
-    html
-    function resetMarcador() {
-      ordenMarcado = ''
-      $('#display-orden').val('0')
-      $('#icono-buscar-dinamico').removeClass('fa-search').addClass('fa-sync-alt')
-      $('#btnBuscarOrden').removeClass('btn-primary').addClass('btn-info')
-    }
-    
-    // Petición para Buscar los Datos del Elector antes de Confirmar
-    function buscarElectorPorOrden() {
-      const localId = $('select[name="local_votacion"]').val()
-      const mesaNum = $('select[name="mesa"]').val()
-    
-      if (!ordenMarcado) {
-        alert('Por favor ingrese un número de orden primero.')
-        return
-      }
-    
-      const btnBuscar = $('#btnBuscarOrden')
-      btnBuscar.prop('disabled', true)
-    
-      // Reutilizamos la URL principal de la vista con una nueva acción
-      fetch(window.location.pathname, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: new URLSearchParams({
-          action: 'get_elector_info',
-          local_votacion: localId,
-          mesa: mesaNum,
-          orden: ordenMarcado
-        })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            // Rellenamos el modal con los datos exactos que devolvió Django
-            $('#mdl-local').text($('select[name="local_votacion"] option:selected').text().toUpperCase())
-            $('#mdl-mesa').text(mesaNum)
-            $('#mdl-orden').text(ordenMarcado)
-            $('#mdl-elector').text(data.elector.nombre)
-            $('#mdl-ci').text(data.elector.ci)
-    
-            // Actualizamos el contador con el dato que viene del servidor
-            $('#txt-total-votos').text(data.total_votos_mesa)
-    
-            // Configuramos el botón de confirmación interno del modal
-            const btnConfirmar = $('#btnConfirmarVotoModal')
-            btnConfirmar.attr('data-id', data.elector.id)
-    
-            // Cambiamos el color de la alerta según el estado actual en la BD
-            if (data.elector.pasoxmv) {
-              $('#mdl-alerta-estado').html('<div class="alert alert-warning text-center font-weight-bold mb-2"><i class="fas fa-exclamation-triangle"></i> ESTE ELECTOR YA FIGURA CON VOTO REGISTRADO</div>')
-              btnConfirmar.removeClass('btn-success').addClass('btn-danger').html('<i class="fas fa-undo"></i> ANULAR VOTO')
-            } else {
-              $('#mdl-alerta-estado').html('<div class="alert alert-info text-center font-weight-bold mb-2"><i class="fas fa-user-check"></i> VERIFIQUE LOS DATOS ANTES DE CONFIRMAR</div>')
-              btnConfirmar.removeClass('btn-danger').addClass('btn-success').html('<i class="fas fa-check"></i> CONFIRMAR ASISTENCIA (VOTO)')
-            }
-    
-            // Desplegamos el modal
-            $('#modal-confirmacion-tactil').modal('show')
-          } else {
-            alert(data.error)
-            resetMarcador()
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          alert('Error de red al buscar el elector.')
-        })
-        .finally(() => {
-          btnBuscar.prop('disabled', false)
-        })
-    }
-    
-    // Petición de confirmación definitiva desde el modal
-    function procesarVotoDesdeModal(boton) {
-      const electorId = boton.getAttribute('data-id')
-      $(boton).prop('disabled', true)
-    
-      const url = "{% url 'quick_update_voto' %}"
-    
-      // Configuración base del Toast de SweetAlert2
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top', // Lo muestra en la parte superior central
-        showConfirmButton: false,
-        timer: 2000, // Se cierra solo en 2 segundos
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener('mouseenter', Swal.stopTimer)
-          toast.addEventListener('mouseleave', Swal.resumeTimer)
-        }
-      })
-    
-      fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRFToken': '{{ csrf_token }}'
-        },
-        body: JSON.stringify({ elector_id: electorId })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('Respuesta del Servidor:', data)
-          if (data.success) {
-            $('#modal-confirmacion-tactil').modal('hide')
-            resetMarcador()
-            // NUEVO: Actualiza el contador gigante de la cabecera en tiempo real
-            if (data.total_votos_mesa !== undefined) {
-              $('#txt-total-votos').text(data.total_votos_mesa)
-            }
-    
-            // LANZAR NOTIFICACIÓN ELEGANTE EN LA PARTE SUPERIOR
-            if (data.nuevo_estado) {
-              Toast.fire({
-                icon: 'success',
-                title: '¡Voto guardado exitosamente!'
-              })
-            } else {
-              Toast.fire({
-                icon: 'info',
-                title: '¡Voto anulado correctamente!'
-              })
-            }
-          } else {
-            Swal.fire({
-              icon: 'error',
-              title: 'Error al guardar',
-              text: data.error,
-              confirmButtonColor: '#007bff'
-            })
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error)
-          alert('Error de comunicación con el servidor.')
-        })
-        .finally(() => {
-          $(boton).prop('disabled', false)
-        })
-    }
-  </script>
-{% endblock %}
-
-{% block content_modals %}
   <div class="modal fade" id="modal-confirmacion-tactil" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content border-primary shadow-lg">
         <div class="modal-header bg-primary text-white py-2">
           <h5 class="modal-title font-weight-bold"><i class="fas fa-id-card"></i> Validación del Elector</h5>
-          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" onclick="resetMarcador()"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" onclick="resetMarcador()">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-
         <div class="modal-body p-3">
           <div id="mdl-alerta-estado"></div>
-
           <small class="text-muted d-block mb-0 font-weight-bold">LOCAL DE VOTACIÓN:</small>
           <div id="mdl-local" class="font-weight-bold text-truncate text-secondary mb-2" style="font-size: 1rem;">-</div>
-
+          
           <div class="row text-center mb-3 bg-light py-2 mx-0 rounded border">
             <div class="col-6 border-right">
               <small class="text-muted d-block font-weight-bold">MESA</small>
@@ -480,19 +264,271 @@
               <h4 id="mdl-orden" class="font-weight-bold text-primary mb-0">0</h4>
             </div>
           </div>
-
+          
           <small class="text-muted d-block mb-0 font-weight-bold">ELECTOR (APELLIDO Y NOMBRE):</small>
           <div id="mdl-elector" class="font-weight-bold text-dark text-uppercase mb-2" style="font-size: 1.2rem; line-height: 1.3;">-</div>
-
           <small class="text-muted d-block mb-0 font-weight-bold">CÉDULA DE IDENTIDAD:</small>
           <div id="mdl-ci" class="font-weight-bold text-secondary text-uppercase mb-1" style="font-size: 1.1rem;">-</div>
         </div>
-
-        <div class="modal-footer p-2 bg-light flex-column">
-          <button type="button" class="btn btn-success btn-block btn-lg font-weight-bold py-3 mb-2" id="btnConfirmarVotoModal" onclick="procesarVotoDesdeModal(this)"><i class="fas fa-check"></i> CONFIRMAR VOTO</button>
-          <button type="button" class="btn btn-secondary btn-block btn-lg" data-dismiss="modal" onclick="resetMarcador()">CANCELAR</button>
+        
+        <div class="modal-footer p-3 bg-light flex-column">
+          <button type="button" class="btn btn-success btn-block btn-lg font-weight-bold py-3 mb-3" id="btnConfirmarVotoModal" onclick="procesarVotoDesdeModal(this)">
+            <i class="fas fa-check"></i> CONFIRMAR VOTO
+          </button>
+          <button type="button" class="btn btn-secondary btn-block btn-lg font-weight-bold py-3 m-0" data-dismiss="modal" onclick="resetMarcador()">
+            <i class="fas fa-times"></i> CANCELAR / VOLVER
+          </button>
         </div>
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block javascript_list %}
+  <script>
+    let ordenMarcado = "";
+
+    $(document).ready(function () {
+        // PERSISTENCIA: Recuperar datos del teléfono al recargar la página
+        const localGuardado = localStorage.getItem('veedor_local_id');
+        const mesaGuardada = localStorage.getItem('veedor_mesa_num');
+
+        if (localGuardado && mesaGuardada) {
+            $('select[name="local_votacion"]').val(localGuardado).trigger('change');
+            setTimeout(function() {
+                $('select[name="mesa"]').val(mesaGuardada).trigger('change');
+                sincronizarLabelsFiltro();
+            }, 300);
+        }
+
+        // CONTROLADOR AL CAMBIAR LA MESA SELECCIONADA
+        $('select[name="mesa"]').on('change', function() {
+            const localId = $('select[name="local_votacion"]').val();
+            const mesaNum = $(this).val();
+            const localTexto = $('select[name="local_votacion"] option:selected').text();
+
+            if (localId && mesaNum) {
+                $('#txt-nombre-local').text(localTexto.toUpperCase());
+                $('#txt-numero-mesa').text(mesaNum);
+                $('#txt-total-votos').text('...');
+                $('#contenedor-marcador').removeClass('d-none');
+                resetMarcador();
+
+                // Traer cantidad inicial de votos
+                fetch(window.location.pathname, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': '{{ csrf_token }}' },
+                    body: new URLSearchParams({ 'action': 'get_mesa_stats', 'local_votacion': localId, 'mesa': mesaNum })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) $('#txt-total-votos').text(data.total_votos_mesa);
+                    else $('#txt-total-votos').text('0');
+                })
+                .catch(error => { $('#txt-total-votos').text('0'); });
+            }
+        });
+    });
+
+    function sincronizarLabelsFiltro() {
+        const localTexto = $('select[name="local_votacion"] option:selected').text();
+        const mesaNum = $('select[name="mesa"]').val();
+        if ($('select[name="local_votacion"]').val() && mesaNum) {
+            $('#lbl-filtro-combinado').html(`<i class="fas fa-check-circle text-success mr-2"></i> ${localTexto} - MESA ${mesaNum}`);
+        }
+    }
+
+    /* CONTROL INTERACTIVO DEL BOTÓN DINÁMICO (SYNC Y SEARCH) */
+    function controlAccionBotonDinamico() {
+        if (ordenMarcado === "" || ordenMarcado === "0") {
+            const localId = $('select[name="local_votacion"]').val();
+            const mesaNum = $('select[name="mesa"]').val();
+            if (!localId || !mesaNum) return;
+
+            const icono = $('#icono-buscar-dinamico');
+            icono.addClass('fa-spin');
+            $('#txt-total-votos').text('...');
+
+            fetch(window.location.pathname, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': '{{ csrf_token }}' },
+                body: new URLSearchParams({ 'action': 'get_mesa_stats', 'local_votacion': localId, 'mesa': mesaNum })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) $('#txt-total-votos').text(data.total_votos_mesa);
+            })
+            .finally(() => { setTimeout(() => { icono.removeClass('fa-spin'); }, 400); });
+        } else {
+            buscarElectorPorOrden();
+        }
+    }
+
+    function marcarNumero(num) {
+        if (ordenMarcado === "" && num === "0") return;
+        if (ordenMarcado.length < 4) {
+            ordenMarcado += num;
+            $('#display-orden').val(ordenMarcado);
+            if (ordenMarcado.length > 0) {
+                $('#icono-buscar-dinamico').removeClass('fa-sync-alt').addClass('fa-search');
+                $('#btnBuscarOrden').removeClass('btn-info').addClass('btn-primary');
+            }
+        }
+    }
+
+    function borrarNumero() {
+        ordenMarcado = ordenMarcado.slice(0, -1);
+        if (ordenMarcado === "" || ordenMarcado === "0") {
+            $('#display-orden').val("0");
+            $('#icono-buscar-dinamico').removeClass('fa-search').addClass('fa-sync-alt');
+            $('#btnBuscarOrden').removeClass('btn-primary').addClass('btn-info');
+        } else {
+            $('#display-orden').val(ordenMarcado);
+        }
+    }
+
+    function resetMarcador() {
+        ordenMarcado = "";
+        $('#display-orden').val("0");
+        $('#icono-buscar-dinamico').removeClass('fa-search').addClass('fa-sync-alt');
+        $('#btnBuscarOrden').removeClass('btn-primary').addClass('btn-info');
+    }
+
+    /* MANEJO DE SELECCIÓN DE FILTROS EN MODAL */
+    function abrirSelectorLocal() {
+        const contenedorLocales = $('#lista-locales-botones');
+        contenedorLocales.empty();
+        $('select[name="local_votacion"] option').each(function() {
+            const id = $(this).val();
+            const texto = $(this).text();
+            if (id) {
+                contenedorLocales.append(`<button type="button" class="btn btn-block btn-item-local" onclick="seleccionarLocalEnModal('${id}', '${texto}')"><i class="fas fa-building text-muted mr-2"></i> ${texto.toUpperCase()}</button>`);
+            }
+        });
+        $('#selector-titulo').text('Seleccionar Local');
+        $('#pantalla-local').removeClass('d-none');
+        $('#pantalla-mesa').addClass('d-none');
+        $('#modal-selector-electoral').modal('show');
+    }
+
+    $('#buscar-local-input').on('keyup', function() {
+        const valor = $(this).val().toLowerCase();
+        $('#lista-locales-botones button').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(valor) > -1);
+        });
+    });
+
+    function seleccionarLocalEnModal(localId, localTexto) {
+        localStorage.setItem('veedor_local_id', localId);
+        $('select[name="local_votacion"]').val(localId).trigger('change');
+        $('#lbl-local-seleccionado-interno').text(`LOCAL: ${localTexto.toUpperCase()}`);
+        $('#selector-titulo').text('Seleccionar Mesa');
+        
+        const contenedorMesas = $('#grilla-mesas-botones');
+        contenedorMesas.empty();
+        
+        let cantidadMesas = 0;
+        $('select[name="mesa"] option').each(function() {
+            const id = $(this).val();
+            const texto = $(this).text();
+            if (id) {
+                cantidadMesas++;
+                contenedorMesas.append(`<div class="col-3"><button type="button" class="btn btn-primary btn-grid-mesa" onclick="finalizarSeleccionElectoral('${id}')">${texto}</button></div>`);
+            }
+        });
+
+        if (cantidadMesas === 0) {
+            for (let m = 1; m <= 20; m++) {
+                contenedorMesas.append(`<div class="col-3"><button type="button" class="btn btn-primary btn-grid-mesa" onclick="finalizarSeleccionElectoral('${m}')">${m}</button></div>`);
+            }
+        }
+        $('#pantalla-local').addClass('d-none');
+        $('#pantalla-mesa').removeClass('d-none');
+    }
+
+    function finalizarSeleccionElectoral(mesaNum) {
+        localStorage.setItem('veedor_mesa_num', mesaNum);
+        $('select[name="mesa"]').val(mesaNum).trigger('change');
+        sincronizarLabelsFiltro();
+        $('#modal-selector-electoral').modal('hide');
+    }
+
+    function volverALocales() {
+        $('#selector-titulo').text('Seleccionar Local');
+        $('#pantalla-local').removeClass('d-none');
+        $('#pantalla-mesa').addClass('d-none');
+    }
+
+    /* PETICIONES AL BACKEND PARA ELECTOR Y CONFIRMACIÓN */
+    function buscarElectorPorOrden() {
+        const localId = $('select[name="local_votacion"]').val();
+        const mesaNum = $('select[name="mesa"]').val();
+        
+        $('#btnBuscarOrden').prop('disabled', true);
+
+        fetch(window.location.pathname, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': '{{ csrf_token }}' },
+            body: new URLSearchParams({ 'action': 'get_elector_info', 'local_votacion': localId, 'mesa': mesaNum, 'orden': ordenMarcado })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                $('#mdl-local').text($('select[name="local_votacion"] option:selected').text().toUpperCase());
+                $('#mdl-mesa').text(mesaNum);
+                $('#mdl-orden').text(ordenMarcado);
+                $('#mdl-elector').text(data.elector.nombre);
+                $('#mdl-ci').text(data.elector.ci);
+                
+                const btnConfirmar = $('#btnConfirmarVotoModal');
+                btnConfirmar.attr('data-id', data.elector.id);
+                
+                if (data.elector.pasoxmv) {
+                    $('#mdl-alerta-estado').html('<div class="alert alert-warning text-center font-weight-bold mb-2"><i class="fas fa-exclamation-triangle"></i> EL ELECTOR YA REGISTRA VOTO</div>');
+                    btnConfirmar.removeClass('btn-success').addClass('btn-danger').html('<i class="fas fa-undo"></i> ANULAR VOTO');
+                } else {
+                    $('#mdl-alerta-estado').html('<div class="alert alert-info text-center font-weight-bold mb-2"><i class="fas fa-user-check"></i> VERIFIQUE ANTES DE CONFIRMAR</div>');
+                    btnConfirmar.removeClass('btn-danger').addClass('btn-success').html('<i class="fas fa-check"></i> CONFIRMAR ASISTENCIA');
+                }
+                $('#modal-confirmacion-tactil').modal('show');
+            } else {
+                Swal.fire({ icon: 'error', title: 'Atención', text: data.error, confirmButtonColor: '#007bff'});
+                resetMarcador();
+            }
+        })
+        .finally(() => { $('#btnBuscarOrden').prop('disabled', false); });
+    }
+
+    function procesarVotoDesdeModal(boton) {
+        const electorId = boton.getAttribute('data-id');
+        $(boton).prop('disabled', true);
+
+        const Toast = Swal.mixin({ toast: true, position: 'top', showConfirmButton: false, timer: 2000, timerProgressBar: true });
+
+        fetch("{% url 'quick_update_voto' %}", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+            body: JSON.stringify({ elector_id: electorId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                if (data.total_votos_mesa !== undefined) {
+                    $('#txt-total-votos').text(data.total_votos_mesa);
+                }
+                $('#modal-confirmacion-tactil').modal('hide');
+                resetMarcador();
+                
+                Toast.fire({
+                    icon: data.nuevo_estado ? 'success' : 'info',
+                    title: data.nuevo_estado ? '¡Voto guardado exitosamente!' : '¡Voto anulado correctamente!'
+                });
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: data.error });
+            }
+        })
+        .catch(error => { Swal.fire({ icon: 'error', title: 'Error de Red', text: 'No se pudo comunicar con el servidor.' }); })
+        .finally(() => { $(boton).prop('disabled', false); });
+    }
+  </script>
 {% endblock %}
