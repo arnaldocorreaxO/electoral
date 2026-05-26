@@ -780,6 +780,7 @@ class RegistroVotoRapidoView(FormView):
         context["form"] = self.form_class(usuario=self.request.user)
         context["title"] = "Carga Rápida de Votos por Mesa"
         context["action"] = "generate_grid"
+        context["distrito"] = self.request.user.distrito.denominacion
         return context
 
 
@@ -887,6 +888,7 @@ class RegistroVotoMovilView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["form"] = self.form_class(usuario=self.request.user)
-        context["title"] = "Control Móvil de Votos (Veedores)"
+        context["title"] = "Control de Votos (Veedores)"
         context["action"] = "generate_grid"
+        context["distrito"] = self.request.user.distrito.denominacion
         return context
