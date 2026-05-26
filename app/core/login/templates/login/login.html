@@ -2,53 +2,58 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block head_login %}
-    <script src="{% static 'login/js/login.js' %}"></script>
+  <script src="{% static 'login/js/login.js' %}"></script>
 {% endblock %}
 {% block content %}
-    <div class="login-box">
-        <div class="login-box-body">
-            <div class="card">
-                <div class="card-body login-card-body">
-                    <div class="contact-image">
-                        <i class="{{ dshboard.get_icon }} fa-4x"></i>
-                    </div>
-                    <p class="login-box-msg">Inicio de Sesión</p>
-                    <form method="post" id="frmLogin">
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ next }}">
-                        <div class="form-group">
-                            <label>Usuario:</label>
-                            {{ form.username }}
-                        </div>
-                        <div class="form-group">
-                            <label>Contraseña:</label>
-                            <div class="input-group my-group">
-                                {{ form.password }}
-                                <div class="input-group-append">
-                                    <button class="btn btn-danger btnShowPassword btn-flat" type="button">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <button type="submit" class="btn btn-danger btn-block btn-flat">
-                                    <i class="fas fa-sign-in-alt"></i> Ingresar
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    <p class="mt-3 text-center desc">
-                        Si has olvidado tu contraseña <a href="{% url 'reset_password' %}">da click aqui <i
-                            class="fas fa-key"></i></a>
-                    </p>
-                </div>
+  <div class="login-box">
+    <div class="login-box-body">
+      <div class="card">
+        <div class="card-body login-card-body">
+          <!-- ICONO -->
+          <div class="contact-image">
+            <i class="{{ dshboard.get_icon }} fa-4x"></i>
+          </div>
+
+          <!-- TÍTULO -->
+          <p class="login-box-msg">Inicio de Sesión</p>
+
+          <!-- FORMULARIO -->
+          <form method="post" id="frmLogin">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}" />
+
+            <div class="form-group mb-3">
+              <label>Usuario:</label>
+              {{ form.username }}
             </div>
+
+            <div class="form-group mb-3">
+              <label>Contraseña:</label>
+              <div class="input-group my-group">
+                {{ form.password }}
+                <div class="input-group-append">
+                  <button class="btn btn-danger btnShowPassword btn-flat" type="button"><i class="fas fa-eye"></i></button>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-danger btn-block btn-flat w-100"><i class="fas fa-sign-in-alt"></i> Ingresar</button>
+          </form>
+
+          <!-- RECUPERAR CONTRASEÑA -->
+          <p class="mt-3 text-center desc">
+            <a href="{% url 'reset_password' %}">Reestablecer contraseña <i class="fas fa-key"></i></a>
+          </p>
+
+          <!-- FIRMA CORPORATIVA -->
+          <p class="text-center mt-4 brand-signature">xO Soluciones Informáticas</p>
         </div>
+      </div>
     </div>
-    <script type="application/javascript">
+  </div>
+
+  <!-- ERRORES -->
+  <script type="application/javascript">
         var errors = "";
         {% if form.errors %}
             {% for field in form %}

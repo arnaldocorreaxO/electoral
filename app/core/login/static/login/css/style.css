@@ -1,24 +1,146 @@
-.contact-image {
-    text-align: center;
+/* ============================
+   ESTILO APP MÓVIL
+   ============================ */
+
+/* Fondo tipo app */
+body {
+  background: #f2f2f2;
+  font-family: "Inter", "Roboto", sans-serif;
 }
 
-.lockscreen-wrapper {
-    width: 450px;
+/* Contenedor centrado tipo app */
+.login-box {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 2rem 1.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Tarjeta estilo app */
+.login-card-body {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 22px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+/* Icono circular tipo app */
+.contact-image {
+  width: 95px;
+  height: 95px;
+  margin: 0 auto 1.5rem auto;
+  border-radius: 50%;
+  background: #dc3545;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
 }
 
 .contact-image i {
-    margin-top: 10px;
-    margin-bottom: 15px;
-    border-radius: 50%;
+  font-size: 3rem;
 }
 
-@media (max-width: 768px) {
-    .login-box, .register-box {
-        width: 90%;
-        margin-top: 80px;
-    }
+/* Título */
+.login-box-msg {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  color: #333;
+  margin-bottom: 1.8rem;
 }
 
-.login-box p.desc {
-    font-size: 14px;
+/* Inputs estilo app */
+.form-group label {
+  font-weight: 600;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.form-control {
+  border-radius: 14px !important;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  font-size: 1rem;
+}
+
+.form-control:focus {
+  border-color: #dc3545 !important;
+  background: #fff;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Botón principal estilo app */
+.btn-danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  border-radius: 14px;
+  padding: 0.9rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.35);
+}
+
+/* Botón mostrar contraseña */
+.btnShowPassword {
+  border-radius: 0 14px 14px 0 !important;
+}
+
+/* Texto inferior */
+.desc {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.desc a {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+/* Responsive móvil */
+@media (max-width: 480px) {
+  .login-card-body {
+    padding: 1.6rem;
+    border-radius: 18px;
+  }
+
+  .contact-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .contact-image i {
+    font-size: 2.4rem;
+  }
+}
+
+.brand-signature {
+  font-size: 0.85rem;
+  color: #dc3545;
+  font-weight: 700;
+  opacity: 0.9;
+  letter-spacing: 0.5px;
+}
+
+/* Ajustar el botón del ojo al alto del input */
+.input-group .btnShowPassword {
+  height: 100%;
+  padding: 0 14px; /* ancho cómodo sin deformar */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 14px 14px 0 !important;
+}
+
+/* Ajustar el icono para que no sea más grande que el input */
+.btnShowPassword i {
+  font-size: 1.1rem; /* tamaño ideal */
 }
