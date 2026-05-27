@@ -1,169 +1,532 @@
-@media (max-width: 991.98px) {
-    .control-sidebar-open .control-sidebar, .control-sidebar-open .control-sidebar::before {
-        right: 0;
-        display: block;
-    }
+/* ==========================================================================
+   SISTEMA DE IDENTIDAD VISUAL INTEGRADO - SGEX 
+   SOPORTE 100% DINÁMICO PARA CONFIGURACIÓN DESDE LA BASE DE DATOS
+   ========================================================================== */
+
+:root {
+  /* --- Colores Primarios e Institucionales --- */
+  --peya-main: #dc3545; /* Tu Rojo Institucional */
+  --peya-main-hover: #bd2130; /* Estado hover/activo */
+  --peya-main-alpha: rgba(220, 53, 69, 0.06);
+  --peya-main-alpha-strong: rgba(220, 53, 69, 0.12);
+
+  /* --- Estructura de Fondos --- */
+  --peya-light-bg: #ffffff;
+  --peya-gray-bg: #f7f7f7;
+
+  /* --- Tipografía y Legibilidad --- */
+  --peya-text-main: #2d2e2e;
+  --peya-text-muted: #757575;
+  --peya-text-on-main: #ffffff;
+
+  /* --- Bordes y Radio de Curvatura --- */
+  --peya-radius-sm: 12px;
+  --peya-radius-lg: 16px;
+  --peya-radius-pill: 100px;
+
+  /* --- Sombras --- */
+  --peya-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --peya-shadow-hover: 0 6px 15px rgba(220, 53, 69, 0.25);
 }
 
-.breadcrumb {
-    background-color: white !important;
-    padding: 5px 20px !important;
-    margin-bottom: 0;
-    list-style: none;
-    border: 1px solid #e9ecef;
+/* --- Estructura General del Layout --- */
+body,
+.app-main,
+.content-wrapper {
+  background-color: var(--peya-gray-bg) !important;
+  color: var(--peya-text-main);
+  letter-spacing: -0.2px;
 }
 
-.breadcrumb a {
-    color: #4a4a4a;;
-    font-weight: 400;
+/* ==========================================================================
+   BARRA DE NAVEGACIÓN SUPERIOR (NAVBAR MASTER - DINÁMICO)
+   ========================================================================== */
+/* NO forzamos background general para que funcione el string {{ dshboard.navbar }} */
+.wrapper .main-header.navbar,
+body .main-header.navbar {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
 }
 
-.btn {
-    color: white !important;
+/* Asegura el contraste correcto según la clase de la barra elegida */
+.main-header.navbar-dark .nav-link,
+.main-header.navbar-dark .nav-link i {
+  color: #ffffff !important;
+}
+.main-header.navbar-light .nav-link,
+.main-header.navbar-light .nav-link i {
+  color: var(--peya-text-main) !important;
 }
 
-.card-footer {
-    border-top: 1px solid #dee2e6;
+/* ==========================================================================
+   ESTRUCTURA DEL SIDEBAR (DINÁMICO - RESPETA {{ dshboard.sidebar }})
+   ========================================================================== */
+.wrapper .main-sidebar,
+body .main-sidebar,
+.main-sidebar {
+  border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* --- Panel de Información del Usuario --- */
+.main-sidebar .user-panel {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Los textos del user-panel heredan color según si el sidebar es dark o light nativo */
+.main-sidebar[class*="sidebar-dark-"] .user-panel a,
+.main-sidebar[class*="sidebar-dark-"] .user-panel h6 {
+  color: #ffffff !important;
+}
+.main-sidebar[class*="sidebar-light-"] .user-panel a,
+.main-sidebar[class*="sidebar-light-"] .user-panel h6 {
+  color: var(--peya-text-main) !important;
+}
+
+/* Titulillos divisorios de secciones en el menú */
+.main-sidebar .nav-sidebar .nav-header {
+  background-color: transparent !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.8px;
+  padding: 12px 20px;
+}
+
+/* ==========================================================================
+   INTEGRACIÓN DE BRAND-LINK (RESPETA {{ dshboard.brand_logo }})
+   ========================================================================== */
+a.brand-link.brand-link,
+.wrapper .main-sidebar .brand-link,
+body .main-sidebar .brand-link {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0.8125rem 0.5rem !important;
+  height: 57px !important;
+  transition: background-color 0.2s ease;
+}
+
+/* Estilo del texto del logo sin cajas duras de fondo */
+.wrapper .main-sidebar .brand-link .brand-text,
+body .main-sidebar .brand-link .brand-text,
+a.brand-link .brand-text,
+.brand-link .brand-text {
+  background-color: transparent !important;
+  background: transparent !important;
+  font-weight: 800 !important;
+  font-size: 1.2rem !important;
+  text-shadow: none !important;
+  letter-spacing: -0.5px !important;
+  display: inline-block !important;
+}
+
+/* Legibilidad automática basada en clases Dark/Light de AdminLTE para el logo */
+.brand-link[class*="navbar-light"] .brand-text,
+.brand-link.navbar-white .brand-text {
+  color: var(--peya-text-main) !important;
+}
+.brand-link[class*="navbar-dark"] .brand-text,
+.brand-link.navbar-primary .brand-text,
+.brand-link.navbar-danger .brand-text {
+  color: #ffffff !important;
+}
+
+.main-sidebar .brand-link .brand-image,
+a.brand-link img {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  max-height: 33px !important;
+  background-color: transparent !important;
+}
+
+/* ==========================================================================
+   CARDS DINÁMICAS (RESPETA {{ dshboard.card }})
+   ========================================================================== */
+.card {
+  border-radius: var(--peya-radius-lg) !important;
+  box-shadow: var(--peya-shadow) !important;
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  padding: 1.25rem !important;
 }
 
 .card .card-header .card-title {
-    font-size: 1.3rem;
-    font-weight: bold;
+  font-weight: 800 !important;
+  font-size: 1.3rem;
 }
 
-.table-bordered {
-    border: 0 !important;
+.card[class*="card-"] .card-title {
+  color: inherit;
 }
 
-table.table-bordered.dataTable tbody td {
-    border-bottom-width: 1px !important;
+/* ==========================================================================
+   INTERCEPCIÓN INTELIGENTE DE COMPONENTES DANGER / CORPORATIVOS
+   ========================================================================== */
+
+/* --- 1. Elementos que SÍ deben llevar fondo rojo absoluto --- */
+.main-header.navbar-danger,
+.brand-link.navbar-danger,
+.brand-link.navbar-maroon,
+.card-danger .card-header,
+.card-maroon .card-header,
+.bg-danger,
+.badge-danger,
+.btn-danger {
+  background-color: var(--peya-main) !important;
+  color: #ffffff !important;
 }
 
-.panel-module {
-    min-height: 480px;
+/* --- 2. Desactivar el fondo rojo global en los Sidebars Claros --- */
+.main-sidebar.sidebar-light-danger,
+.main-sidebar.sidebar-light-maroon,
+[class*="sidebar-light-"] {
+  background-color: #ffffff !important;
 }
 
-.sbox {
-    webkit-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
-    -moz-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
-    -ms-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
-    -o-box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
-    box-shadow: 0 1px 0px rgba(0, 0, 0, 0.12), 0 1px 1px rgba(0, 0, 0, 0.24);
+/* --- 3. Ajuste de los Items Activos dentro del Sidebar Claro --- */
+.sidebar-light-danger .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-maroon .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active {
+  background-color: var(--peya-main) !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2) !important;
 }
 
+.sidebar-light-danger .nav-sidebar > .nav-item > .nav-link.active i,
+.sidebar-light-maroon .nav-sidebar > .nav-item > .nav-link.active i,
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active i {
+  color: #ffffff !important;
+}
+
+/* --- 4. Ajuste de las Cards con estilo Outline --- */
+.card-outline.card-danger,
+.card-outline.card-maroon {
+  border-top: 3px solid var(--peya-main) !important;
+  background-color: #ffffff !important;
+}
+
+/* ==========================================================================
+   CONTROL DE MENÚ LATERAL (ELIMINACIÓN DE AZULES Y ADAPTACIÓN DE HOVERS)
+   ========================================================================== */
+
+/* --- 1. Estado Base Estructural de los Links --- */
+.wrapper .main-sidebar .nav-sidebar .nav-item .nav-link,
+body .main-sidebar .nav-sidebar .nav-item .nav-link,
+.nav-sidebar .nav-item .nav-link {
+  border-radius: var(--peya-radius-sm) !important;
+  margin: 4px 10px !important;
+  padding: 10px 15px !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease-in-out;
+  background-color: transparent !important;
+}
+
+/* --- 2. Color del Texto e Iconos Base según Tipo de Sidebar (Evita el Azul) --- */
+.main-sidebar[class*="sidebar-dark-"]
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active) {
+  color: #c2c7d0 !important;
+}
+.main-sidebar[class*="sidebar-dark-"]
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active)
+  i {
+  color: #a0a5b0 !important;
+}
+
+.main-sidebar[class*="sidebar-light-"]
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active) {
+  color: var(--peya-text-main) !important;
+}
+.main-sidebar[class*="sidebar-light-"]
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active)
+  i {
+  color: var(--peya-text-muted) !important;
+}
+
+/* --- 3. Hover Adaptativo Automático --- */
+/* Hover para cualquier Sidebar Oscuro */
+.main-sidebar[class*="sidebar-dark-"]
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+}
+.main-sidebar[class*="sidebar-dark-"]
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover
+  i {
+  color: #ffffff !important;
+}
+
+/* Hover para cualquier Sidebar Claro */
+.main-sidebar[class*="sidebar-light-"]
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  color: #000000 !important;
+}
+.main-sidebar[class*="sidebar-light-"]
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover
+  i {
+  color: #000000 !important;
+}
+
+/* --- 4. Excepción de Hover para variantes Corporativas (Danger / Maroon / Primary) --- */
+.main-sidebar.sidebar-dark-danger
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover,
+.main-sidebar.sidebar-light-danger
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover,
+.main-sidebar.sidebar-dark-maroon
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover,
+.main-sidebar.sidebar-light-maroon
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover,
+.main-sidebar.sidebar-dark-primary
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover,
+.main-sidebar.sidebar-light-primary
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover {
+  background-color: var(--peya-main-alpha) !important;
+  color: var(--peya-main) !important;
+}
+.main-sidebar.sidebar-dark-danger
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover
+  i,
+.main-sidebar.sidebar-light-danger
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover
+  i,
+.main-sidebar.sidebar-dark-maroon
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover
+  i,
+.main-sidebar.sidebar-light-maroon
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover
+  i,
+.main-sidebar.sidebar-dark-primary
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover
+  i,
+.main-sidebar.sidebar-light-primary
+  .nav-sidebar
+  .nav-item
+  .nav-link:not(.active):hover
+  i {
+  color: var(--peya-main) !important;
+}
+
+/* --- 5. Item Activo --- */
+.sidebar-dark-danger .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-danger .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-maroon .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-maroon .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active,
+.nav-treeview > .nav-item > .nav-link.active {
+  background-color: var(--peya-main) !important;
+  color: var(--peya-text-on-main) !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2) !important;
+}
+
+.sidebar-dark-danger .nav-sidebar > .nav-item > .nav-link.active i,
+.sidebar-light-danger .nav-sidebar > .nav-item > .nav-link.active i,
+.sidebar-dark-maroon .nav-sidebar > .nav-item > .nav-link.active i,
+.sidebar-light-maroon .nav-sidebar > .nav-item > .nav-link.active i,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active i,
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active i {
+  color: var(--peya-text-on-main) !important;
+}
+
+/* --- 6. Menús Desplegados Internos (Submenús Treeview) --- */
+.wrapper .main-sidebar .nav-treeview,
+body .main-sidebar .nav-treeview,
+.nav-treeview {
+  background-color: rgba(0, 0, 0, 0.03) !important;
+}
+
+/* ==========================================================================
+   CORRECCIÓN ABSOLUTA PARA EL BREADCRUMB (ELIMINACIÓN DE AZULES)
+   ========================================================================== */
+.content-wrapper .breadcrumb,
+.content-header .breadcrumb {
+  background-color: #ffffff !important;
+  padding: 8px 20px !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: var(--peya-radius-sm, 12px) !important;
+}
+
+.content-wrapper .breadcrumb a,
+.content-header .breadcrumb a,
+.content-wrapper .breadcrumb-item a,
+.content-wrapper .breadcrumb-item i,
+.content-wrapper .breadcrumb-item [class*="fa-"] {
+  color: var(--peya-text-muted, #757575) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  transition: color 0.2s ease-in-out;
+}
+
+.content-wrapper .breadcrumb-item a:hover,
+.content-wrapper .breadcrumb-item a:hover i,
+.content-wrapper .breadcrumb-item a:hover [class*="fa-"] {
+  color: var(--peya-main, #dc3545) !important;
+}
+
+.content-wrapper .breadcrumb-item.active,
+.content-header .breadcrumb-item.active {
+  color: var(--peya-text-main, #2d2e2e) !important;
+  font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   UI COMPONENTES Y FORMULARIOS (BOOTSTRAP & SELECT2)
+   ========================================================================== */
+.wrapper .btn,
+.wrapper .btn-primary,
+body .btn-primary {
+  border-radius: var(--peya-radius-pill) !important;
+  font-weight: 700 !important;
+  padding: 10px 24px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none !important;
+}
+
+.btn-primary {
+  background-color: var(--peya-main) !important;
+}
+.btn-primary:hover {
+  background-color: var(--peya-main-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--peya-shadow-hover) !important;
+}
+
+/* --- CONFIGURACIÓN BASE UNIFICADA DE CAJAS FORM-CONTROL --- */
+.form-control {
+  background-color: #f9f9f9 !important;
+  border: 1.5px solid #eee !important;
+  border-radius: 12px !important;
+  height: 48px !important;
+  color: var(--peya-text-main) !important;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+/* Inputs ordinarios */
+input.form-control,
+textarea.form-control {
+  padding: 12px 16px !important;
+}
+
+/* SELECTS nativos: Evita colapsos de texto y congelamientos de fondo */
+select.form-control {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  padding-left: 16px !important;
+  padding-right: 36px !important;
+  line-height: 45px !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23757575' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 14px center !important;
+  background-size: 16px !important;
+}
+
+/* Estados de interacción limpios para todos los form-control */
+.form-control:hover {
+  border-color: var(--peya-main) !important;
+  cursor: pointer;
+}
+.form-control:focus {
+  background-color: #ffffff !important;
+  border-color: var(--peya-main) !important;
+  box-shadow: 0 0 0 4px var(--peya-main-alpha-strong) !important;
+  outline: none !important;
+}
+
+/* Celdas internas del dropdown nativo */
+select.form-control option {
+  background-color: #ffffff !important;
+  color: var(--peya-text-main) !important;
+  padding: 12px !important;
+}
+
+/* --- Select2 Sync --- */
+.select2-container--default .select2-selection--single,
+.select2-selection.select2-selection--single {
+  background-color: #f9f9f9 !important;
+  border: 1.5px solid #f2f2f2 !important;
+  border-radius: 14px !important;
+  height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+.select2-container--default.select2-container--focus
+  .select2-selection--single {
+  border-color: var(--peya-main) !important;
+  box-shadow: 0 0 0 4px var(--peya-main-alpha-strong) !important;
+}
+.select2-results__option--highlighted[aria-selected] {
+  background-color: var(--peya-main) !important;
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   PANEL DE MÓDULOS GRID
+   ========================================================================== */
 .panel-module .icon {
-    padding-top: 12px;
-    width: 150px;
-    float: left;
-    height: 180px;
-    background: #ffffff26;
-    margin-right: 10px;
-    margin-bottom: 10px;
-    position: relative;
-    border-radius: 5px;
-    transition: width 2s;
-    text-align: center;
+  padding-top: 12px;
+  width: 150px;
+  float: left;
+  height: 180px;
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  position: relative;
+  border-radius: var(--peya-radius-lg, 16px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
 }
-
-.panel-module .icon .iconname {
-    font-weight: bold;
-    width: 100%;
-    position: absolute;
-    text-align: center;
-    font-size: 14px;
-    line-height: 10px;
-}
-
-.panel-module .icon .iconimage {
-    width: 100%;
-    text-align: center;
-}
-
 .panel-module .icon:hover {
-    background: #cdcdcd;
-    cursor: pointer;
+  background: var(--peya-main-alpha) !important;
+  border-color: var(--peya-main) !important;
+  transform: translateY(-4px);
+  cursor: pointer;
 }
-
-.panel-module img {
-    height: 70px;
-    margin-top: 15px;
-    border-bottom: 1px solid #9E9E9E;
-    padding-bottom: 10px;
-}
-
-.pd {
-    padding: 5px;
-}
-
-.panel-module .icon .icondesc {
-    font-weight: normal;
-    font-size: 10px;
-    line-height: 10px;
-}
-
-.panel-module .icon .iconname .tituloicon {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.panel-module a {
-    color: #222222;
-}
-
-.nav-info-user li a {
-    color: #0c0c0c;
-    font-weight: 500;
-}
-
-.nav-info-user li a span {;
-    font-weight: normal;
-}
-
-.control-sidebar-content hr {
-    border-color: #dee2e6;
-}
-
-.password-progress {
-    margin-top: 10px;
-    margin-bottom: 0;
-}
-
-.nav-info-user .nav-item span {
-    font-size: 13px;
-}
-
-.input-group-search .dropdown-item:active {
-    background-color: #dee2e6;
-}
-
-.dataTables_scrollHeadInner {
-    width: 100% !important;
-}
-
-.dataTables_scrollHeadInner table {
-    width: 100% !important;
-}
-
-
-/* Voto 3: Naranja */
-.btn-orange {
-    background-color: #fd7e14;
-    border-color: #fd7e14;
-    color: #fff;
-}
-.btn-orange:hover { color: #fff; background-color: #e96b02; }
-
-/* Voto 1: Rojo Fuerte / Oscuro */
-.btn-danger-dark {
-    background-color: #a10000;
-    border-color: #800000;
-    color: #fff;
-}
-.btn-danger-dark:hover { color: #fff; background-color: #7a0000; }
-
-/* Voto 0 / Sin Historial: Negro */
-.btn-dark {
-    background-color: #000000;
-    border-color: #000000;
-    color: #fff;
+.panel-module .icon:hover .iconname {
+  color: var(--peya-main);
 }

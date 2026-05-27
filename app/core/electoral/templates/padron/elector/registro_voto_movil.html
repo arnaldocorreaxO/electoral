@@ -105,18 +105,21 @@
     .btn-item-local span, .btn-item-local i {
       color: #212529 !important;
     }
-    .btn-grid-mesa {
-      width: 70px !important;
-      height: 70px !important;
-      font-size: 1rem !important;
-      font-weight: bold !important;
-      margin: 0 auto 15px auto !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      border-radius: 12px !important; 
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    }
+  /* Encadenamiento directo para ganarle a la especificidad global */
+  .wrapper .btn.btn-grid-mesa,
+  body .btn.btn-grid-mesa {
+    width: 80px !important;
+    height: 80px !important;
+    font-size: 0.85rem !important;
+    font-weight: bold !important;
+    margin: 0 auto 15px auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 12px !important; /* Tus 12px perfectos, ya no es redondo */
+    padding: 0 !important; /* Mata los 24px de los lados que estiraban el botón */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08) !important;
+  }
     .style-scroll-movil {
       max-height: calc(100vh - 160px);
       overflow-y: auto;
@@ -465,7 +468,7 @@
               contenedorMesas.append(`
                   <div class="col-12 text-center p-3">
                       <p class="text-danger font-weight-bold mb-2"><i class="fas fa-exclamation-circle"></i> No se cargaron las mesas automáticamente</p>
-                      <button type="button" class="btn btn-sm btn-danger font-weight-bold" onclick="seleccionarLocalEnModal('${localId}', '${localTexto}')">
+                      <button type="button" class="btn btn-md btn-danger font-weight-bold" onclick="seleccionarLocalEnModal('${localId}', '${localTexto}')">
                           <i class="fas fa-sync"></i> Reintentar cargar mesas
                       </button>
                   </div>

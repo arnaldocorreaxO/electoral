@@ -1,61 +1,79 @@
-/*
-===================================================================
+/* ===================================================================
 Author: xO
-C:\Users\arnaldo\proyectos\electoral\.env\Lib\site-packages\django\
-contrib\admin\templates\admin\change_form.html
-Se utiliza para modificar el comportamiento de todos los SELECT en 
-el Administrador de Django
-En ese path se referencia a este js para Select2 Anidado de  
-Local de Votacion y Mesas
-====================================================================
-*/
+Refactored: API Select2 unificada para el change_form de Django Admin
+Manejo dinámico de Local de Votación -> Mesas
+==================================================================== */
 $(function () {
-    
-    $('.select2').select2({
-        theme: "bootstrap4",
-        language: 'es'
-    });
- 
-    var select_mesas = $('select[name="mesa"]');
-    var token = $('input[name="csrfmiddlewaretoken"]');
-    // alert(token.val())
+  // 1. Inicialización Base de Select2 en el Admin de Django
+  var select2Config = {
+    theme: "bootstrap4",
+    language: "es",
+    allowClear: true,
+    placeholder: {
+      id: "",
+      text: "(Todos)",
+    },
+  };
 
-    $('select[name="local_votacion"]').on('change', function () {
-        var id = $(this).val();
-        var options = '<option value="">(Todos)</option>';
-        if (id === '') {
-            select_mesas.html(options);
-            return false;
+  $(".select2").select2(select2Config);
+
+  var select_mesas = $('select[name="mesa"]');
+  var token = $('input[name="csrfmiddlewaretoken"]');
+
+  $('select[name="local_votacion"]').on("change", function () {
+    var id = $(this).val();
+
+    // Vaciamos Select2 de forma nativa sin romper la instancia visual
+    select_mesas
+      .empty()
+      .append(new Option("(Todos)", "", true, true))
+      .trigger("change.select2");
+
+    if (id === "") {
+      return false;
+    }
+
+    $.ajax({
+      headers: { "X-CSRFToken": token.val() },
+      // Usamos la URL actual del navegador para que sirva tanto en ADD como en CHANGE (Edit)
+      url: "/electoral/elector/add/",
+      type: "POST",
+      data: {
+        action: "search_mesa_id",
+        id: id,
+      },
+      dataType: "json",
+    })
+      .done(function (data) {
+        if (!data.hasOwnProperty("error")) {
+          // Iteramos los datos e inyectamos nuevas opciones usando la API oficial
+          $.each(data, function (index, item) {
+            // item.text e item.id deben venir formateados desde el backend (JsonVertical/Diccionario)
+            var option = new Option(item.text, item.id, false, false);
+            select_mesas.append(option);
+          });
+
+          // Refrescamos visualmente Select2 una sola vez al terminar el bucle
+          select_mesas.trigger("change.select2");
+          return false;
         }
-        $.ajax({
-            headers: { "X-CSRFToken": token.val() },            
-            // url: window.location.pathname,
-            url: '/electoral/elector/add/',
-            type: 'POST',
-            data: {
-                'action': 'search_mesa_id',
-                'id': id
-            },
-            dataType: 'json',
-        }).done(function (data) {
-            if (!data.hasOwnProperty('error')) {
-                select_mesas.html('').select2({
-                    theme: "bootstrap4",
-                    language: 'es',
-                    data: data                    
-                });
-                return false;
-            }
-            message_error(data.error);
-        }).fail(function (jqXHR, textStatus, errorThrown) {
-            alert(textStatus + ': ' + errorThrown);
-        }).always(function (data) {
-            //select_manzanas.html(options);
-        });
-    });
 
-    select_mesas.on('change', function () {
-        var value = select_mesas.select2('data')[0];
-        console.log(value);
-    });
+        if (typeof message_error === "function") {
+          message_error(data.error);
+        } else {
+          alert("Error: " + data.error);
+        }
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+        console.error("Error en peticion de mesas:", textStatus, errorThrown);
+      });
+  });
+
+  // Monitoreo de cambio de mesa (Mantiene la consistencia del log)
+  select_mesas.on("change", function () {
+    var selectedData = $(this).select2("data");
+    if (selectedData && selectedData.length > 0) {
+      console.log("Mesa seleccionada:", selectedData[0]);
+    }
+  });
 });

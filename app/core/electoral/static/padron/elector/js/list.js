@@ -47,12 +47,6 @@ function getData(all) {
 
   var parameters = {
     action: "search",
-    start_date: input_daterange
-      .data("daterangepicker")
-      .startDate.format("YYYY-MM-DD"),
-    end_date: input_daterange
-      .data("daterangepicker")
-      .endDate.format("YYYY-MM-DD"),
 
     local_votacion: select_local_votacion.val(),
     mesa: select_mesa.val(),
@@ -523,26 +517,40 @@ function getData(all) {
 $(function () {
   var link_add = document.querySelector('a[href="/electoral/elector/add/"]');
   var link_upd = document.querySelector('a[href=""]');
-  link_add.style.display = "none";
-  link_upd.style.display = "none";
+  if (link_add) link_add.style.display = "none";
+  if (link_upd) link_upd.style.display = "none";
 
   input_term = $('input[name="term"]');
   current_date = new moment().format("YYYY-MM-DD");
   input_daterange = $('input[name="date_range"]');
 
+  // --- REFERENCIAS DE SELECTORES ---
   select_local_votacion = $('select[name="local_votacion"]');
   select_mesa = $('select[name="mesa"]');
   select_seccional = $('select[name="seccional"]');
   select_operador = $('select[name="operador"]');
-
   select_ciudad = $('select[name="ciudad"]');
   select_barrio = $('select[name="barrio"]');
   select_manzana = $('select[name="manzana"]');
   select_tipo_voto = $('select[name="tipo_voto"]');
-
   select_pasoxpc = $('select[name="pasoxpc"]');
   select_pasoxmv = $('select[name="pasoxmv"]');
+  select_pasoxgs = $('select[name="pasoxgs"]');
+  select_monto = $('select[name="monto"]');
 
+  // --- INICIALIZACIÓN DE SELECT2 EN FILTROS ---
+  // Inyectamos los placeholders nativos para evitar appends HTML conflictivos
+  $(".select2").select2({
+    theme: "bootstrap4",
+    width: "100%",
+    allowClear: true,
+    placeholder: "Todos / Todas",
+  });
+
+  // Forzamos el estado vacío inicial sin romper el renderizado de la extensión
+  $(".select2").val("").trigger("change.select2");
+
+  // --- CONFIGURACIÓN DE DATETIMEPICKER ---
   input_daterange
     .daterangepicker({
       language: "auto",
@@ -558,96 +566,35 @@ $(function () {
   $(".drp-buttons").hide();
 
   initTable();
-  //   getData("filter");
 
+  // --- COMPORTAMIENTO DE BOTONES ---
   $(".btnSearch").on("click", function () {
     getData("bday");
   });
-
   $(".btnFilter").on("click", function () {
     getData("filter");
   });
-
   $(".btnSearchAll").on("click", function () {
     getData("all");
   });
 
-  // BTN DEFAULT
+  // Escucha del Enter en el buscador de texto ordinario
   input_term.keypress(function (e) {
     if (e.keyCode == 13) $(".btnFilter").click();
   });
 
-  // Agregamos una linea vacia a los select
+  // --- EVENTOS DEL RESTO DE SELECTS DE BÚSQUEDA ---
+  // Hace que al cambiar cualquier combo, la grilla se actualice al instante
+  $("select.select2")
+    .not(select_local_votacion)
+    .on("change", function () {
+      getData("filter");
+    });
 
-  select_local_votacion.append(
-    $("<option>", {
-      value: "",
-      text: "Todos",
-    }),
-  );
-
-  select_mesa.append(
-    $("<option>", {
-      value: "",
-      text: "Todas",
-    }),
-  );
-
-  select_seccional.append(
-    $("<option>", {
-      value: "",
-      text: "Todas",
-    }),
-  );
-
-  select_operador.append(
-    $("<option>", {
-      value: "",
-      text: "Todos",
-    }),
-  );
-
-  select_ciudad.append(
-    $("<option>", {
-      value: "",
-      text: "Todas",
-    }),
-  );
-
-  select_barrio.append(
-    $("<option>", {
-      value: "",
-      text: "Todos",
-    }),
-  );
-
-  select_manzana.append(
-    $("<option>", {
-      value: "",
-      text: "Todas",
-    }),
-  );
-
-  select_tipo_voto.append(
-    $("<option>", {
-      value: "",
-      text: "Todos",
-    }),
-  );
-
-  select_local_votacion.val("").change();
-  select_mesa.val("").change();
-  select_seccional.val("").change();
-  select_operador.val("").change();
-
-  select_ciudad.val("").change();
-  select_barrio.val("").change();
-  select_manzana.val("").change();
-  select_tipo_voto.val("").change();
-
+  // ==========================================================================
+  // EVENTOS DE EDICIÓN EN LÍNEA (INLINE DATA TABLE)
+  // ==========================================================================
   $(function () {
-    // --- EVENTOS DE LA TABLA ---
-
     // 1. Activar edición al hacer clic en el display (Badge/Texto)
     $("#data tbody").on("click", ".div-edit-display", function () {
       var cell = $(this).closest("td");
@@ -659,7 +606,7 @@ $(function () {
       var selectElement = cell.find("select");
       var fieldName = selectElement.data("field");
 
-      // Inicializar Select2
+      // Inicializar Select2 en la celda correspondiente de la grilla
       selectElement
         .select2({
           theme: "bootstrap4",
@@ -675,7 +622,6 @@ $(function () {
                 action: "search_select2",
                 field: fieldName,
                 term: params.term,
-                // Si es manzana, enviamos el ID del barrio de la misma fila para filtrar
                 barrio_id:
                   fieldName === "manzana"
                     ? row.find('select[data-field="barrio"]').val()
@@ -691,27 +637,24 @@ $(function () {
         .select2("open");
     });
 
-    // 2. Evento: Selección de una opción
+    // 2. Evento: Selección de una opción inline
     $("#data tbody").on("select2:select", ".select2-inline", function (e) {
       var id = $(this).data("id");
       var field = $(this).data("field");
       var value = e.params.data.id;
-
       cerrarYGuardar($(this), id, field, value);
     });
 
-    // 3. Evento: Limpiar campo (clic en la "X")
+    // 3. Evento: Limpiar campo inline (clic en la "X")
     $("#data tbody").on("select2:clearing", ".select2-inline", function (e) {
       var id = $(this).data("id");
       var field = $(this).data("field");
-
       cerrarYGuardar($(this), id, field, "");
     });
 
     // 4. Evento: Cierre sin cambios (clic fuera)
     $("#data tbody").on("select2:close", ".select2-inline", function () {
       var cell = $(this).closest("td");
-      // Pequeño delay para no interferir con los eventos de click/select
       setTimeout(function () {
         if (cell.find(".div-edit-input").is(":visible")) {
           destruirSelect2(cell);
@@ -720,8 +663,7 @@ $(function () {
     });
   });
 
-  // --- FUNCIONES DE APOYO ---
-
+  // --- FUNCIONES DE APOYO INLINE ---
   function destruirSelect2(cell) {
     var select = cell.find("select");
     if (select.data("select2")) {
@@ -733,15 +675,11 @@ $(function () {
 
   function cerrarYGuardar(elemento, id, field, value) {
     var cell = elemento.closest("td");
-
-    // 1. Destruir visualmente primero para evitar el lag de la UI
     destruirSelect2(cell);
-
-    // 2. Ejecutar Ajax
     saveInlineUpdate(id, field, value);
   }
 
-  // 3. Guardar cambios en inputs de texto (Nro Casa) al perder el foco o Enter
+  // Guardar cambios en inputs de texto (Nro Casa) al perder el foco
   $("#data tbody").on("change", ".quick-edit-text", function () {
     var id = $(this).data("id");
     var field = $(this).data("field");
@@ -750,7 +688,6 @@ $(function () {
   });
 
   function saveInlineUpdate(id, field, value) {
-    // 1. Guardamos la posición actual del scroll del navegador
     var scrollPos = $(window).scrollTop();
 
     $.ajax({
@@ -765,12 +702,10 @@ $(function () {
       },
       success: function (response) {
         if (!response.hasOwnProperty("error")) {
-          // 2. El segundo parámetro 'false' mantiene la página (ej. pág 10)
           tblData.ajax.reload(function () {
-            // 3. Restauramos la posición del scroll después de que los datos carguen
             $(window).scrollTop(scrollPos);
 
-            // Si es barrio, seguimos con el foco automático a manzana
+            // Si editamos barrio, movemos automáticamente el foco a la celda de manzana
             if (field === "barrio" && value !== "") {
               var currentRow = $("#data")
                 .find('select[data-id="' + id + '"]')
@@ -788,10 +723,8 @@ $(function () {
   }
 });
 
-// VENTANAS MODAL
+// MODALES DE EDICIÓN COMPLETA
 $(function () {
-  /* Functions */
-
   var loadForm = function () {
     var btn = $(this);
     $.ajax({
@@ -802,8 +735,6 @@ $(function () {
         $("#modal-elector").modal("show");
       },
       success: function (data) {
-        // console.log('SUCEEEEEEEEEEEEEEEEEEEEEEEEESS')
-
         if (!data.hasOwnProperty("error")) {
           $("#modal-elector .modal-content").html(data.html_form);
           return false;
@@ -814,7 +745,6 @@ $(function () {
   };
 
   var saveForm = function () {
-    // Habilitamos antes de submit
     var select_seccional = $("#frmForm #id_seccional");
     var select_local_votacion = $("#frmForm #id_local_votacion");
     select_seccional.prop("disabled", false);
@@ -828,7 +758,6 @@ $(function () {
       type: form.attr("method"),
       dataType: "json",
       success: function (request) {
-        // console.log(request);
         if (!request.hasOwnProperty("error")) {
           tblData.draw("page");
           $("#modal-elector").modal("hide");
@@ -845,13 +774,6 @@ $(function () {
     return false;
   };
 
-  /* Binding */
-
-  // // Create book
-  // $(".js-create-elector").click(loadForm);
-  // $("#modal-elector").on("submit", ".js-elector-create-form", saveForm);
-
-  // Update Elector
   $("#data").on("click", ".js-update", loadForm);
   $("#modal-elector").on("submit", ".js-update-form", saveForm);
 });

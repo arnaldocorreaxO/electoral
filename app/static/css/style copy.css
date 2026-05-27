@@ -1,0 +1,489 @@
+/* ==========================================================================
+   SISTEMA DE IDENTIDAD VISUAL INTEGRADO - SGEX (ROJO INSTITUCIONAL #dc3545)
+   BLINDAJE ESPECÍFICO PARA ADMINLTE 3.0.5 (BOOTSTRAP 4 BASE)
+   ========================================================================== */
+
+:root {
+  /* --- Colores Primarios e Institucionales --- */
+  --peya-main: #dc3545; /* Rojo predominante del sistema */
+  --peya-main-hover: #bd2130; /* Tono más oscuro para hovers y estados activos */
+  --peya-main-alpha: rgba(
+    220,
+    53,
+    69,
+    0.06
+  ); /* Fondo sutil para hovers y estados pasivos */
+  --peya-main-alpha-strong: rgba(
+    220,
+    53,
+    69,
+    0.12
+  ); /* Para anillos de enfoque (focus) */
+
+  /* --- Estructura de Fondos --- */
+  --peya-light-bg: #ffffff;
+  --peya-gray-bg: #f7f7f7;
+
+  /* --- Tipografía y Legibilidad --- */
+  --peya-text-main: #2d2e2e;
+  --peya-text-muted: #757575;
+  --peya-text-on-main: #ffffff; /* Contraste perfecto sobre fondo rojo */
+
+  /* --- Bordes y Radio de Curvatura --- */
+  --peya-radius-sm: 12px;
+  --peya-radius-lg: 16px;
+  --peya-radius-pill: 100px;
+
+  /* --- Sombras y Efectos de Elevación --- */
+  --peya-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --peya-shadow-hover: 0 6px 15px rgba(220, 53, 69, 0.25);
+}
+
+/* --- Estructura General --- */
+body,
+.app-main,
+.content-wrapper {
+  background-color: var(--peya-gray-bg) !important;
+  color: var(--peya-text-main);
+  letter-spacing: -0.2px;
+}
+
+/* --- Header estilo Minimalista --- */
+.app-header,
+.main-header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #f2f2f2 !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* --- Sidebar: Diseño Limpio --- */
+.sidebar-brand,
+.main-sidebar .brand-link {
+  background: #ffffff !important;
+  border-bottom: 1px solid #f2f2f2 !important;
+}
+
+.main-sidebar .brand-link .brand-text {
+  color: var(--peya-main) !important;
+  font-weight: 900 !important;
+  font-size: 1.4rem !important;
+}
+
+/* ==========================================================================
+   ANULACIÓN DE CASCADA DE ADMINLTE 3.0.5 (MENÚ LATERAL NAV-SIDEBAR)
+   ========================================================================== */
+
+/* --- Estado Base del Menú --- */
+.wrapper .main-sidebar .sidebar .sidebar-menu .nav-sidebar .nav-item .nav-link,
+body .sidebar-menu .nav-link {
+  border-radius: var(--peya-radius-sm) !important;
+  margin: 4px 10px !important;
+  padding: 10px 15px !important;
+  font-weight: 600 !important;
+  color: var(--peya-text-main) !important;
+  transition: all 0.2s ease;
+  background-color: transparent !important;
+}
+
+/* --- Hover del Menú --- */
+.wrapper
+  .main-sidebar
+  .sidebar
+  .sidebar-menu
+  .nav-sidebar
+  .nav-item
+  .nav-link:hover,
+body .sidebar-menu .nav-link:hover {
+  background-color: var(--peya-main-alpha) !important;
+  color: var(--peya-main) !important;
+}
+
+/* --- Link Activo (Desactiva el Azul/Verde por defecto de AdminLTE 3) --- */
+.wrapper .main-sidebar .nav-sidebar .nav-item .nav-link.active,
+body .main-sidebar .nav-sidebar .nav-item .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-light-primary .nav-sidebar > .nav-item > .nav-link.active {
+  background-color: var(--peya-main) !important;
+  color: var(--peya-text-on-main) !important;
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2) !important;
+}
+
+/* ==========================================================================
+   BOTONES EN ADMINLTE 3.0.5 / BOOTSTRAP 4
+   ========================================================================== */
+
+.wrapper .btn,
+.wrapper .btn-xo,
+.wrapper .btn-primary,
+body .btn,
+body .btn-xo,
+body .btn-primary,
+.btn-primary.btn-primary {
+  border-radius: var(--peya-radius-pill) !important;
+  text-transform: none;
+  font-weight: 700 !important;
+  padding: 10px 24px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none !important;
+  color: #ffffff !important; /* Asegura el texto blanco sobre AdminLTE */
+}
+
+.wrapper .btn-xo,
+.wrapper .btn-primary,
+body .btn-xo,
+body .btn-primary,
+.btn-primary.btn-primary {
+  background-color: var(--peya-main) !important;
+  border-color: var(--peya-main) !important;
+}
+
+.wrapper .btn-xo:hover,
+.wrapper .btn-primary:hover,
+body .btn-xo:hover,
+body .btn-primary:hover,
+.btn-primary.btn-primary:hover,
+.btn-primary:not(:disabled):not(.disabled):active {
+  background-color: var(--peya-main-hover) !important;
+  border-color: var(--peya-main-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--peya-shadow-hover) !important;
+}
+
+/* --- Checkboxes y Radios Coherentes con AdminLTE 3 --- */
+.wrapper .form-check-input:checked,
+body .form-check-input:checked,
+.custom-control-input:checked ~ .custom-control-label::before {
+  background-color: var(--peya-main) !important;
+  border-color: var(--peya-main) !important;
+}
+
+.wrapper .form-check-input:focus,
+body .form-check-input:focus {
+  border-color: var(--peya-main) !important;
+  box-shadow: 0 0 0 4px var(--peya-main-alpha-strong) !important;
+}
+
+/* ==========================================================================
+   COMPONENTES DE INTERFAZ GENERAL, CARDS E INPUTS
+   ========================================================================== */
+
+/* --- Cards Estilo App --- */
+.card {
+  background: #ffffff !important;
+  border-radius: var(--peya-radius-lg) !important;
+  border: 1px solid #f0f0f0 !important;
+  box-shadow: var(--peya-shadow) !important;
+  margin-bottom: 1.5rem;
+}
+
+.card-header {
+  background: transparent !important;
+  border-bottom: 1px solid #f7f7f7 !important;
+  padding: 1.25rem !important;
+}
+
+.card .card-header .card-title {
+  color: var(--peya-text-main);
+  font-weight: 800 !important;
+  font-size: 1.3rem;
+}
+
+.card-footer {
+  border-top: 1px solid #dee2e6;
+}
+
+/* --- Inputs Modernos --- */
+.form-control {
+  background-color: #f9f9f9 !important;
+  border: 1.5px solid #eee !important;
+  border-radius: 12px !important;
+  padding: 12px 16px !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-control:focus {
+  background-color: #ffffff !important;
+  border-color: var(--peya-main) !important;
+  box-shadow: 0 0 0 4px var(--peya-main-alpha-strong) !important;
+}
+
+/* ==========================================================================
+   SINCRONIZACIÓN TOTAL SELECT2
+   ========================================================================== */
+
+.select2-container--bootstrap-5 .select2-selection--single,
+.select2-container--default .select2-selection--single,
+.select2-selection.select2-selection--single {
+  background-color: #f9f9f9 !important;
+  border: 1.5px solid #f2f2f2 !important;
+  border-radius: 14px !important;
+  height: 48px !important;
+  display: flex !important;
+  align-items: center !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.select2-container--bootstrap-5
+  .select2-selection--single
+  .select2-selection__rendered,
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__rendered,
+.select2-selection__rendered {
+  padding-left: 15px !important;
+  color: var(--peya-text-main) !important;
+  font-weight: 500;
+  background-color: transparent !important;
+  line-height: 48px !important;
+}
+
+.select2-container--bootstrap-5 .select2-selection__arrow,
+.select2-container--default
+  .select2-selection--single
+  .select2-selection__arrow,
+.select2-selection__arrow {
+  background-color: transparent !important;
+  border: none !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  height: 46px !important;
+}
+
+.select2-container--bootstrap-5.select2-container--focus
+  .select2-selection--single,
+.select2-container--bootstrap-5.select2-container--open
+  .select2-selection--single,
+.select2-container--default.select2-container--focus
+  .select2-selection--single {
+  background-color: #ffffff !important;
+  border-color: var(--peya-main) !important;
+  box-shadow: 0 0 0 4px var(--peya-main-alpha-strong) !important;
+}
+
+.select2-container--bootstrap-5 .select2-dropdown,
+.select2-dropdown {
+  border-radius: 14px !important;
+  border: 1px solid #f2f2f2 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.select2-results__option--highlighted[aria-selected],
+.select2-container--bootstrap-5 .select2-results__option--highlighted {
+  background-color: var(--peya-main) !important;
+  color: var(--peya-text-on-main) !important;
+}
+
+/* ==========================================================================
+   ESTILOS COMPLEMENTARIOS Y CORRECCIONES DE PANTALLAS
+   ========================================================================== */
+
+@media (max-width: 991.98px) {
+  .control-sidebar-open .control-sidebar,
+  .control-sidebar-open .control-sidebar::before {
+    right: 0;
+    display: block;
+  }
+}
+
+/* --- Breadcrumbs / Ruta de Navegación --- */
+.breadcrumb {
+  background-color: #ffffff !important;
+  padding: 5px 20px !important;
+  margin-bottom: 0;
+  list-style: none;
+  border: 1px solid #e9ecef;
+  border-radius: var(--peya-radius-sm, 12px);
+}
+
+.breadcrumb a {
+  color: var(--peya-text-muted, #757575);
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+  color: var(--peya-main, #dc3545);
+  text-decoration: none;
+}
+
+/* --- DataTables / Limpieza de Bordes --- */
+.table-bordered {
+  border: 0 !important;
+}
+
+table.table-bordered.dataTable tbody td {
+  border-bottom-width: 1px !important;
+}
+
+.dataTables_scrollHeadInner,
+.dataTables_scrollHeadInner table {
+  width: 100% !important;
+}
+
+/* --- Dashboard / Panel de Módulos --- */
+.panel-module {
+  min-height: 480px;
+}
+
+.panel-module .icon {
+  padding-top: 12px;
+  width: 150px;
+  float: left;
+  height: 180px;
+  background: #ffffff;
+  border: 1px solid #f0f0f0;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  position: relative;
+  border-radius: var(--peya-radius-lg, 16px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+
+.panel-module .icon .iconname {
+  color: var(--peya-text-main, #2d2e2e);
+  font-weight: bold;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  font-size: 14px;
+  line-height: 14px;
+}
+
+.panel-module .icon .iconname .tituloicon {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.panel-module .icon .iconimage {
+  width: 100%;
+  text-align: center;
+}
+
+.panel-module img {
+  height: 70px;
+  margin-top: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.panel-module .icon:hover {
+  background: var(--peya-main-alpha, rgba(220, 53, 69, 0.06)) !important;
+  border-color: var(--peya-main, #dc3545) !important;
+  transform: translateY(-4px);
+  cursor: pointer;
+}
+
+.panel-module .icon:hover .iconname {
+  color: var(--peya-main, #dc3545);
+}
+
+.panel-module .icon .icondesc {
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 12px;
+  color: var(--peya-text-muted, #757575);
+}
+
+.panel-module a {
+  color: var(--peya-text-main, #2d2e2e);
+  transition: color 0.2s ease;
+}
+
+.panel-module a:hover {
+  color: var(--peya-main, #dc3545);
+}
+
+/* --- Componentes Nav e Información de Usuario --- */
+.nav-info-user li a {
+  color: var(--peya-text-main, #2d2e2e);
+  font-weight: 500;
+}
+
+.nav-info-user li a span {
+  font-weight: normal;
+}
+
+.nav-info-user .nav-item span {
+  font-size: 13px;
+}
+
+.control-sidebar-content hr {
+  border-color: #dee2e6;
+}
+
+.password-progress {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.input-group-search .dropdown-item:active {
+  background-color: var(--peya-main, #dc3545);
+  color: #ffffff;
+}
+
+.pd {
+  padding: 5px;
+}
+
+.sbox {
+  box-shadow: var(--peya-shadow, 0 4px 16px rgba(0, 0, 0, 0.08));
+}
+
+/* --- Estados Especiales de Botones / Historial --- */
+.btn-orange {
+  background-color: #fd7e14 !important;
+  border-color: #fd7e14 !important;
+  color: #ffffff !important;
+}
+.btn-orange:hover {
+  background-color: #e96b02 !important;
+  transform: translateY(-2px);
+}
+
+.btn-danger-dark {
+  background-color: #a10000 !important;
+  border-color: #800000 !important;
+  color: #ffffff !important;
+}
+.btn-danger-dark:hover {
+  background-color: #7a0000 !important;
+  transform: translateY(-2px);
+}
+
+.btn-dark {
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  color: #ffffff !important;
+}
+.btn-dark:hover {
+  background-color: #1a1a1a !important;
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   BLINDAJE TOTAL PARA NAVBAR EN ADMINLTE 3.0.5
+   ========================================================================== */
+
+/* --- Si querés que la barra superior sea ROJA INSTITUCIONAL --- */
+.wrapper .main-header.navbar,
+body .main-header.navbar {
+  background-color: var(--peya-main) !important;
+  border-bottom: 1px solid var(--peya-main-hover) !important;
+}
+
+/* Forzar que los iconos y eslabones de la barra superior pasen a blanco para que se lean bien */
+.wrapper .main-header.navbar .nav-link,
+body .main-header.navbar .nav-link,
+.wrapper .main-header.navbar .nav-link i,
+body .main-header.navbar .nav-link i {
+  color: var(--peya-text-on-main, #ffffff) !important;
+}
+
+/* Hover de los iconos en el navbar rojo */
+.wrapper .main-header.navbar .nav-link:hover,
+body .main-header.navbar .nav-link:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
