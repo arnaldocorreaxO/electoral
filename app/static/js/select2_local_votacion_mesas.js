@@ -1,7 +1,7 @@
 /* ===================================================================
 Author: xO
 Refactored: API Select2 unificada para el change_form de Django Admin
-Manejo dinámico de Local de Votación -> Mesas
+Manejo dinámico de Local de Votación -> Mesas (Blindado contra doble Ajax)
 ==================================================================== */
 $(function () {
   // 1. Inicialización Base de Select2 en el Admin de Django
@@ -20,57 +20,81 @@ $(function () {
   var select_mesas = $('select[name="mesa"]');
   var token = $('input[name="csrfmiddlewaretoken"]');
 
-  $('select[name="local_votacion"]').on("change", function () {
-    var id = $(this).val();
+  // Bandera de control para evitar colisiones o ejecuciones simultáneas
+  var isAjaxRunning = false;
 
-    // Vaciamos Select2 de forma nativa sin romper la instancia visual
-    select_mesas
-      .empty()
-      .append(new Option("(Todos)", "", true, true))
-      .trigger("change.select2");
+  // Cambiamos 'change' por 'select2:select' y 'select2:unselect' para capturar la
+  // acción pura del usuario sobre la interfaz y no los rebotes del DOM nativo.
+  $('select[name="local_votacion"]').on(
+    "select2:select select2:unselect change",
+    function (e) {
+      // Si el evento es el 'change' interno/automático de Select2 y no una acción directa, lo ignoramos
+      if (e.namespace === "select2") return;
 
-    if (id === "") {
-      return false;
-    }
+      var id = $(this).val();
 
-    $.ajax({
-      headers: { "X-CSRFToken": token.val() },
-      // Usamos la URL actual del navegador para que sirva tanto en ADD como en CHANGE (Edit)
-      url: "/electoral/elector/add/",
-      type: "POST",
-      data: {
-        action: "search_mesa_id",
-        id: id,
-      },
-      dataType: "json",
-    })
-      .done(function (data) {
-        if (!data.hasOwnProperty("error")) {
-          // Iteramos los datos e inyectamos nuevas opciones usando la API oficial
-          $.each(data, function (index, item) {
-            // item.text e item.id deben venir formateados desde el backend (JsonVertical/Diccionario)
-            var option = new Option(item.text, item.id, false, false);
-            select_mesas.append(option);
-          });
+      // Vaciamos Select2 de forma limpia antes de arrancar
+      select_mesas
+        .empty()
+        .append(new Option("(Todos)", "", true, true))
+        .trigger("change.select2");
 
-          // Refrescamos visualmente Select2 una sola vez al terminar el bucle
-          select_mesas.trigger("change.select2");
-          return false;
-        }
+      if (id === "") {
+        return false;
+      }
 
-        if (typeof message_error === "function") {
-          message_error(data.error);
-        } else {
-          alert("Error: " + data.error);
-        }
+      // Si ya hay una petición en curso, abortamos esta para evitar duplicados
+      if (isAjaxRunning) {
+        return false;
+      }
+
+      // Encendemos el bloqueo
+      isAjaxRunning = true;
+
+      $.ajax({
+        headers: { "X-CSRFToken": token.val() },
+        url: "/electoral/elector/add/",
+        type: "POST",
+        data: {
+          action: "search_mesa_id",
+          id: id,
+        },
+        dataType: "json",
       })
-      .fail(function (jqXHR, textStatus, errorThrown) {
-        console.error("Error en peticion de mesas:", textStatus, errorThrown);
-      });
-  });
+        .done(function (data) {
+          // Volvemos a asegurar que la lista esté limpia justo antes de inyectar
+          select_mesas.empty().append(new Option("(Todos)", "", true, true));
 
-  // Monitoreo de cambio de mesa (Mantiene la consistencia del log)
-  select_mesas.on("change", function () {
+          if (!data.hasOwnProperty("error")) {
+            // Iteramos los datos e inyectamos nuevas opciones
+            $.each(data, function (index, item) {
+              var option = new Option(item.text, item.id, false, false);
+              select_mesas.append(option);
+            });
+
+            // Refrescamos visualmente Select2 de forma controlada con su namespace
+            select_mesas.trigger("change.select2");
+            return false;
+          }
+
+          if (typeof message_error === "function") {
+            message_error(data.error);
+          } else {
+            alert("Error: " + data.error);
+          }
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+          console.error("Error en peticion de mesas:", textStatus, errorThrown);
+        })
+        .always(function () {
+          // Apagamos la bandera para permitir futuras consultas al cambiar de local
+          isAjaxRunning = false;
+        });
+    },
+  );
+
+  // Monitoreo de cambio de mesa
+  select_mesas.on("change.select2", function () {
     var selectedData = $(this).select2("data");
     if (selectedData && selectedData.length > 0) {
       console.log("Mesa seleccionada:", selectedData[0]);

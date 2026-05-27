@@ -3,10 +3,6 @@
 
 {% block head_list %}
   <script src="{% static '/js/select2_local_votacion_mesas.js' %}"></script>
-  
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
   <style>
     /* 1. OCULTAR LISTAS TRADICIONALES DE DATATABLES Y COMPONENTES EXTRAS */
     #data_list, .card-footer, .dataTables_wrapper, #btnCargarCuadricula {
@@ -245,8 +241,8 @@
 
   <div class="modal fade" id="modal-confirmacion-tactil" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static">
     <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content border-primary shadow-lg">
-        <div class="modal-header bg-primary text-white py-2">
+      <div class="modal-content border-danger shadow-lg">
+        <div class="modal-header bg-danger text-white py-2">
           <h5 class="modal-title font-weight-bold"><i class="fas fa-id-card"></i> Validación del Elector</h5>
           <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close" onclick="resetMarcador()">
             <span aria-hidden="true">&times;</span>
@@ -264,7 +260,7 @@
             </div>
             <div class="col-6">
               <small class="text-muted d-block font-weight-bold">N° ORDEN</small>
-              <h4 id="mdl-orden" class="font-weight-bold text-primary mb-0">0</h4>
+              <h4 id="mdl-orden" class="font-weight-bold text-dark mb-0">0</h4>
             </div>
           </div>
           
