@@ -1,8 +1,8 @@
 from datetime import datetime
-from dateutil.relativedelta import relativedelta
 
+from dateutil.relativedelta import relativedelta
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum,Count
+from django.db.models import Count, Sum
 from django.db.models.functions import Coalesce
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -11,10 +11,11 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, requires_csrf_token
 from django.views.generic import TemplateView
 
-from core.reports.choices import months,rango_edad
-from core.pos.models import Company
 from core.electoral.models import Elector
+from core.pos.models import Company
+from core.reports.choices import months, rango_edad
 from core.security.models import Dashboard
+
 
 class DashboardView(LoginRequiredMixin, TemplateView):
 
@@ -26,8 +27,8 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         dashboard = Dashboard.objects.filter()
         if dashboard.exists():
             if dashboard[0].layout == 1:
-                return 'vtcpanel.html'
-        return 'hztpanel.html'
+                return "vtcpanel.html"
+        return "hztpanel.html"
 
     def get(self, request, *args, **kwargs):
         request.user.set_group_session()
@@ -36,103 +37,133 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            action = request.POST['action']      
-            distrito = request.user.distrito    
-            distrito = distrito if distrito else 1 #Distrito por defecto 1 San Lazaro
-            if action == 'get_graph_electores_seccional':
+            action = request.POST["action"]
+            distrito = request.user.distrito
+            distrito = distrito if distrito else 1  # Distrito por defecto 1 San Lazaro
+            if action == "get_graph_electores_seccional":
                 info = []
                 # for i in Product.objects.order_by('-id')[0:10]:
                 #     info.append([i.name, i.stock])
-                for i in Elector.objects.values('seccional__denominacion') \
-                        .filter(distrito=distrito)\
-                        .annotate(tot_electores=Count(True)) \
-                        .order_by('-tot_electores'):
-                        info.append([i['seccional__denominacion'],i['tot_electores']])
-                
+                for i in (
+                    Elector.objects.values("seccional__denominacion")
+                    .filter(distrito=distrito)
+                    .annotate(tot_electores=Count(True))
+                    .order_by("-tot_electores")
+                ):
+                    info.append([i["seccional__denominacion"], i["tot_electores"]])
+
                 data = {
-                    'name': 'Electores por Seccional',
-                    'type': 'pie',
-                    'colorByPoint': True,
-                    'data': info,
+                    "name": "Electores por Seccional",
+                    "type": "pie",
+                    "colorByPoint": True,
+                    "data": info,
                 }
-            elif action == 'get_graph_preferencia_votos':
+            elif action == "get_graph_preferencia_votos":
                 info = []
                 # for i in Product.objects.order_by('-id')[0:10]:
                 #     info.append([i.name, i.stock])
-                for i in Elector.objects.values('tipo_voto__denominacion') \
-                        .filter(distrito=distrito)\
-                        .exclude(tipo_voto__cod__in=['F','E'])\
-                        .annotate(tot_votos=Count(True)) \
-                        .order_by('-tot_votos'):
-                        info.append([i['tipo_voto__denominacion'] if i['tipo_voto__denominacion'] else 'SIN PREFERENCIA',
-                                     i['tot_votos']])
-               
+                for i in (
+                    Elector.objects.values("tipo_voto__denominacion")
+                    .filter(distrito=distrito)
+                    .exclude(tipo_voto__cod__in=["F", "E"])
+                    .annotate(tot_votos=Count(True))
+                    .order_by("-tot_votos")
+                ):
+                    info.append(
+                        [
+                            (
+                                i["tipo_voto__denominacion"]
+                                if i["tipo_voto__denominacion"]
+                                else "SIN PREFERENCIA"
+                            ),
+                            i["tot_votos"],
+                        ]
+                    )
+
                 data = {
-                    'name': 'Preferencia de Votos',
-                    'type': 'pie',
-                    'colorByPoint': True,
-                    'data': info,
+                    "name": "Preferencia de Votos",
+                    "type": "pie",
+                    "colorByPoint": True,
+                    "data": info,
                 }
-            elif action == 'get_graph_control_preferencia_votos':
+            elif action == "get_graph_control_preferencia_votos":
                 info = []
-                for i in Elector.objects.values('tipo_voto__denominacion') \
-                                        .filter(distrito=distrito,local_votacion=1,pasoxmv='S')\
-                                        .annotate(tot_votos=Count(True)) \
-                                        .order_by('-tot_votos'):
-                                        info.append({'name' : i['tipo_voto__denominacion'] if i['tipo_voto__denominacion'] else 'SIN PREFERENCIA',
-                                                     'data' : [float(i['tot_votos']),]})
+                for i in (
+                    Elector.objects.values("tipo_voto__denominacion")
+                    .filter(distrito=distrito, local_votacion=1, pasoxmv="S")
+                    .annotate(tot_votos=Count(True))
+                    .order_by("-tot_votos")
+                ):
+                    info.append(
+                        {
+                            "name": (
+                                i["tipo_voto__denominacion"]
+                                if i["tipo_voto__denominacion"]
+                                else "SIN PREFERENCIA"
+                            ),
+                            "data": [
+                                float(i["tot_votos"]),
+                            ],
+                        }
+                    )
                 data = info
 
-            elif action == 'get_graph_dia_d':
+            elif action == "get_graph_dia_d":
                 info = []
                 # for i in Product.objects.order_by('-id')[0:10]:
                 #     info.append([i.name, i.stock])
-                cant_pc =  Elector.objects.filter(distrito=distrito,pasoxpc__exact='S')\
-                                          .aggregate(cant=Coalesce(Count(True), 0))['cant']
-                info.append(['PUESTO CONTROL',cant_pc])
+                cant_pc = Elector.objects.filter(
+                    distrito=distrito, pasoxpc__exact="S"
+                ).aggregate(cant=Coalesce(Count(True), 0))["cant"]
+                info.append(["PUESTO CONTROL", cant_pc])
 
-                cant_mv =  Elector.objects.filter(distrito=distrito,pasoxmv__exact='S')\
-                                          .aggregate(cant=Coalesce(Count(True), 0))['cant']
-                info.append(['LOCAL VOTACION',cant_mv])
-               
+                cant_mv = Elector.objects.filter(
+                    distrito=distrito, pasoxmv__exact="S"
+                ).aggregate(cant=Coalesce(Count(True), 0))["cant"]
+                info.append(["LOCAL VOTACION", cant_mv])
+
                 data = {
-                    'name': 'Grafico Dia D',
-                    'type': 'pie',
-                    'colorByPoint': True,
-                    'data': info,
-                }   
+                    "name": "Grafico Dia D",
+                    "type": "pie",
+                    "colorByPoint": True,
+                    "data": info,
+                }
 
-            elif action == 'get_graph_dia_d_bar':
-                # Se envia 0 (cero) para todos los locales 
-                lv = request.POST['local_votacion']
+            elif action == "get_graph_dia_d_bar":
+                # Se envia 0 (cero) para todos los locales
+                lv = request.POST["local_votacion"]
                 data = []
 
                 rows = []
-                cant_pasoxpc = Elector.objects.filter(distrito=distrito,pasoxpc__exact='S')\
-                                              .extra(where=["local_votacion_id IN (%s) OR 0=%s"], params=[lv,lv])\
-                                              .aggregate(cant=Coalesce(Count(True), 0))['cant']
-                                     
+                cant_pasoxpc = (
+                    Elector.objects.filter(distrito=distrito, pasoxpc__exact="S")
+                    .extra(where=["local_votacion_id IN (%s) OR 0=%s"], params=[lv, lv])
+                    .aggregate(cant=Coalesce(Count(True), 0))["cant"]
+                )
+
                 rows.append(float(cant_pasoxpc))
-                data.append({'name': 'Puesto de Control', 'data': rows})
-                
+                data.append({"name": "Puesto de Control", "data": rows})
+
                 rows = []
-                cant_pasoxmv = Elector.objects.filter(distrito=distrito,pasoxmv__exact='S')\
-                                              .extra(where=["local_votacion_id IN (%s) OR 0=%s"], params=[lv,lv])\
-                                              .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                cant_pasoxmv = (
+                    Elector.objects.filter(distrito=distrito, pasoxmv__exact="S")
+                    .extra(where=["local_votacion_id IN (%s) OR 0=%s"], params=[lv, lv])
+                    .aggregate(cant=Coalesce(Count(True), 0))["cant"]
+                )
                 rows.append(float(cant_pasoxmv))
-                data.append({'name': 'Local de Votacion', 'data': rows})
-                
+                data.append({"name": "Local de Votacion", "data": rows})
+
                 rows = []
                 cant_margen = float(cant_pasoxmv - cant_pasoxpc)
                 rows.append(float(cant_margen))
-                data.append({'name': 'Margen', 'data': rows})
+                data.append({"name": "Margen", "data": rows})
 
                 rows = []
                 cant_diferencia = float(cant_pasoxpc - abs(cant_margen))
                 rows.append(float(cant_diferencia))
-                data.append({'name': 'Diferencia', 'data': rows})
+                data.append({"name": "Diferencia", "data": rows})
 
-            elif action == 'get_graph_rango_edades_pie':
+            elif action == "get_graph_rango_edades_pie":
                 info = []
                 data = []
                 # Todas las edades de los Electores
@@ -141,17 +172,19 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     anho_ini = (hoy - relativedelta(years=i[1])).year
                     anho_fin = (hoy - relativedelta(years=i[0])).year
 
-                    cant = Elector.objects.filter(distrito=distrito,fecha_nacimiento__year__range=[anho_ini,anho_fin])\
-                            .aggregate(cant=Coalesce(Count(True), 0))['cant']
-                    info.append([i[2],cant])
-               
+                    cant = Elector.objects.filter(
+                        distrito=distrito,
+                        fecha_nacimiento__year__range=[anho_ini, anho_fin],
+                    ).aggregate(cant=Coalesce(Count(True), 0))["cant"]
+                    info.append([i[2], cant])
+
                 data = {
-                    'name': 'Pie Rango Edades',
-                    'type': 'pie',
-                    'colorByPoint': True,
-                    'data': info,
+                    "name": "Pie Rango Edades",
+                    "type": "pie",
+                    "colorByPoint": True,
+                    "data": info,
                 }
-            elif action == 'get_graph_rango_edades':
+            elif action == "get_graph_rango_edades":
                 data = []
                 rows = []
                 # Todas las edades de los Electores
@@ -160,10 +193,12 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     anho_ini = (hoy - relativedelta(years=i[1])).year
                     anho_fin = (hoy - relativedelta(years=i[0])).year
                     # print(anho_ini,'-',anho_fin)
-                    result = Elector.objects.filter(distrito=distrito,fecha_nacimiento__year__range=[anho_ini,anho_fin])\
-                                            .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                    result = Elector.objects.filter(
+                        distrito=distrito,
+                        fecha_nacimiento__year__range=[anho_ini, anho_fin],
+                    ).aggregate(cant=Coalesce(Count(True), 0))["cant"]
                     rows.append(float(result))
-                data.append({'name': 'Total', 'data': rows})
+                data.append({"name": "Total", "data": rows})
                 rows = []
                 # Solo Electores Identificados
                 for i in rango_edad[1:]:
@@ -171,45 +206,61 @@ class DashboardView(LoginRequiredMixin, TemplateView):
                     anho_ini = (hoy - relativedelta(years=i[1])).year
                     anho_fin = (hoy - relativedelta(years=i[0])).year
                     # print(anho_ini,'-',anho_fin)
-                    result = Elector.objects.filter(distrito=distrito,fecha_nacimiento__year__range=[anho_ini,anho_fin])\
-                                            .exclude(barrio_id__exact=0)\
-                                            .exclude(barrio__isnull=True)\
-                                            .aggregate(cant=Coalesce(Count(True), 0))['cant']
+                    result = (
+                        Elector.objects.filter(
+                            distrito=distrito,
+                            fecha_nacimiento__year__range=[anho_ini, anho_fin],
+                        )
+                        .exclude(barrio_id__exact=0)
+                        .exclude(barrio__isnull=True)
+                        .aggregate(cant=Coalesce(Count(True), 0))["cant"]
+                    )
                     #
                     rows.append(float(result))
-                data.append({'name': 'Identificados', 'data': rows})
+                data.append({"name": "Identificados", "data": rows})
             else:
-                data['error'] = 'Ha ocurrido un error'
+                data["error"] = "Ha ocurrido un error"
         except Exception as e:
-            data['error'] = str(e)
+            data["error"] = str(e)
         return JsonResponse(data, safe=False)
 
     def get_context_data(self, **kwargs):
         usu_distrito = self.request.user.distrito
         company = Company.objects.first()
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Panel de administración'
-        context['company'] = company
-        context['distrito'] = usu_distrito.denominacion  if usu_distrito.denominacion else 'FALTA DEFINIR DISTRITO PARA EL USUARIO'
-        context['total_padron'] = Elector.objects.filter(distrito=usu_distrito).count()
-        context['total_ubicados'] = Elector.objects.exclude(barrio__id__in=[0])\
-                                                   .exclude(barrio__isnull=True)\
-                                                   .filter(distrito=usu_distrito).count()
-        context['votos_positivos'] = Elector.objects.filter(distrito=usu_distrito,tipo_voto__cod__exact=company.lista).count()
-        context['votos_negativos'] = Elector.objects.exclude(tipo_voto__cod__in=[company.lista,'A','E','F'])\
-                                                    .filter(distrito=usu_distrito)\
-                                                    .count()
+        context["title"] = "Panel de administración"
+        context["company"] = company
+        context["distrito"] = (
+            usu_distrito.denominacion
+            if usu_distrito.denominacion
+            else "FALTA DEFINIR DISTRITO PARA EL USUARIO"
+        )
+        context["total_padron"] = Elector.objects.filter(distrito=usu_distrito).count()
+        context["total_ubicados"] = (
+            Elector.objects.exclude(barrio__id__in=[0])
+            .exclude(barrio__isnull=True)
+            .filter(distrito=usu_distrito)
+            .count()
+        )
+        context["votos_positivos"] = Elector.objects.filter(
+            distrito=usu_distrito, tipo_voto__cod__exact=company.lista
+        ).count()
+        context["votos_negativos"] = (
+            Elector.objects.exclude(tipo_voto__cod__in=[company.lista, "A", "E", "F"])
+            .filter(distrito=usu_distrito)
+            .count()
+        )
         # context['product'] = Product.objects.all().count()
         # context['sale'] = Sale.objects.filter().order_by('-id')[0:10]
-        context['create_url'] = reverse_lazy('carga_dia_d_list_mv')
+        context["create_url"] = reverse_lazy("registro_voto_rapido_movil")
         return context
 
 
 @requires_csrf_token
 def error_404(request, exception):
-    return render(request, '404.html', {})
+    return render(request, "404.html", {})
 
 
 @requires_csrf_token
 def error_500(request, exception):
-    return render(request, '500.html', {})
+    return render(request, "500.html", {})
