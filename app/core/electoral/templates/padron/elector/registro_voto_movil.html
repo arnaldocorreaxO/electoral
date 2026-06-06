@@ -441,7 +441,14 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.success) $('#txt-total-votos').text(data.total_votos_mesa);
+              if (data.success) {
+                $('#txt-total-votos').text(data.total_votos_mesa);
+              }
+
+              // Sincroniza tambien la tabla de electores cargados de la mesa actual.
+              if (window.tblData2 && $.fn.DataTable.isDataTable('#data2')) {
+                window.tblData2.ajax.reload(null, false);
+              }
             })
             .finally(() => { setTimeout(() => { icono.removeClass('fa-spin'); }, 400); });
         } else {
@@ -629,6 +636,12 @@
                 if (data.total_votos_mesa !== undefined) {
                     $('#txt-total-votos').text(data.total_votos_mesa);
                 }
+
+            // Refresca la grilla de electores cargados en la mesa tras confirmar/anular voto.
+            if (window.tblData2 && $.fn.DataTable.isDataTable('#data2')) {
+              window.tblData2.ajax.reload(null, false);
+            }
+
                 $('#modal-confirmacion-tactil').modal('hide');
                 resetMarcador();
                 
