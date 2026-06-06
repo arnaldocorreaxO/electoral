@@ -983,7 +983,29 @@ class RegistroVotoMovilView(FormView):
                         status=404,
                     )
 
-                return JsonResponse({"success": True})
+                elector_ref = (
+                    Elector.objects.filter(
+                        id=elector_id,
+                        distrito=request.user.distrito,
+                    )
+                    .values("local_votacion_id", "mesa")
+                    .first()
+                )
+
+                total_votos = 0
+                if elector_ref:
+                    total_votos = Elector.objects.filter(
+                        local_votacion_id=elector_ref["local_votacion_id"],
+                        mesa=elector_ref["mesa"],
+                        pasoxmv="S",
+                    ).count()
+
+                return JsonResponse(
+                    {
+                        "success": True,
+                        "total_votos_mesa": total_votos,
+                    }
+                )
             except Exception as e:
                 return JsonResponse({"success": False, "error": str(e)}, status=500)
 

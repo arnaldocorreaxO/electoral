@@ -244,6 +244,10 @@ $(function () {
       },
       success: function (response) {
         if (response && response.success) {
+          if (response.total_votos_mesa !== undefined) {
+            $("#txt-total-votos").text(response.total_votos_mesa);
+          }
+
           $("#modal-confirmar-eliminacion-data2").modal("hide");
           if ($.fn.DataTable.isDataTable("#data2")) {
             $("#data2").DataTable().ajax.reload(null, false);
