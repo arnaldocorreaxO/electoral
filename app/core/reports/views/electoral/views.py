@@ -1,32 +1,365 @@
 import json
-from django.template.loader import render_to_string
-from core.electoral.models import Elector, LocalVotacion
-from core.reports.forms import (
-    FormFilterGenerarPDFMesa,
-    ReportForm,
-)
-from django.db.models import Max, IntegerField
-from django.db.models.functions import Cast
-from core.reports.jasperbase import JasperReportBase
-from core.security.mixins import ModuleMixin
-from core.security.models import Module
+from io import BytesIO
+
+from django.conf import settings
+from django.db.models import IntegerField, Max
 from django.db.models.aggregates import Count
-from django.http import HttpResponse
+from django.db.models.functions import Cast
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from django.views.generic import FormView
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.views.generic import FormView, TemplateView
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Font, PatternFill
 
-from django.db.models import IntegerField, Max
-from django.conf import settings
-from core.electoral.models import Elector
+from core.electoral.models import Elector, LocalVotacion, TipoVoto
+from core.reports.forms import FormFilterGenerarPDFMesa, ReportForm
+from core.reports.jasperbase import JasperReportBase
+from core.security.mixins import ModuleMixin
+from core.security.models import Module
 
 try:
     from weasyprint import HTML
 except ImportError:
     HTML = None
+
+
+class ReporteMesaPreviewView(ModuleMixin, TemplateView):
+    template_name = "electoral/reports/reporte_mesa.html"
+
+    def _get_mesas_data(self):
+        qs = (
+            Elector.objects.filter(
+                distrito=self.request.user.distrito,
+                pasoxmv="S",
+            )
+            .annotate(mesa_int=Cast("mesa", IntegerField()))
+            .values("local_votacion__denominacion", "mesa")
+            .annotate(cantidad_votos=Count("id"))
+            .order_by("local_votacion__denominacion", "mesa_int", "mesa")
+        )
+
+        mesas = []
+        for row in qs:
+            mesas.append(
+                {
+                    "local_votacion": row["local_votacion__denominacion"]
+                    or "SIN LOCAL",
+                    "numero_mesa": row["mesa"],
+                    "pasoxmv": row["cantidad_votos"],
+                }
+            )
+
+        total_votos = sum(int(item["pasoxmv"]) for item in mesas)
+        return mesas, total_votos
+
+    def post(self, request, *args, **kwargs):
+        action = request.POST.get("action")
+        if action == "sync_data":
+            mesas, total_votos = self._get_mesas_data()
+            return JsonResponse({"data": mesas, "total_votos": total_votos})
+        return JsonResponse({"error": "Accion no valida"}, status=400)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        mesas, total_votos = self._get_mesas_data()
+
+        context["nombre_local"] = ""
+        context["distrito"] = getattr(self.request.user.distrito, "denominacion", "")
+        context["title"] = "Reporte de Votos por Mesa"
+        context["mesas"] = mesas
+        context["total_votos"] = total_votos
+        return context
+
+
+class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
+    template_name = "electoral/reports/reporte_tipo_voto_mesa.html"
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        try:
+            action = request.POST.get("action", "")
+
+            if action == "generate_excel_custom":
+                payload_str = request.POST.get("datatable_payload", "")
+                if not payload_str:
+                    return JsonResponse(
+                        {"error": "No se recibió el payload del DataTable"},
+                        status=400,
+                    )
+
+                payload = json.loads(payload_str)
+                return self._generate_excel_from_payload(payload)
+
+            if action != "generate_pdf_weasy":
+                return JsonResponse({"error": "Acción no válida"}, status=400)
+
+            if HTML is None:
+                return HttpResponse(
+                    "Error: WeasyPrint no está instalado en el servidor.",
+                    status=500,
+                    content_type="text/plain",
+                )
+
+            from itertools import groupby
+            from operator import itemgetter
+
+            tipos_voto, rows = self._build_stats_data()
+
+            grupos = []
+            for local_name, group_iter in groupby(rows, key=itemgetter("local")):
+                group_rows = list(group_iter)
+                grupos.append(
+                    {
+                        "local": local_name,
+                        "rows": group_rows,
+                        "sub_tipo1": sum(r["tipo_1"] for r in group_rows),
+                        "sub_otros": sum(r["total_otros"] for r in group_rows),
+                        "sub_dif": sum(r["diferencia"] for r in group_rows),
+                    }
+                )
+
+            context = {
+                "distrito": getattr(request.user.distrito, "denominacion", ""),
+                "tipos_voto": tipos_voto,
+                "grupos": grupos,
+                "total_tipo1": sum(g["sub_tipo1"] for g in grupos),
+                "total_otros": sum(g["sub_otros"] for g in grupos),
+                "total_dif": sum(g["sub_dif"] for g in grupos),
+            }
+
+            html_str = render_to_string(
+                "electoral/reports/reporte_tipo_voto_mesa_pdf.html",
+                context,
+                request=request,
+            )
+
+            pdf_bytes = HTML(
+                string=html_str,
+                base_url=request.build_absolute_uri("/"),
+            ).write_pdf()
+
+            response = HttpResponse(pdf_bytes, content_type="application/pdf")
+            response["Content-Disposition"] = (
+                'inline; filename="estadistica_votos_tipo.pdf"'
+            )
+            return response
+
+        except Exception as exc:
+            return HttpResponse(
+                f"Error generando archivo: {type(exc).__name__}: {exc}",
+                status=500,
+                content_type="text/plain; charset=utf-8",
+            )
+
+    def _generate_excel_from_payload(self, payload):
+        headers = payload.get("headers", {})
+        groups = payload.get("groups", [])
+        totals = payload.get("totals", {})
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Reporte"
+
+        title = payload.get("title") or "Estadistica de Votos por Tipo"
+        district = payload.get("district") or ""
+
+        ws.merge_cells("A1:D1")
+        ws["A1"] = title
+        ws["A1"].font = Font(bold=True, size=14)
+        ws["A1"].alignment = Alignment(horizontal="center")
+
+        ws.merge_cells("A2:D2")
+        ws["A2"] = f"Distrito: {district}"
+        ws["A2"].alignment = Alignment(horizontal="center")
+
+        row_idx = 4
+        head_fill = PatternFill(
+            start_color="E9ECEF", end_color="E9ECEF", fill_type="solid"
+        )
+        sub_fill = PatternFill(
+            start_color="F8F9FA", end_color="F8F9FA", fill_type="solid"
+        )
+        total_fill = PatternFill(
+            start_color="E2E8F0", end_color="E2E8F0", fill_type="solid"
+        )
+
+        ws.cell(row=row_idx, column=1, value=headers.get("mesa", "Mesa"))
+        ws.cell(row=row_idx, column=2, value=headers.get("tipo_1", "Tipo 1"))
+        ws.cell(row=row_idx, column=3, value=headers.get("total_otros", "Otros tipos"))
+        ws.cell(row=row_idx, column=4, value=headers.get("diferencia", "Diferencia"))
+        for col in range(1, 5):
+            ws.cell(row=row_idx, column=col).font = Font(bold=True)
+            ws.cell(row=row_idx, column=col).fill = head_fill
+        row_idx += 2
+
+        for group in groups:
+            local_name = group.get("local", "SIN LOCAL")
+            ws.merge_cells(
+                start_row=row_idx, start_column=1, end_row=row_idx, end_column=4
+            )
+            ws.cell(row=row_idx, column=1, value=f"LOCAL DE VOTACION: {local_name}")
+            ws.cell(row=row_idx, column=1).font = Font(bold=True)
+            ws.cell(row=row_idx, column=1).fill = head_fill
+            row_idx += 1
+
+            for item in group.get("rows", []):
+                ws.cell(row=row_idx, column=1, value=item.get("mesa", ""))
+                ws.cell(row=row_idx, column=2, value=int(item.get("tipo_1", 0)))
+                ws.cell(row=row_idx, column=3, value=int(item.get("total_otros", 0)))
+                ws.cell(row=row_idx, column=4, value=int(item.get("diferencia", 0)))
+                row_idx += 1
+
+            ws.cell(row=row_idx, column=1, value=f"Subtotal {local_name}")
+            ws.cell(row=row_idx, column=2, value=int(group.get("subtotal_tipo1", 0)))
+            ws.cell(row=row_idx, column=3, value=int(group.get("subtotal_otros", 0)))
+            ws.cell(
+                row=row_idx, column=4, value=int(group.get("subtotal_diferencia", 0))
+            )
+            for col in range(1, 5):
+                ws.cell(row=row_idx, column=col).font = Font(bold=True)
+                ws.cell(row=row_idx, column=col).fill = sub_fill
+            row_idx += 2
+
+        ws.cell(row=row_idx, column=1, value="TOTAL GENERAL")
+        ws.cell(row=row_idx, column=2, value=int(totals.get("tipo_1", 0)))
+        ws.cell(row=row_idx, column=3, value=int(totals.get("total_otros", 0)))
+        ws.cell(row=row_idx, column=4, value=int(totals.get("diferencia", 0)))
+        for col in range(1, 5):
+            ws.cell(row=row_idx, column=col).font = Font(bold=True)
+            ws.cell(row=row_idx, column=col).fill = total_fill
+
+        ws.column_dimensions["A"].width = 36
+        ws.column_dimensions["B"].width = 18
+        ws.column_dimensions["C"].width = 18
+        ws.column_dimensions["D"].width = 18
+
+        for row in ws.iter_rows(min_row=1, max_row=row_idx, min_col=1, max_col=4):
+            for cell in row:
+                if cell.column == 1:
+                    cell.alignment = Alignment(horizontal="left", vertical="center")
+                else:
+                    cell.alignment = Alignment(horizontal="right", vertical="center")
+
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+
+        response = HttpResponse(
+            output.getvalue(),
+            content_type=(
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            ),
+        )
+        response["Content-Disposition"] = (
+            'attachment; filename="estadistica_votos_tipo.xlsx"'
+        )
+        return response
+
+    def _build_stats_data(self):
+        base_qs = Elector.objects.filter(
+            distrito=self.request.user.distrito,
+            pasoxmv="S",
+        )
+
+        tipo_ids = list(
+            base_qs.exclude(tipo_voto_id__isnull=True)
+            .values_list("tipo_voto_id", flat=True)
+            .distinct()
+        )
+
+        tipos_voto = list(
+            TipoVoto.objects.filter(id__in=tipo_ids)
+            .order_by("id", "denominacion")
+            .values("id", "cod", "denominacion")
+        )
+
+        mesas_base = list(
+            base_qs.values("local_votacion__denominacion", "mesa")
+            .annotate(mesa_int=Cast("mesa", IntegerField()))
+            .order_by("local_votacion__denominacion", "mesa_int", "mesa")
+            .values("local_votacion__denominacion", "mesa")
+            .distinct()
+        )
+
+        conteos_qs = (
+            base_qs.exclude(tipo_voto_id__isnull=True)
+            .annotate(mesa_int=Cast("mesa", IntegerField()))
+            .values(
+                "local_votacion__denominacion",
+                "mesa",
+                "tipo_voto_id",
+            )
+            .annotate(cantidad=Count("id"))
+            .order_by(
+                "local_votacion__denominacion", "mesa_int", "mesa", "tipo_voto_id"
+            )
+        )
+
+        rows_map = {}
+        for mesa_row in mesas_base:
+            local_name = mesa_row["local_votacion__denominacion"] or "SIN LOCAL"
+            mesa_num = mesa_row["mesa"] or ""
+            key = f"{local_name}|{mesa_num}"
+            rows_map[key] = {
+                "local": local_name,
+                "mesa": mesa_num,
+                **{f"tipo_{tipo['id']}": 0 for tipo in tipos_voto},
+            }
+
+        for count_row in conteos_qs:
+            local_name = count_row["local_votacion__denominacion"] or "SIN LOCAL"
+            mesa_num = count_row["mesa"] or ""
+            key = f"{local_name}|{mesa_num}"
+            if key not in rows_map:
+                rows_map[key] = {
+                    "local": local_name,
+                    "mesa": mesa_num,
+                    **{f"tipo_{tipo['id']}": 0 for tipo in tipos_voto},
+                }
+            rows_map[key][f"tipo_{count_row['tipo_voto_id']}"] = count_row["cantidad"]
+
+        tipo_principal_key = "tipo_1"
+        for row in rows_map.values():
+            base = row.get(tipo_principal_key, 0)
+            otros = sum(
+                v
+                for k, v in row.items()
+                if k.startswith("tipo_") and k != tipo_principal_key
+            )
+            row["total_otros"] = otros
+            row["diferencia"] = base - otros
+
+        rows = list(rows_map.values())
+        rows.sort(
+            key=lambda r: (
+                r["local"],
+                int(r["mesa"]) if str(r["mesa"]).isdigit() else 999999,
+                str(r["mesa"]),
+            )
+        )
+
+        return tipos_voto, rows
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tipos_voto, rows = self._build_stats_data()
+
+        context["title"] = "Estadistica de Votos por Tipo"
+        context["distrito"] = getattr(self.request.user.distrito, "denominacion", "")
+        context["tipos_voto"] = tipos_voto
+        context["rows_data"] = rows
+        context["tipos_voto_json"] = json.dumps(tipos_voto, ensure_ascii=False)
+        context["rows_data_json"] = json.dumps(rows, ensure_ascii=False)
+        context["list_url"] = reverse_lazy("reporte_tipo_voto_mesa")
+        return context
+
 
 """Reporte de Barrios y Manzanas con Codigo"""
 
@@ -235,9 +568,13 @@ class RptElectoral000ReportView(ModuleMixin, FormView):
 
                 # Datos del Local para el Encabezado
                 nombre_local = f"LOCAL DE VOTACIÓN N° {local_id}"
+                total_votos = sum(
+                    int(mesa.get("max_orden") or 0) for mesa in mesas_data
+                )
                 context = {
                     "nombre_local": nombre_local,
                     "mesas": mesas_data,
+                    "total_votos": total_votos,
                 }
 
                 # Renderizamos el template HTML a un String crudo

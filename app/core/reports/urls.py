@@ -1,8 +1,19 @@
 from django.urls import path
+
 from .views.electoral.views import *
 
 urlpatterns = [
     # REPORTES ELECTORAL
+    path(
+        "reporte-tipo-voto-mesa/",
+        ReporteVotoTipoMesaView.as_view(),
+        name="reporte_tipo_voto_mesa",
+    ),
+    path(
+        "reporte-mesa/",
+        ReporteMesaPreviewView.as_view(),
+        name="reporte_mesa_preview",
+    ),
     path("rpt_padron001/", RptPadron001ReportView.as_view(), name="rpt_padron001"),
     path(
         "rpt_electoral000/",

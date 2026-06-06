@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Estadística de Votos por Tipo</title>
+    <style>
+      @page {
+        size: A4 landscape;
+        margin: 12mm 10mm 12mm 10mm;
+      }
+      
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 9pt;
+        color: #212529;
+        background: #fff;
+      }
+      
+      /* ── Cabecera del documento ── */
+      .doc-header {
+        border-bottom: 2px solid #343a40;
+        padding-bottom: 5px;
+        margin-bottom: 10px;
+      }
+      .doc-title {
+        font-size: 13pt;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .doc-subtitle {
+        font-size: 8pt;
+        color: #6c757d;
+        margin-top: 2px;
+      }
+      
+      /* ── Tabla principal ── */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+      
+      thead th {
+        background: #343a40;
+        color: #fff;
+        font-weight: 700;
+        font-size: 8pt;
+        text-transform: uppercase;
+        padding: 5px 6px;
+        border: 1px solid #495057;
+        text-align: center;
+      }
+      thead th.text-right {
+        text-align: right;
+      }
+      thead th.text-left {
+        text-align: left;
+      }
+      
+      /* filas de datos */
+      tbody tr.fila-dato td {
+        padding: 4px 6px;
+        border: 1px solid #dee2e6;
+        vertical-align: middle;
+      }
+      tbody tr.fila-dato:nth-child(odd) td {
+        background: #ffffff;
+      }
+      tbody tr.fila-dato:nth-child(even) td {
+        background: #f8f9fa;
+      }
+      
+      /* encabezado de grupo */
+      tr.fila-grupo td {
+        background: #e9ecef !important;
+        font-weight: 700;
+        font-size: 8.5pt;
+        padding: 5px 6px;
+        border-top: 1px solid #adb5bd;
+        border-bottom: 1px solid #adb5bd;
+        page-break-after: avoid;
+      }
+      
+      /* subtotal por local */
+      tr.fila-subtotal td {
+        background: #f1f3f5 !important;
+        font-weight: 700;
+        font-size: 8.5pt;
+        padding: 4px 6px;
+        border-top: 1px solid #ced4da;
+        border-bottom: 2px solid #adb5bd;
+      }
+      
+      /* total general */
+      tr.fila-total-general td {
+        background: #dee2e6 !important;
+        font-weight: 700;
+        font-size: 9pt;
+        padding: 5px 6px;
+        border-top: 2px solid #495057;
+      }
+      
+      .text-right {
+        text-align: right !important;
+      }
+      .text-center {
+        text-align: center !important;
+      }
+      .text-left {
+        text-align: left !important;
+      }
+      
+      .dif-pos {
+        color: #1a7a4a;
+        font-weight: 700;
+      }
+      .dif-neg {
+        color: #c0392b;
+        font-weight: 700;
+      }
+      .dif-neu {
+        color: #555;
+        font-weight: 700;
+      }
+      
+      .col-local {
+        width: 35%;
+      }
+      .col-mesa {
+        width: 12%;
+      }
+      .col-num {
+        width: 17%;
+      }
+      .col-dif {
+        width: 19%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="doc-header">
+      <div class="doc-title">Estadística de Votos por Tipo de Voto</div>
+      <div class="doc-subtitle">DISTRITO: {{ distrito }} &nbsp;|&nbsp; Solo electores con voto registrado (pasoxmv = S)</div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="col-mesa text-center">Mesa</th>
+          {% for tipo in tipos_voto %}
+            {% if tipo.id == 1 %}
+              <th class="col-num text-right">{{ tipo.cod }} — {{ tipo.denominacion }}</th>
+            {% endif %}
+          {% endfor %}
+          <th class="col-num text-right">Otros tipos</th>
+          <th class="col-dif text-right">Diferencia</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for grupo in grupos %}
+          {# ── Encabezado de grupo: Local de Votación ── #}
+          <tr class="fila-grupo">
+            <td colspan="4">{{ grupo.local }}</td>
+          </tr>
+
+          {# ── Filas de mesas ── #}
+          {% for row in grupo.rows %}
+            {% with dif=row.diferencia %}
+              <tr class="fila-dato">
+                <td class="text-center">{{ row.mesa }}</td>
+                <td class="text-right">{{ row.tipo_1 }}</td>
+                <td class="text-right">{{ row.total_otros }}</td>
+                <td class="text-right
+              {% if dif > 0 %}
+                     dif-pos
+
+                  {% elif dif < 0 %}
+                     dif-neg
+
+                  {% else %}
+                     dif-neu
+                  {% endif %}">{{ dif }}</td>
+              </tr>
+            {% endwith %}
+          {% endfor %}
+
+          {# ── Subtotal del local ── #}
+          <tr class="fila-subtotal">
+            <td class="text-right">Subtotal {{ grupo.local }}</td>
+            <td class="text-right">{{ grupo.sub_tipo1 }}</td>
+            <td class="text-right">{{ grupo.sub_otros }}</td>
+            <td class="text-right
+            {% if grupo.sub_dif > 0 %}
+                 dif-pos
+
+              {% elif grupo.sub_dif < 0 %}
+                 dif-neg
+
+              {% else %}
+                 dif-neu
+              {% endif %}">{{ grupo.sub_dif }}</td>
+          </tr>
+        {% empty %}
+          <tr class="fila-dato">
+            <td colspan="4" class="text-center">Sin datos disponibles.</td>
+          </tr>
+        {% endfor %}
+
+        {# ── Total general ── #}
+        <tr class="fila-total-general">
+          <td class="text-right">TOTAL GENERAL</td>
+          <td class="text-right">{{ total_tipo1 }}</td>
+          <td class="text-right">{{ total_otros }}</td>
+          <td class="text-right
+          {% if total_dif > 0 %}
+               dif-pos
+
+            {% elif total_dif < 0 %}
+               dif-neg
+
+            {% else %}
+               dif-neu
+            {% endif %}">{{ total_dif }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

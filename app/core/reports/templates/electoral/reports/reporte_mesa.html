@@ -1,0 +1,217 @@
+{% extends 'list.html' %}
+{% load static %}
+
+{% block head_list %}
+  <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/rowgroup-1.1.2/css/rowGroup.dataTables.min.css' %}" />
+  <script src="{% static 'lib/datatables-1.10.20/plugins/rowgroup-1.1.2/js/dataTables.rowGroup.min.js' %}"></script>
+  <style>
+    .dtrg-group.dtrg-start {
+      font-weight: 700;
+      background: #e9ecef !important;
+    }
+    
+    .fila-subtotal-local {
+      font-weight: 700;
+      background: #f8f9fa !important;
+    }
+    
+    #data tfoot td {
+      font-weight: 700;
+      background: #e9ecef;
+    }
+    
+    #btnSync.syncing {
+      transform: translateY(-1px);
+      box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.6);
+      animation: syncPulse 0.9s infinite;
+    }
+    
+    @keyframes syncPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.6);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block box_header_buttons %}
+  <button type="button" id="btnSync" class="btn btn-success btn-flat"><i class="fas fa-sync-alt"></i> Sync</button>
+{% endblock %}
+
+{% block columns %}
+  <th class="d-none">Local</th>
+  <th style="width: 35%;">Mesa</th>
+  <th style="width: 65%;" class="text-right">Cantidad de Votos</th>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block box_footer %}
+
+{% endblock %}
+
+{% block box_footer_after %}
+  <table class="table table-bordered table-striped mt-0" id="tablaTotalGeneral" width="100%">
+    <tfoot>
+      <tr>
+        <td class="text-right" style="width: 35%;">
+          <b>TOTAL GENERAL</b>
+        </td>
+        <td id="totalGeneral" class="text-right" style="width: 65%;">
+          <b>0</b>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+{% endblock %}
+
+{% block javascript_list %}
+  <script>
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString("es-PY");
+    }
+
+    function normalizeRows(rows) {
+      if (!Array.isArray(rows)) {
+        return [];
+      }
+      return rows.map(function (mesa) {
+        return {
+          local: mesa.local_votacion || '',
+          mesa: mesa.numero_mesa || '',
+          votos: Number(mesa.pasoxmv || 0) || 0
+        };
+      });
+    }
+
+    $(function () {
+      const table = $('#data').DataTable({
+        ajax: {
+          url: window.location.pathname,
+          type: 'POST',
+          data: function () {
+            return {
+              action: 'sync_data',
+              csrfmiddlewaretoken: '{{ csrf_token }}'
+            };
+          },
+          dataSrc: function (json) {
+            return normalizeRows(json.data);
+          }
+        },
+        responsive: true,
+        autoWidth: false,
+        destroy: true,
+        deferRender: true,
+        serverSide: false,
+        order: [[0, 'asc'], [1, 'asc']],
+        searching: true,
+        paging: true,
+        info: true,
+        columns: [
+          { data: 'local', visible: false, searchable: true },
+          { data: 'mesa', className: 'text-center' },
+          {
+            data: 'votos',
+            className: 'text-right',
+            render: function (data) {
+              return formatNumber(data);
+            }
+          }
+        ],
+        rowGroup: {
+          dataSrc: 'local',
+          startRender: function (rows, group) {
+            return $('<tr class="dtrg-group dtrg-start"><td colspan="2">' + group + '</td></tr>');
+          },
+          endRender: function (rows, group) {
+            const subtotal = rows
+              .data()
+              .pluck('votos')
+              .reduce(function (a, b) {
+                return Number(a || 0) + Number(b || 0);
+              }, 0);
+
+            return $(
+              '<tr class="fila-subtotal-local">' +
+                {% comment %} '<td>TOTAL ' + group + '</td>' + {% endcomment %}
+                '<td>TOTAL </td>' +
+                
+                '<td class="text-right">' + formatNumber(subtotal) + '</td>' +
+              '</tr>'
+            );
+          }
+        },
+        drawCallback: function () {
+          const api = this.api();
+          const total = api
+            .column(2, { search: 'applied' })
+            .data()
+            .reduce(function (a, b) {
+              return Number(a || 0) + Number(b || 0);
+            }, 0);
+
+          $('#totalGeneral').html('<b>' + formatNumber(total) + '</b>');
+        },
+        language: {
+          search: 'Buscar:',
+          lengthMenu: 'Mostrar _MENU_ registros',
+          info: 'Mostrando _START_ a _END_ de _TOTAL_',
+          infoEmpty: 'Sin registros',
+          paginate: {
+            first: 'Primero',
+            last: 'Último',
+            next: 'Siguiente',
+            previous: 'Anterior'
+          },
+          zeroRecords: 'No se encontraron registros'
+        }
+      });
+
+      function setSyncingState(isSyncing) {
+        const $btn = $('#btnSync');
+        if (isSyncing) {
+          $btn
+            .prop('disabled', true)
+            .addClass('syncing')
+            .html('<i class="fas fa-sync-alt fa-spin"></i> Sync...');
+        } else {
+          $btn
+            .prop('disabled', false)
+            .removeClass('syncing')
+            .html('<i class="fas fa-sync-alt"></i> Sync');
+        }
+      }
+
+      table.on('preXhr.dt', function () {
+        setSyncingState(true);
+      });
+
+      table.on('xhr.dt', function (e, settings, json) {
+        setSyncingState(false);
+        const total = (json && Number(json.total_votos)) || 0;
+        if (json && Object.prototype.hasOwnProperty.call(json, 'total_votos')) {
+          $('#totalGeneral').html('<b>' + formatNumber(total) + '</b>');
+        }
+      });
+
+      table.on('error.dt', function () {
+        setSyncingState(false);
+      });
+
+      $('#btnSync').on('click', function () {
+        table.ajax.reload(null, false);
+      });
+
+      table.ajax.reload(null, false);
+    });
+  </script>
+{% endblock %}

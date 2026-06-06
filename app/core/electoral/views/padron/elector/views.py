@@ -5,7 +5,7 @@ from datetime import date, datetime
 
 # 2. Django imports
 from django.contrib.auth.decorators import permission_required
-from django.db.models import IntegerField, Q
+from django.db.models import CharField, IntegerField, Q
 from django.db.models.functions import Cast
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render
@@ -834,6 +834,84 @@ class RegistroVotoMovilView(FormView):
     def post(self, request, *args, **kwargs):
         action = request.POST.get("action")
 
+        if action == "search_pasoxmv":
+            try:
+                mesa = request.POST.get("mesa", "")
+                local_votacion = request.POST.get("local_votacion", "")
+                start = int(request.POST.get("start", 0))
+                length = int(request.POST.get("length", 10))
+                draw = int(request.POST.get("draw", 1))
+                search_value = request.POST.get("search[value]", "").strip()
+
+                base_qs = Elector.objects.filter(
+                    distrito=request.user.distrito,
+                    pasoxmv="S",
+                )
+
+                if local_votacion:
+                    base_qs = base_qs.filter(local_votacion_id=local_votacion)
+                if mesa:
+                    base_qs = base_qs.filter(mesa=mesa)
+
+                filtered_qs = base_qs
+                if search_value:
+                    filtered_qs = filtered_qs.annotate(
+                        mesa_search=Cast("mesa", output_field=CharField()),
+                        orden_search=Cast("orden", output_field=CharField()),
+                        ci_search=Cast("ci", output_field=CharField()),
+                    )
+
+                    search_filter = (
+                        Q(mesa_search__icontains=search_value)
+                        | Q(orden_search__icontains=search_value)
+                        | Q(ci_search__icontains=search_value)
+                        | Q(nombre__icontains=search_value)
+                        | Q(apellido__icontains=search_value)
+                    )
+
+                    parts = [
+                        part for part in search_value.replace(",", " ").split() if part
+                    ]
+                    if len(parts) >= 2:
+                        p1 = parts[0]
+                        p2 = " ".join(parts[1:])
+                        search_filter |= Q(apellido__icontains=p1, nombre__icontains=p2)
+                        search_filter |= Q(nombre__icontains=p1, apellido__icontains=p2)
+
+                    filtered_qs = filtered_qs.filter(search_filter)
+
+                records_total = base_qs.count()
+                records_filtered = filtered_qs.count()
+
+                page_qs = filtered_qs.order_by(
+                    "mesa", Cast("orden", IntegerField()), "id"
+                )[start : start + length]
+
+                data = []
+                for elector in page_qs:
+                    item = elector.toJSON()
+                    item["fullname"] = f"{item['apellido']}, {item['nombre']}"
+                    data.append(item)
+
+                return JsonResponse(
+                    {
+                        "draw": draw,
+                        "recordsTotal": records_total,
+                        "recordsFiltered": records_filtered,
+                        "data": data,
+                    }
+                )
+            except Exception as e:
+                return JsonResponse(
+                    {
+                        "draw": int(request.POST.get("draw", 1)),
+                        "recordsTotal": 0,
+                        "recordsFiltered": 0,
+                        "data": [],
+                        "error": str(e),
+                    }
+                )
+
         if action == "get_mesa_stats":
             local_id = request.POST.get("local_votacion")
             mesa_num = request.POST.get("mesa")
@@ -882,8 +960,36 @@ class RegistroVotoMovilView(FormView):
             except Exception as e:
                 return JsonResponse({"success": False, "error": str(e)})
 
-        # Conservamos la acción anterior si se llega a requerir
-        return self.render_to_response(self.get_context_data())
+        if action == "delete_pasoxmv":
+            elector_id = request.POST.get("id")
+            try:
+                if not elector_id:
+                    return JsonResponse(
+                        {"success": False, "error": "ID de registro requerido."},
+                        status=400,
+                    )
+
+                updated = Elector.objects.filter(
+                    id=elector_id,
+                    distrito=request.user.distrito,
+                ).update(pasoxmv="N")
+
+                if not updated:
+                    return JsonResponse(
+                        {
+                            "success": False,
+                            "error": "Registro no encontrado o sin permisos.",
+                        },
+                        status=404,
+                    )
+
+                return JsonResponse({"success": True})
+            except Exception as e:
+                return JsonResponse({"success": False, "error": str(e)}, status=500)
+
+        return JsonResponse(
+            {"success": False, "error": "Acción no válida."}, status=400
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

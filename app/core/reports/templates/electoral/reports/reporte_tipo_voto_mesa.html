@@ -1,0 +1,503 @@
+{% extends 'list.html' %}
+{% load static %}
+
+{% block head_list %}
+  <link rel="stylesheet" href="{% static 'lib/datatables-1.10.20/plugins/rowgroup-1.1.2/css/rowGroup.dataTables.min.css' %}" />
+  <script src="{% static 'lib/datatables-1.10.20/plugins/rowgroup-1.1.2/js/dataTables.rowGroup.min.js' %}"></script>
+  <style>
+    /* Encabezado de grupo por Local */
+    tr.dtrg-group td {
+      font-weight: 700;
+      background: #e9ecef !important;
+      font-size: 0.92rem;
+      letter-spacing: 0.02em;
+    }
+    /* Fila de subtotal por local */
+    tr.fila-subtotal-local td {
+      font-weight: 700;
+      background: #f8f9fa !important;
+      border-top: 1px solid #dee2e6;
+    }
+    /* Fila de total general */
+    tr.fila-total-general td {
+      font-weight: 700;
+      background: #e2e8f0 !important;
+      border-top: 2px solid #adb5bd;
+    }
+    
+    tr.fila-resumen-extra td {
+      font-weight: 600;
+      background: #f1f5f9 !important;
+      border-top: 1px solid #d8dee6;
+    }
+    
+    tr.fila-resumen-extra.fila-destacada td {
+      font-weight: 700;
+      background: #e8f2e8 !important;
+    }
+    
+    tr.fila-objetivo td {
+      font-weight: 700;
+      background: #eef6ff !important;
+      border-top: 2px solid #7da7d9;
+    }
+    
+    .local-filter-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 8px;
+    }
+    
+    .local-filter-wrap label {
+      margin: 0;
+      font-weight: 600;
+      color: #495057;
+      white-space: nowrap;
+    }
+    
+    .local-filter-wrap select {
+      min-width: 220px;
+    }
+    
+    .target-filter-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 8px;
+    }
+    
+    .target-filter-wrap label {
+      margin: 0;
+      font-weight: 600;
+      color: #495057;
+      white-space: nowrap;
+    }
+    
+    .target-filter-wrap input {
+      width: 110px;
+    }
+    
+    @media (max-width: 767.98px) {
+      .local-filter-wrap {
+        width: 100%;
+        margin: 8px 0 0;
+      }
+    
+      .local-filter-wrap select {
+        width: 100%;
+      }
+    
+      .target-filter-wrap {
+        width: 100%;
+        margin: 8px 0 0;
+      }
+    
+      .target-filter-wrap input {
+        width: 100%;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block box_header_buttons %}
+  <form method="POST" action="" id="form-pdf-weasy" class="d-inline">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="generate_pdf_weasy" />
+    <button type="submit" class="btn btn-danger btn-flat"><i class="fas fa-file-pdf"></i> PDF</button>
+  </form>
+{% endblock %}
+
+{% block box_header %}
+
+{% endblock %}
+
+{# thead: local oculto + mesa + tipo_1 + total_otros + diferencia #}
+{% block columns %}
+  <th class="d-none">Local</th>
+  <th>Mesa</th>
+  {% for tipo in tipos_voto %}
+    {% if tipo.id == 1 %}
+      <th class="text-right">{{ tipo.cod }} — {{ tipo.denominacion }}</th>
+    {% endif %}
+  {% endfor %}
+  <th class="text-right">Otros tipos</th>
+  <th class="text-right">Diferencia</th>
+{% endblock %}
+
+{% block rows %}
+
+{% endblock %}
+
+{% block javascript_list %}
+  <script>
+    /* ── datos del contexto ──────────────────────────────────── */
+    const tiposVoto = JSON.parse('{{ tipos_voto_json|escapejs }}')
+    const rowsData = JSON.parse('{{ rows_data_json|escapejs }}')
+    
+    /* ── helpers ─────────────────────────────────────────────── */
+    function fmt(v) {
+      return Number(v || 0).toLocaleString('es-PY')
+    }
+    
+    function difHtml(val) {
+      const n = Number(val || 0)
+      const c = n > 0 ? '#1a7a4a' : n < 0 ? '#c0392b' : '#555'
+      return '<span style="color:' + c + ';font-weight:700">' + fmt(n) + '</span>'
+    }
+    
+    function pct(v) {
+      return Number(v || 0).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%'
+    }
+    
+    function numberValue(v) {
+      const n = Number(v)
+      return Number.isFinite(n) ? n : 0
+    }
+    
+    function sumCol(api, colIdx, searchApplied) {
+      const scope = searchApplied ? { search: 'applied' } : {}
+      return api
+        .column(colIdx, scope)
+        .data()
+        .reduce(function (a, b) {
+          return Number(a || 0) + Number(b || 0)
+        }, 0)
+    }
+    
+    function getCookie(name) {
+      const value = `; ${document.cookie}`
+      const parts = value.split(`; ${name}=`)
+      if (parts.length === 2) {
+        return parts.pop().split(';').shift()
+      }
+      return ''
+    }
+    
+    function submitExport(actionName, payload) {
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = window.location.pathname
+      form.style.display = 'none'
+    
+      const actionInput = document.createElement('input')
+      actionInput.type = 'hidden'
+      actionInput.name = 'action'
+      actionInput.value = actionName
+      form.appendChild(actionInput)
+    
+      const csrfInput = document.createElement('input')
+      csrfInput.type = 'hidden'
+      csrfInput.name = 'csrfmiddlewaretoken'
+      csrfInput.value = getCookie('csrftoken')
+      form.appendChild(csrfInput)
+    
+      if (payload !== undefined && payload !== null) {
+        const payloadInput = document.createElement('input')
+        payloadInput.type = 'hidden'
+        payloadInput.name = 'datatable_payload'
+        payloadInput.value = JSON.stringify(payload)
+        form.appendChild(payloadInput)
+      }
+    
+      document.body.appendChild(form)
+      form.submit()
+    }
+    
+    function buildExcelPayload(api) {
+      const orderedRows = api.rows({ search: 'applied', order: 'applied' }).data().toArray()
+      const groupsMap = {}
+      const groupsOrder = []
+    
+      orderedRows.forEach(function (row) {
+        const localName = row.local || 'SIN LOCAL'
+        if (!groupsMap[localName]) {
+          groupsMap[localName] = {
+            local: localName,
+            rows: [],
+            subtotal_tipo1: 0,
+            subtotal_otros: 0,
+            subtotal_diferencia: 0
+          }
+          groupsOrder.push(localName)
+        }
+    
+        const tipo1 = Number(row.tipo_1 || 0)
+        const otros = Number(row.total_otros || 0)
+        const diferencia = Number(row.diferencia || 0)
+    
+        groupsMap[localName].rows.push({
+          mesa: row.mesa || '',
+          tipo_1: tipo1,
+          total_otros: otros,
+          diferencia: diferencia
+        })
+    
+        groupsMap[localName].subtotal_tipo1 += tipo1
+        groupsMap[localName].subtotal_otros += otros
+        groupsMap[localName].subtotal_diferencia += diferencia
+      })
+    
+      const groups = groupsOrder.map(function (localName) {
+        return groupsMap[localName]
+      })
+    
+      const headers = {
+        mesa: $('#data thead th').eq(1).text().trim() || 'Mesa',
+        tipo_1: $('#data thead th').eq(2).text().trim() || 'Tipo 1',
+        total_otros: $('#data thead th').eq(3).text().trim() || 'Otros tipos',
+        diferencia: $('#data thead th').eq(4).text().trim() || 'Diferencia'
+      }
+    
+      const totals = groups.reduce(
+        function (acc, group) {
+          acc.tipo_1 += group.subtotal_tipo1
+          acc.total_otros += group.subtotal_otros
+          acc.diferencia += group.subtotal_diferencia
+          return acc
+        },
+        { tipo_1: 0, total_otros: 0, diferencia: 0 }
+      )
+    
+      return {
+        title: 'Estadistica de Votos por Tipo',
+        district: '{{ distrito|escapejs }}',
+        headers: headers,
+        groups: groups,
+        totals: totals
+      }
+    }
+    
+    function escapeRegex(text) {
+      return String(text || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    }
+    
+    function buildLocalFilter(tableApi) {
+      const uniqueLocals = tableApi
+        .column(0)
+        .data()
+        .toArray()
+        .map(function (v) {
+          return (v || 'SIN LOCAL').toString()
+        })
+        .filter(function (value, index, arr) {
+          return arr.indexOf(value) === index
+        })
+        .sort(function (a, b) {
+          return a.localeCompare(b, 'es')
+        })
+    
+      const $container = $('<div class="local-filter-wrap"></div>')
+      const $label = $('<label for="filter-local-votacion">Local:</label>')
+      const $select = $('<select id="filter-local-votacion" class="form-control form-control-sm"></select>')
+    
+      $select.append('<option value="">Todos</option>')
+      uniqueLocals.forEach(function (localName) {
+        $select.append($('<option></option>').val(localName).text(localName))
+      })
+    
+      $select.on('change', function () {
+        const selected = $(this).val()
+        if (!selected) {
+          tableApi.column(0).search('', true, false).draw()
+          return
+        }
+    
+        tableApi
+          .column(0)
+          .search('^' + escapeRegex(selected) + '$', true, false)
+          .draw()
+      })
+    
+      $container.append($label).append($select)
+      $('#data_filter').append($container)
+    }
+    
+    function buildTargetFilter(tableApi) {
+      const $container = $('<div class="target-filter-wrap"></div>')
+      const $label = $('<label for="target-percent">Objetivo %:</label>')
+      const $input = $('<input id="target-percent" type="number" min="0" max="100" step="0.1" class="form-control form-control-sm" value="90" />')
+    
+      $input.on('input change', function () {
+        tableApi.draw(false)
+      })
+    
+      $container.append($label).append($input)
+      $('#data_filter').append($container)
+    }
+    
+    function getObjectivePercent() {
+      const value = Number($('#target-percent').val())
+      return Number.isFinite(value) ? value : 90
+    }
+    
+    /* ── columnas fijas visibles (índices absolutos, col 0 = local oculto) ── */
+    // col 0: local (hidden)
+    // col 1: mesa
+    // col 2: tipo_1
+    // col 3: total_otros
+    // col 4: diferencia
+    const COL_TIPO1 = 2
+    const COL_OTROS = 3
+    const COL_DIF = 4
+    const TOTAL_COLS = 5 // 5 columnas en total (incluyendo local oculto)
+    
+    $(function () {
+      const table = $('#data').DataTable({
+        data: rowsData,
+        responsive: true,
+        autoWidth: false,
+        destroy: true,
+        deferRender: true,
+        serverSide: false,
+        order: [
+          [0, 'asc'],
+          [1, 'asc']
+        ],
+        searching: true,
+        paging: true,
+        info: true,
+    
+        /* ── Buttons: Excel + PDF ── */
+        dom: "<'row'<'col-sm-6'B><'col-sm-6'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+        buttons: [
+          {
+            text: '<i class="fas fa-file-excel"></i> Excel',
+            className: 'btn btn-success btn-sm btn-flat',
+            action: function (_e, dtApi) {
+              const payload = buildExcelPayload(dtApi)
+              submitExport('generate_excel_custom', payload)
+            }
+          },
+          {
+            text: '<i class="fas fa-file-pdf"></i> PDF',
+            className: 'btn btn-danger btn-sm btn-flat',
+            action: function () {
+              submitExport('generate_pdf_weasy')
+            }
+          }
+        ],
+    
+        /* ── columnas ── */
+        columns: [
+          { data: 'local', visible: false, searchable: true },
+          { data: 'mesa', className: 'text-center', responsivePriority: 1 },
+          {
+            data: 'tipo_1',
+            className: 'text-right',
+            responsivePriority: 2,
+            render: function (d) {
+              return fmt(d)
+            }
+          },
+          {
+            data: 'total_otros',
+            className: 'text-right',
+            responsivePriority: 3,
+            render: function (d) {
+              return fmt(d)
+            }
+          },
+          {
+            data: 'diferencia',
+            className: 'text-right',
+            responsivePriority: 4,
+            render: function (d) {
+              return difHtml(d)
+            }
+          }
+        ],
+    
+        /* ── rowGroup: encabezado y subtotal por Local ── */
+        rowGroup: {
+          dataSrc: 'local',
+    
+          startRender: function (rows, group) {
+            return $('<tr class="dtrg-group"><td colspan="' + TOTAL_COLS + '">' + '<i class="fas fa-map-marker-alt mr-1 text-secondary"></i> ' + group + '</td></tr>')
+          },
+    
+          endRender: function (rows, group) {
+            const sTipo1 = rows
+              .data()
+              .pluck('tipo_1')
+              .reduce(function (a, b) {
+                return Number(a || 0) + Number(b || 0)
+              }, 0)
+            const sOtros = rows
+              .data()
+              .pluck('total_otros')
+              .reduce(function (a, b) {
+                return Number(a || 0) + Number(b || 0)
+              }, 0)
+            const sDif = rows
+              .data()
+              .pluck('diferencia')
+              .reduce(function (a, b) {
+                return Number(a || 0) + Number(b || 0)
+              }, 0)
+            return $('<tr class="fila-subtotal-local">' + '<td colspan="2" class="text-right text-uppercase">Subtotal ' + group + '</td>' + '<td class="text-right">' + fmt(sTipo1) + '</td>' + '<td class="text-right">' + fmt(sOtros) + '</td>' + '<td class="text-right">' + difHtml(sDif) + '</td>' + '</tr>')
+          }
+        },
+    
+        /* ── total general en drawCallback ── */
+        drawCallback: function () {
+          const api = this.api()
+    
+          /* eliminar filas de resumen previas para evitar duplicados */
+          $('#data tbody tr.fila-total-general, #data tbody tr.fila-resumen-extra').remove()
+    
+          const gTipo1 = sumCol(api, COL_TIPO1, true)
+          const gOtros = sumCol(api, COL_OTROS, true)
+          const gDif = sumCol(api, COL_DIF, true)
+          const gTotal = gTipo1 + gOtros
+          const objetivo = Math.max(0, Math.min(100, getObjectivePercent()))
+          const objetivoValor = (gTipo1 * objetivo) / 100
+          const fuga = gTipo1 - objetivoValor
+          const ajustado = gOtros + fuga
+          const diferenciaObjetivo = objetivoValor - ajustado
+          const porcentajeEfectivos = gTotal > 0 ? (gTipo1 / gTotal) * 100 : 0
+    
+          const $totalRow = $('<tr class="fila-total-general">' + '<td colspan="2" class="text-right text-uppercase font-weight-bold">TOTAL GENERAL</td>' + '<td class="text-right font-weight-bold">' + fmt(gTipo1) + '</td>' + '<td class="text-right font-weight-bold">' + fmt(gOtros) + '</td>' + '<td class="text-right font-weight-bold">' + difHtml(gDif) + '</td>' + '</tr>')
+    
+          const $otrosRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">TOTAL GENERAL OTROS TIPOS</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(gOtros) + '</td>' + '<td class="text-right">-</td>' + '</tr>')
+    
+          const $positivosRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">TOTAL GENERAL VOTOS POSITIVOS</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '</tr>')
+    
+          const $porcentajeRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">PORCENTAJE DE VOTOS EFECTIVOS</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + fmt(gTotal) + '</td>' + '<td class="text-right">' + pct(porcentajeEfectivos) + '</td>' + '</tr>')
+    
+          const $margenRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">MARGEN DE ERROR (OBJETIVO ' + pct(objetivo) + ')</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + pct(objetivo) + '</td>' + '<td class="text-right">' + fmt(objetivoValor) + '</td>' + '</tr>')
+    
+          const $diferenciaRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">DIFERENCIA (MARGEN - POSITIVOS)</td>' + '<td class="text-right">' + fmt(objetivoValor) + '</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + difHtml(objetivoValor - gTipo1) + '</td>' + '</tr>')
+    
+          const $asignarRow = $('<tr class="fila-resumen-extra fila-destacada">' + '<td colspan="2" class="text-right text-uppercase">ASIGNAR DIFERENCIA A OTROS TIPOS</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(Math.max(0, ajustado)) + '</td>' + '<td class="text-right">' + (diferenciaObjetivo > 0 ? difHtml(diferenciaObjetivo) : '0') + '</td>' + '</tr>')
+    
+          const $objetivoRow = $('<tr class="fila-objetivo">' + '<td colspan="4" class="text-right text-uppercase">DIFERENCIA PORCENTAJE OBJETIVO</td>' + '<td class="text-right">' + difHtml(diferenciaObjetivo) + '</td>' + '</tr>')
+    
+          $('#data tbody').append($totalRow)
+          $('#data tbody').append($otrosRow)
+          $('#data tbody').append($positivosRow)
+          $('#data tbody').append($porcentajeRow)
+          $('#data tbody').append($margenRow)
+          $('#data tbody').append($diferenciaRow)
+          $('#data tbody').append($asignarRow)
+          $('#data tbody').append($objetivoRow)
+        },
+    
+        /* ── traducciones ── */
+        language: {
+          search: 'Buscar:',
+          lengthMenu: 'Mostrar _MENU_ registros',
+          info: 'Mostrando _START_ a _END_ de _TOTAL_',
+          infoEmpty: 'Sin registros',
+          paginate: { first: 'Primero', last: 'Último', next: 'Siguiente', previous: 'Anterior' },
+          zeroRecords: 'No se encontraron registros'
+        },
+    
+        initComplete: function () {
+          buildLocalFilter(this.api())
+          buildTargetFilter(this.api())
+        }
+      })
+    })
+  </script>
+{% endblock %}

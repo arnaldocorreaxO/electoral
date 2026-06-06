@@ -1,200 +1,278 @@
 var tblData;
+var tblData2;
 var input_term;
 var columns = [];
 
-function initTable() {
-    
-    tblData = $('#data').DataTable({
-        responsive: true,
-        autoWidth: false,
-        destroy: true,
-        deferRender: true,
-        order: [[0, 'asc']],
-        paging: false,
-        ordering: false,
-        searching: false,    
-        info:     false   ,
-    });
-    // Establece width para exportar en PDF pdfmake
-    $.each(tblData.settings()[0].aoColumns, function (key, value) {
-        columns.push(value.sWidthOrig);
-    });
+function escapeAttr(value) {
+  return String(value === null || value === undefined ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
 
-    $('#data tbody tr').each(function (idx) {
-        // $(this).children("td:eq(0)").html(idx + 1);
-        // console.log(idx+1);
-    });
+function initTable() {
+  tblData = $("#data").DataTable({
+    responsive: true,
+    autoWidth: false,
+    destroy: true,
+    deferRender: true,
+    order: [[0, "asc"]],
+    paging: false,
+    ordering: false,
+    searching: false,
+    info: false,
+  });
+  // Establece width para exportar en PDF pdfmake
+  $.each(tblData.settings()[0].aoColumns, function (key, value) {
+    columns.push(value.sWidthOrig);
+  });
+
+  $("#data tbody tr").each(function (idx) {
+    // $(this).children("td:eq(0)").html(idx + 1);
+    // console.log(idx+1);
+  });
 }
 
 function getData(all) {
-    var parameters = {
-        'action': 'search',
-        'term' : input_term.val(),
-        'local_votacion' : select_local_votacion.val(),
-        'mesa' : select_mesa.val(),
-    };
+  var parameters = {
+    action: "search",
+    term: input_term.val(),
+    local_votacion: select_local_votacion.val(),
+    mesa: select_mesa.val(),
+  };
 
-
-    tblData = $('#data').DataTable({
-        
-        responsive: true,
-        autoWidth: false,
-        destroy: true,
-        deferRender: true,
-        ajax: {
-            url: pathname,
-            type: 'POST',
-            data: parameters,
-            dataSrc: ""
+  tblData = $("#data").DataTable({
+    responsive: true,
+    autoWidth: false,
+    destroy: true,
+    deferRender: true,
+    ajax: {
+      url: pathname,
+      type: "POST",
+      data: parameters,
+      dataSrc: "",
+    },
+    order: [[0, "asc"]],
+    paging: false,
+    ordering: false,
+    searching: false,
+    info: false,
+    columns: [
+      // {data: "mesa"},
+      // {data: "orden"},
+      { data: "ci" },
+      { data: "fullname" },
+      { data: "id" },
+    ],
+    columnDefs: [
+      {
+        targets: [-1],
+        class: "text-center",
+        render: function (data, type, row) {
+          var buttons = "";
+          // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
+          buttons += "<b>" + row.mesa + "</b> - " + "<b>" + row.orden + "</b>";
+          buttons +=
+            '<br><a href="/electoral/carga_dia_d/update/' +
+            row.id +
+            '/edit_mv/S/0/" data-toggle="tooltip" title="Editar registro" class="btn btn-dark btn-lg btn-flat"><i class="fas fa-plus"></i></a>';
+          // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
+          return buttons;
         },
-        order: [[0, 'asc']],
-        paging: false,
-        ordering: false,
-        searching: false,    
-        info:     false   ,
-        columns: [
-            // {data: "mesa"},
-            // {data: "orden"},
-            {data: "ci"},
-            {data: "fullname"},          
-            {data: "id"},
-        ],
-        columnDefs: [
-       
-            {
-                targets: [-1],
-                class: 'text-center',
-                render: function (data, type, row) {
-                    var buttons = '';
-                    // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
-                    buttons += '<b>' + row.mesa +'</b> - ' + '<b>' + row.orden +'</b>';
-                    buttons += '<br><a href="/electoral/carga_dia_d/update/' + row.id + '/edit_mv/S/0/" data-toggle="tooltip" title="Editar registro" class="btn btn-dark btn-lg btn-flat"><i class="fas fa-plus"></i></a>';
-                    // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
-                    return buttons;
-                }
-            },
-        ],
-        rowCallback: function (row, data, index) {
-
-        },
-        initComplete: function (settings, json) {
-            $('[data-toggle="tooltip"]').tooltip();
-        }
-    });
+      },
+    ],
+    rowCallback: function (row, data, index) {},
+    initComplete: function (settings, json) {
+      $('[data-toggle="tooltip"]').tooltip();
+    },
+  });
 }
 
-
-
 function getData2(all) {
-      
-    var local_votacion = localStorage.getItem("local_local_votacion");
-    var mesa = localStorage.getItem("local_mesa");
+  var local_votacion = localStorage.getItem("local_local_votacion");
+  var mesa = localStorage.getItem("local_mesa");
 
-    $('select[name="local_votacion"]').val(local_votacion);
-    $('select[name="mesa"]').val(mesa);
-    
-    var parameters = {
-        'action': 'search_pasoxmv',
-        'local_votacion': local_votacion,
-        'mesa': mesa,
+  $('select[name="local_votacion"]').val(local_votacion);
+  $('select[name="mesa"]').val(mesa);
 
-    };
+  var parameters = {
+    action: "search_pasoxmv",
+    local_votacion: local_votacion,
+    mesa: mesa,
+  };
 
-    if (all) {
-        parameters['local_votacion'] = '';        
-        parameters['mesa'] = '';        
-    }
+  if (all) {
+    parameters["local_votacion"] = "";
+    parameters["mesa"] = "";
+  }
 
-
-    tblData = $('#data2').DataTable({
-        
-        responsive: true,
-        autoWidth: false,
-        destroy: true,
-        deferRender: true,
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: pathname,
-            type: 'POST',
-            data: parameters,
-            // dataSrc: ""
+  tblData2 = $("#data2").DataTable({
+    responsive: true,
+    autoWidth: false,
+    destroy: true,
+    deferRender: true,
+    processing: true,
+    serverSide: true,
+    ajax: {
+      url: pathname,
+      type: "POST",
+      data: parameters,
+      // dataSrc: ""
+    },
+    order: [
+      [0, "asc"],
+      [1, "asc"],
+    ],
+    paging: true,
+    ordering: true,
+    searching: true,
+    columns: [
+      { data: "mesa" },
+      { data: "orden" },
+      { data: "ci" },
+      { data: "fullname" },
+      { data: "id" },
+    ],
+    columnDefs: [
+      {
+        targets: [-1],
+        class: "text-center",
+        render: function (data, type, row) {
+          var buttons = "";
+          // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
+          buttons +=
+            '<button type="button" ' +
+            'data-toggle="tooltip" ' +
+            'title="Deshacer registro" ' +
+            'class="btn btn-danger btn-flat btn-open-delete-data2" ' +
+            'data-id="' +
+            escapeAttr(row.id) +
+            '" ' +
+            'data-fullname="' +
+            escapeAttr(row.fullname) +
+            '" ' +
+            'data-ci="' +
+            escapeAttr(row.ci) +
+            '" ' +
+            'data-mesa="' +
+            escapeAttr(row.mesa) +
+            '" ' +
+            'data-orden="' +
+            escapeAttr(row.orden) +
+            '">' +
+            '<i class="fas fa-trash"></i></button>';
+          // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
+          return buttons;
         },
-        order: [[0, 'asc'],[1, 'asc']],
-        paging: true,
-        ordering: true,
-        searching: true,       
-        columns: [
-            {data: "mesa"},
-            {data: "orden"},
-            {data: "ci"},
-            {data: "fullname"},          
-            {data: "id"},
-        ],
-        columnDefs: [
-       
-            {
-                targets: [-1],
-                class: 'text-center',
-                render: function (data, type, row) {
-                    var buttons = '';
-                    // buttons += '<a class="btn btn-info btn-xs btn-flat" data-toggle="tooltip" title="Detalles" rel="detail"><i class="fas fa-folder-open"></i></a> ';
-                    buttons += '<a href="/electoral/carga_dia_d/update/' + row.id + '/edit_mv/N/0/" data-toggle="tooltip" title="Deshacer registro" class="btn btn-danger btn-flat"><i class="fas fa-trash"></i></a>';
-                    // buttons += '<a href="/electoral/elector/delete/' + row.id + '/" rel="delete" data-toggle="tooltip" title="Eliminar registro" class="btn btn-danger btn-xs btn-flat"><i class="fas fa-trash"></i></a>';
-                    return buttons;
-                }
-            },
-        ],
-        rowCallback: function (row, data, index) {
-
-        },
-        initComplete: function (settings, json) {
-            $('[data-toggle="tooltip"]').tooltip();
-        }
-    });
+      },
+    ],
+    rowCallback: function (row, data, index) {},
+    initComplete: function (settings, json) {
+      $('[data-toggle="tooltip"]').tooltip();
+    },
+  });
 }
 
 $(function () {
+  current_date = new moment().format("YYYY-MM-DD");
+  input_term = $('input[name="term"]');
+  select_local_votacion = $('select[name="local_votacion"]');
+  select_mesa = $('select[name="mesa"]');
 
-    current_date = new moment().format('YYYY-MM-DD');
-    input_term = $('input[name="term"]');
-    select_local_votacion = $('select[name="local_votacion"]');
-    select_mesa = $('select[name="mesa"]');
+  // BTN DEFAULT
+  input_term.keypress(function (e) {
+    if (e.keyCode == 13) $(".btnSearch").click();
+  });
 
-    
-    // BTN DEFAULT 
-    input_term.keypress(function(e){
-      if(e.keyCode==13)
-      $('.btnSearch').click();
-    });
+  $(".drp-buttons").hide();
 
+  initTable();
+  getData2(false);
 
-    $('.drp-buttons').hide();
+  $(".btnSearch").on("click", function () {
+    getData(false);
+  });
 
-    initTable();
+  $(".btnSearchMesa").on("click", function () {
     getData2(false);
+  });
 
-    $('.btnSearch').on('click', function () {
-        getData(false);
-    });
+  $(".btnSearchAllMesa").on("click", function () {
+    getData2(true);
+  });
 
-    $('.btnSearchMesa').on('click', function () {
-        getData2(false);
-    });
+  $('select[name="mesa"]').on("change", function () {
+    localStorage.setItem("local_mesa", $(this).val());
+    getData2(false);
+  });
+  $('select[name="local_votacion"]').on("change", function () {
+    localStorage.setItem("local_local_votacion", $(this).val());
+    getData2(false);
+  });
 
-    $('.btnSearchAllMesa').on('click', function () {
-        getData2(true);
-    });
+  $(document).on("click", ".btn-open-delete-data2", function () {
+    var $btn = $(this);
+    $("#mdl-del-elector").text($btn.attr("data-fullname") || "-");
+    $("#mdl-del-ci").text($btn.attr("data-ci") || "-");
+    $("#mdl-del-mesa").text($btn.attr("data-mesa") || "-");
+    $("#mdl-del-orden").text($btn.attr("data-orden") || "-");
+    $("#btnConfirmarEliminacionData2").attr(
+      "data-id",
+      $btn.attr("data-id") || "",
+    );
+    $("#modal-confirmar-eliminacion-data2").modal("show");
+  });
 
-    $('select[name="mesa"]').on('change', function () {  
-        localStorage.setItem("local_mesa", $(this).val());;        
-        getData2(false);
-        
+  $("#btnConfirmarEliminacionData2").on("click", function () {
+    var electorId = $(this).attr("data-id");
+    if (!electorId) {
+      return;
+    }
+    var $confirmBtn = $(this);
+    $confirmBtn.prop("disabled", true);
+
+    $.ajax({
+      url: pathname,
+      type: "POST",
+      dataType: "json",
+      data: {
+        action: "delete_pasoxmv",
+        id: electorId,
+        csrfmiddlewaretoken: $("input[name='csrfmiddlewaretoken']").val(),
+      },
+      success: function (response) {
+        if (response && response.success) {
+          $("#modal-confirmar-eliminacion-data2").modal("hide");
+          if (tblData2 && $.fn.DataTable.isDataTable("#data2")) {
+            tblData2.ajax.reload(null, false);
+          }
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text:
+              (response && response.error) ||
+              "No se pudo eliminar el registro.",
+          });
+          $confirmBtn.prop("disabled", false);
+        }
+      },
+      error: function () {
+        Swal.fire({
+          icon: "error",
+          title: "Error de red",
+          text: "No se pudo completar la eliminación.",
+        });
+        $confirmBtn.prop("disabled", false);
+      },
     });
-    $('select[name="local_votacion"]').on('change', function () {        
-        localStorage.setItem("local_local_votacion", $(this).val());;          
-        getData2(false);
-        
-    });
-   
+  });
+
+  $("#modal-confirmar-eliminacion-data2").on("hidden.bs.modal", function () {
+    $("#btnConfirmarEliminacionData2")
+      .prop("disabled", false)
+      .attr("data-id", "");
+  });
 });
