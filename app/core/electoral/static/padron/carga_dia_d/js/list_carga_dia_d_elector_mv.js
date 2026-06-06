@@ -245,7 +245,9 @@ $(function () {
       success: function (response) {
         if (response && response.success) {
           $("#modal-confirmar-eliminacion-data2").modal("hide");
-          if (tblData2 && $.fn.DataTable.isDataTable("#data2")) {
+          if ($.fn.DataTable.isDataTable("#data2")) {
+            $("#data2").DataTable().ajax.reload(null, false);
+          } else if (tblData2 && tblData2.ajax) {
             tblData2.ajax.reload(null, false);
           }
         } else {
