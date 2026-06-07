@@ -356,6 +356,13 @@
         ],
         searching: true,
         paging: true,
+        pageLength: 10,
+        lengthMenu: [
+          [10, 25, 50, -1],
+          [10, 25, 50, 'Todos']
+        ],
+        scrollY: false,
+        scrollCollapse: false,
         info: true,
     
         /* ── Buttons: Excel + PDF ── */
@@ -435,7 +442,7 @@
               .reduce(function (a, b) {
                 return Number(a || 0) + Number(b || 0)
               }, 0)
-            return $('<tr class="fila-subtotal-local">' + '<td colspan="2" class="text-right text-uppercase">Subtotal ' + group + '</td>' + '<td class="text-right">' + fmt(sTipo1) + '</td>' + '<td class="text-right">' + fmt(sOtros) + '</td>' + '<td class="text-right">' + difHtml(sDif) + '</td>' + '</tr>')
+            return $('<tr class="fila-subtotal-local">' + '<td class="text-uppercase">Subtotal ' + group + '</td>' + '<td class="text-right">' + fmt(sTipo1) + '</td>' + '<td class="text-right">' + fmt(sOtros) + '</td>' + '<td class="text-right">' + difHtml(sDif) + '</td>' + '</tr>')
           }
         },
     
