@@ -42,6 +42,30 @@
       border-top: 2px solid #7da7d9;
     }
     
+    #resumen-objetivo-container .table th,
+    #resumen-objetivo-container .table td {
+      vertical-align: middle;
+    }
+    
+    #resumen-objetivo-container .col-favor {
+      background: #e8f5e9;
+    }
+    
+    #resumen-objetivo-container .col-contra {
+      background: #ffebee;
+    }
+    
+    #resumen-objetivo-container .favor-input {
+      max-width: 90px;
+      margin-left: auto;
+      text-align: right;
+    }
+    
+    #resumen-final-lineas .badge {
+      font-size: 0.85rem;
+      padding: 0.45rem 0.7rem;
+    }
+    
     .local-filter-wrap {
       display: inline-flex;
       align-items: center;
@@ -116,11 +140,8 @@
 {% block columns %}
   <th class="d-none">Local</th>
   <th>Mesa</th>
-  {% for tipo in tipos_voto %}
-    {% if tipo.id == 1 %}
-      <th class="text-right">{{ tipo.cod }} — {{ tipo.denominacion }}</th>
-    {% endif %}
-  {% endfor %}
+  <th class="text-right">Tipo Voto 1</th>
+  <th class="text-right">Tipo Voto 2</th>
   <th class="text-right">Otros tipos</th>
   <th class="text-right">Diferencia</th>
 {% endblock %}
@@ -216,6 +237,7 @@
             local: localName,
             rows: [],
             subtotal_tipo1: 0,
+            subtotal_tipo2: 0,
             subtotal_otros: 0,
             subtotal_diferencia: 0
           }
@@ -223,17 +245,20 @@
         }
     
         const tipo1 = Number(row.tipo_1 || 0)
-        const otros = Number(row.total_otros || 0)
-        const diferencia = Number(row.diferencia || 0)
+        const tipo2 = getTipoValue(row, 2)
+        const otros = getOtrosSin12(row)
+        const diferencia = getDiferenciaRow(row)
     
         groupsMap[localName].rows.push({
           mesa: row.mesa || '',
           tipo_1: tipo1,
+          tipo_2: tipo2,
           total_otros: otros,
           diferencia: diferencia
         })
     
         groupsMap[localName].subtotal_tipo1 += tipo1
+        groupsMap[localName].subtotal_tipo2 += tipo2
         groupsMap[localName].subtotal_otros += otros
         groupsMap[localName].subtotal_diferencia += diferencia
       })
@@ -245,18 +270,20 @@
       const headers = {
         mesa: $('#data thead th').eq(1).text().trim() || 'Mesa',
         tipo_1: $('#data thead th').eq(2).text().trim() || 'Tipo 1',
-        total_otros: $('#data thead th').eq(3).text().trim() || 'Otros tipos',
-        diferencia: $('#data thead th').eq(4).text().trim() || 'Diferencia'
+        tipo_2: $('#data thead th').eq(3).text().trim() || 'Tipo 2',
+        total_otros: $('#data thead th').eq(4).text().trim() || 'Otros tipos',
+        diferencia: $('#data thead th').eq(5).text().trim() || 'Diferencia'
       }
     
       const totals = groups.reduce(
         function (acc, group) {
           acc.tipo_1 += group.subtotal_tipo1
+          acc.tipo_2 += group.subtotal_tipo2
           acc.total_otros += group.subtotal_otros
           acc.diferencia += group.subtotal_diferencia
           return acc
         },
-        { tipo_1: 0, total_otros: 0, diferencia: 0 }
+        { tipo_1: 0, tipo_2: 0, total_otros: 0, diferencia: 0 }
       )
     
       return {
@@ -331,18 +358,206 @@
       return Number.isFinite(value) ? value : 90
     }
     
+    function getTipoValue(row, tipoId) {
+      return Number(row['tipo_' + tipoId] || 0)
+    }
+    
+    function getOtrosSin12(row) {
+      return Object.keys(row || {}).reduce(function (acc, key) {
+        if (!key.startsWith('tipo_')) {
+          return acc
+        }
+        if (key === 'tipo_1' || key === 'tipo_2') {
+          return acc
+        }
+        return acc + Number(row[key] || 0)
+      }, 0)
+    }
+    
+    function getDiferenciaRow(row) {
+      const tipo1 = getTipoValue(row, 1)
+      const tipo2 = getTipoValue(row, 2)
+      const otros = getOtrosSin12(row)
+      return tipo1 - (tipo2 + otros)
+    }
+    
+    function ensureResumenObjetivoContainer() {
+      if ($('#resumen-objetivo-container').length) {
+        return
+      }
+    
+      const resumenHtml = '<div id="resumen-objetivo-container" class="card mt-3">' + '<div class="card-header py-2"><strong>Resumen</strong></div>' + '<div class="card-body p-2">' + '<div class="table-responsive">' + '<table class="table table-bordered table-sm mb-0">' + '<thead>' + '<tr>' + '<th>Concepto</th>' + '<th class="text-right">TOTAL</th>' + '<th class="text-right text-success col-favor">FAVOR (%)</th>' + '<th class="text-right text-danger col-contra">CONTRA (%)</th>' + '<th class="text-right text-success col-favor">+</th>' + '<th class="text-right text-danger col-contra">-</th>' + '</tr>' + '</thead>' + '<tbody id="resumen-objetivo-body"></tbody>' + '</table>' + '</div>' + '<div id="resumen-final-lineas" class="d-flex flex-wrap mt-2" style="gap: 8px;"></div>' + '</div>' + '</div>'
+    
+      $('#data_wrapper').after(resumenHtml)
+    }
+    
+    const resumenFavorState = {
+      v1: 90,
+      v2: 90,
+      otros: 90
+    }
+    
+    const RESUMEN_FAVOR_STORAGE_KEY = 'reporte_tipo_voto_mesa_favor_state'
+    
+    let resumenTotalsState = {
+      total_v1: 0,
+      total_v2: 0,
+      total_otros: 0
+    }
+    
+    function loadResumenFavorState() {
+      try {
+        const raw = localStorage.getItem(RESUMEN_FAVOR_STORAGE_KEY)
+        if (!raw) {
+          return
+        }
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === 'object') {
+          resumenFavorState.v1 = sanitizePct(parsed.v1)
+          resumenFavorState.v2 = sanitizePct(parsed.v2)
+          resumenFavorState.otros = sanitizePct(parsed.otros)
+        }
+      } catch (_err) {
+        // Ignorar estado corrupto y continuar con valores por defecto.
+      }
+    }
+    
+    function saveResumenFavorState() {
+      try {
+        localStorage.setItem(RESUMEN_FAVOR_STORAGE_KEY, JSON.stringify(resumenFavorState))
+      } catch (_err) {
+        // Si localStorage no esta disponible, no interrumpir la UX.
+      }
+    }
+    
+    function sanitizePct(v) {
+      const normalized = String(v === null || v === undefined ? '' : v)
+        .replace(',', '.')
+        .trim()
+      const n = Number(normalized)
+      if (!Number.isFinite(n)) {
+        return 0
+      }
+      return Math.max(0, Math.min(100, n))
+    }
+    
+    function pctInput(v) {
+      return sanitizePct(v).toFixed(2)
+    }
+    
+    function pct2(v) {
+      return Number(v || 0).toLocaleString('es-PY', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })
+    }
+    
+    function recalculateResumenObjetivo() {
+      const total_v1 = Number(resumenTotalsState.total_v1 || 0)
+      const total_v2 = Number(resumenTotalsState.total_v2 || 0)
+      const total_otros = Number(resumenTotalsState.total_otros || 0)
+    
+      const favor_v1 = sanitizePct(resumenFavorState.v1)
+      const favor_v2 = sanitizePct(resumenFavorState.v2)
+      const favor_otros = sanitizePct(resumenFavorState.otros)
+    
+      const contra_v1 = 100 - favor_v1
+      const contra_v2 = 100 - favor_v2
+      const contra_otros = 100 - favor_otros
+    
+      const plus_v1 = Math.round(total_v1 * (favor_v1 / 100))
+      const minus_v1 = Math.round(total_v1 - plus_v1)
+      const plus_v2 = Math.round(total_v2 * (favor_v2 / 100))
+      const minus_v2 = Math.round(total_v2 - plus_v2)
+      const plus_otros = Math.round(total_otros * (favor_otros / 100))
+      const minus_otros = Math.round(total_otros - plus_otros)
+    
+      const total_a_favor = plus_v1 + plus_v2 + plus_otros
+      const total_en_contra = minus_v1 + minus_v2 + minus_otros
+      const diferencia_final = total_a_favor - total_en_contra
+    
+      const tableRows = [
+        {
+          key: 'v1',
+          label: 'TIPO VOTO 1',
+          total: total_v1,
+          favorPct: favor_v1,
+          contraPct: contra_v1,
+          plus: plus_v1,
+          minus: minus_v1
+        },
+        {
+          key: 'v2',
+          label: 'TIPO VOTO 2',
+          total: total_v2,
+          favorPct: favor_v2,
+          contraPct: contra_v2,
+          plus: plus_v2,
+          minus: minus_v2
+        },
+        {
+          key: 'otros',
+          label: 'OTROS VOTOS',
+          total: total_otros,
+          favorPct: favor_otros,
+          contraPct: contra_otros,
+          plus: plus_otros,
+          minus: minus_otros
+        }
+      ]
+    
+      const $tbody = $('#resumen-objetivo-body')
+      $tbody.empty()
+    
+      tableRows.forEach(function (row) {
+        const $tr = $('<tr></tr>')
+        const $favorInput = $('<input type="number" class="form-control favor-input" min="0" max="100" step="0.1">').attr('data-key', row.key).val(pctInput(row.favorPct))
+    
+        const $favorCell = $('<td class="text-right col-favor"></td>').append($('<div class="input-group input-group-sm justify-content-end"></div>').append($favorInput).append('<div class="input-group-append"><span class="input-group-text">%</span></div>'))
+    
+        $tr
+          .append($('<td></td>').text(row.label))
+          .append($('<td class="text-right"></td>').text(fmt(row.total)))
+          .append($favorCell)
+          .append($('<td class="text-right col-contra"></td>').text(pct2(row.contraPct) + '%'))
+          .append($('<td class="text-right col-favor"></td>').text(fmt(row.plus)))
+          .append($('<td class="text-right col-contra"></td>').text(fmt(row.minus)))
+    
+        $tbody.append($tr)
+      })
+    
+      const finalHtml = '<span class="badge badge-success">TOTAL A FAVOR: ' + fmt(total_a_favor) + '</span>' + '<span class="badge badge-danger">TOTAL EN CONTRA: ' + fmt(total_en_contra) + '</span>' + '<span class="badge badge-dark">DIFERENCIA FINAL: ' + fmt(diferencia_final) + '</span>'
+    
+      $('#resumen-final-lineas').html(finalHtml)
+    }
+    
+    function renderResumenObjetivo(model) {
+      ensureResumenObjetivoContainer()
+      resumenTotalsState = {
+        total_v1: Number(model.total_v1 || 0),
+        total_v2: Number(model.total_v2 || 0),
+        total_otros: Number(model.total_otros || 0)
+      }
+    
+      recalculateResumenObjetivo()
+    }
+    
     /* ── columnas fijas visibles (índices absolutos, col 0 = local oculto) ── */
     // col 0: local (hidden)
     // col 1: mesa
     // col 2: tipo_1
-    // col 3: total_otros
-    // col 4: diferencia
+    // col 3: tipo_2
+    // col 4: total_otros (sin tipo_1 y tipo_2)
+    // col 5: diferencia
     const COL_TIPO1 = 2
-    const COL_OTROS = 3
-    const COL_DIF = 4
-    const TOTAL_COLS = 5 // 5 columnas en total (incluyendo local oculto)
+    const COL_TIPO2 = 3
+    const COL_OTROS = 4
+    const COL_DIF = 5
+    const TOTAL_COLS = 5 // 5 columnas visibles
     
     $(function () {
+      loadResumenFavorState()
+    
       const table = $('#data').DataTable({
         data: rowsData,
         responsive: true,
@@ -398,19 +613,27 @@
             }
           },
           {
-            data: 'total_otros',
+            data: null,
             className: 'text-right',
-            responsivePriority: 3,
-            render: function (d) {
-              return fmt(d)
+            responsivePriority: 5,
+            render: function (_d, _t, row) {
+              return fmt(getTipoValue(row, 2))
             }
           },
           {
-            data: 'diferencia',
+            data: null,
+            className: 'text-right',
+            responsivePriority: 3,
+            render: function (_d, _t, row) {
+              return fmt(getOtrosSin12(row))
+            }
+          },
+          {
+            data: null,
             className: 'text-right',
             responsivePriority: 4,
-            render: function (d) {
-              return difHtml(d)
+            render: function (_d, _t, row) {
+              return difHtml(getDiferenciaRow(row))
             }
           }
         ],
@@ -430,19 +653,25 @@
               .reduce(function (a, b) {
                 return Number(a || 0) + Number(b || 0)
               }, 0)
+            const sTipo2 = rows
+              .data()
+              .toArray()
+              .reduce(function (acc, row) {
+                return acc + getTipoValue(row, 2)
+              }, 0)
             const sOtros = rows
               .data()
-              .pluck('total_otros')
-              .reduce(function (a, b) {
-                return Number(a || 0) + Number(b || 0)
+              .toArray()
+              .reduce(function (acc, row) {
+                return acc + getOtrosSin12(row)
               }, 0)
             const sDif = rows
               .data()
-              .pluck('diferencia')
-              .reduce(function (a, b) {
-                return Number(a || 0) + Number(b || 0)
+              .toArray()
+              .reduce(function (acc, row) {
+                return acc + getDiferenciaRow(row)
               }, 0)
-            return $('<tr class="fila-subtotal-local">' + '<td class="text-uppercase">Subtotal ' + group + '</td>' + '<td class="text-right">' + fmt(sTipo1) + '</td>' + '<td class="text-right">' + fmt(sOtros) + '</td>' + '<td class="text-right">' + difHtml(sDif) + '</td>' + '</tr>')
+            return $('<tr class="fila-subtotal-local">' + '<td class="text-uppercase">Subtotal ' + group + '</td>' + '<td class="text-right">' + fmt(sTipo1) + '</td>' + '<td class="text-right">' + fmt(sTipo2) + '</td>' + '<td class="text-right">' + fmt(sOtros) + '</td>' + '<td class="text-right">' + difHtml(sDif) + '</td>' + '</tr>')
           }
         },
     
@@ -451,12 +680,22 @@
           const api = this.api()
     
           /* eliminar filas de resumen previas para evitar duplicados */
-          $('#data tbody tr.fila-total-general, #data tbody tr.fila-resumen-extra').remove()
+          $('#data tbody tr.fila-total-general, #data tbody tr.fila-resumen-extra, #data tbody tr.fila-objetivo').remove()
     
-          const gTipo1 = sumCol(api, COL_TIPO1, true)
-          const gOtros = sumCol(api, COL_OTROS, true)
-          const gDif = sumCol(api, COL_DIF, true)
-          const gTotal = gTipo1 + gOtros
+          const filteredRows = api.rows({ search: 'applied' }).data().toArray()
+          const gTipo1 = filteredRows.reduce(function (acc, row) {
+            return acc + getTipoValue(row, 1)
+          }, 0)
+          const gTipo2 = filteredRows.reduce(function (acc, row) {
+            return acc + getTipoValue(row, 2)
+          }, 0)
+          const gOtros = filteredRows.reduce(function (acc, row) {
+            return acc + getOtrosSin12(row)
+          }, 0)
+          const gDif = filteredRows.reduce(function (acc, row) {
+            return acc + getDiferenciaRow(row)
+          }, 0)
+          const gTotal = gTipo1 + gTipo2 + gOtros
           const objetivo = Math.max(0, Math.min(100, getObjectivePercent()))
           const objetivoValor = (gTipo1 * objetivo) / 100
           const fuga = gTipo1 - objetivoValor
@@ -464,21 +703,21 @@
           const diferenciaObjetivo = objetivoValor - ajustado
           const porcentajeEfectivos = gTotal > 0 ? (gTipo1 / gTotal) * 100 : 0
     
-          const $totalRow = $('<tr class="fila-total-general">' + '<td colspan="2" class="text-right text-uppercase font-weight-bold">TOTAL GENERAL</td>' + '<td class="text-right font-weight-bold">' + fmt(gTipo1) + '</td>' + '<td class="text-right font-weight-bold">' + fmt(gOtros) + '</td>' + '<td class="text-right font-weight-bold">' + difHtml(gDif) + '</td>' + '</tr>')
+          const $totalRow = $('<tr class="fila-total-general">' + '<td class="text-uppercase font-weight-bold">TOTAL GENERAL</td>' + '<td class="text-right font-weight-bold">' + fmt(gTipo1) + '</td>' + '<td class="text-right font-weight-bold">' + fmt(gTipo2) + '</td>' + '<td class="text-right font-weight-bold">' + fmt(gOtros) + '</td>' + '<td class="text-right font-weight-bold">' + difHtml(gDif) + '</td>' + '</tr>')
     
-          const $otrosRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">TOTAL GENERAL OTROS TIPOS</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(gOtros) + '</td>' + '<td class="text-right">-</td>' + '</tr>')
+          const $otrosRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">TOTAL GENERAL OTROS TIPOS</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(gOtros) + '</td>' + '<td class="text-right">-</td>' + '</tr>')
     
-          const $positivosRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">TOTAL GENERAL VOTOS POSITIVOS</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '</tr>')
+          const $positivosRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">TOTAL GENERAL VOTOS POSITIVOS</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '</tr>')
     
-          const $porcentajeRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">PORCENTAJE DE VOTOS EFECTIVOS</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + fmt(gTotal) + '</td>' + '<td class="text-right">' + pct(porcentajeEfectivos) + '</td>' + '</tr>')
+          const $porcentajeRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">PORCENTAJE DE VOTOS EFECTIVOS</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + fmt(gTotal) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + pct(porcentajeEfectivos) + '</td>' + '</tr>')
     
-          const $margenRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">MARGEN DE ERROR (OBJETIVO ' + pct(objetivo) + ')</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + pct(objetivo) + '</td>' + '<td class="text-right">' + fmt(objetivoValor) + '</td>' + '</tr>')
+          const $margenRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">MARGEN DE ERROR (OBJETIVO ' + pct(objetivo) + ')</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + pct(objetivo) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(objetivoValor) + '</td>' + '</tr>')
     
-          const $diferenciaRow = $('<tr class="fila-resumen-extra">' + '<td colspan="2" class="text-right text-uppercase">DIFERENCIA (MARGEN - POSITIVOS)</td>' + '<td class="text-right">' + fmt(objetivoValor) + '</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + difHtml(objetivoValor - gTipo1) + '</td>' + '</tr>')
+          const $diferenciaRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">DIFERENCIA (MARGEN - POSITIVOS)</td>' + '<td class="text-right">' + fmt(objetivoValor) + '</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + difHtml(objetivoValor - gTipo1) + '</td>' + '</tr>')
     
-          const $asignarRow = $('<tr class="fila-resumen-extra fila-destacada">' + '<td colspan="2" class="text-right text-uppercase">ASIGNAR DIFERENCIA A OTROS TIPOS</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(Math.max(0, ajustado)) + '</td>' + '<td class="text-right">' + (diferenciaObjetivo > 0 ? difHtml(diferenciaObjetivo) : '0') + '</td>' + '</tr>')
+          const $asignarRow = $('<tr class="fila-resumen-extra fila-destacada">' + '<td class="text-uppercase">ASIGNAR DIFERENCIA A OTROS TIPOS</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(Math.max(0, ajustado)) + '</td>' + '<td class="text-right">' + (diferenciaObjetivo > 0 ? difHtml(diferenciaObjetivo) : '0') + '</td>' + '</tr>')
     
-          const $objetivoRow = $('<tr class="fila-objetivo">' + '<td colspan="4" class="text-right text-uppercase">DIFERENCIA PORCENTAJE OBJETIVO</td>' + '<td class="text-right">' + difHtml(diferenciaObjetivo) + '</td>' + '</tr>')
+          const $objetivoRow = $('<tr class="fila-objetivo">' + '<td class="text-uppercase">DIFERENCIA PORCENTAJE OBJETIVO</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + difHtml(diferenciaObjetivo) + '</td>' + '</tr>')
     
           $('#data tbody').append($totalRow)
           $('#data tbody').append($otrosRow)
@@ -488,6 +727,17 @@
           $('#data tbody').append($diferenciaRow)
           $('#data tbody').append($asignarRow)
           $('#data tbody').append($objetivoRow)
+    
+          const factor = objetivo / 100
+          const total_v1 = gTipo1
+          const total_v2 = gTipo2
+          const total_otros = gOtros
+    
+          renderResumenObjetivo({
+            total_v1: total_v1,
+            total_v2: total_v2,
+            total_otros: total_otros
+          })
         },
     
         /* ── traducciones ── */
@@ -503,6 +753,13 @@
         initComplete: function () {
           buildLocalFilter(this.api())
           buildTargetFilter(this.api())
+    
+          $(document).on('change blur', '#resumen-objetivo-body .favor-input', function () {
+            const key = $(this).data('key')
+            resumenFavorState[key] = sanitizePct($(this).val())
+            saveResumenFavorState()
+            recalculateResumenObjetivo()
+          })
         }
       })
     })
