@@ -66,6 +66,17 @@
       padding: 0.45rem 0.7rem;
     }
     
+    #resumen-paso-container .table th,
+    #resumen-paso-container .table td {
+      vertical-align: middle;
+    }
+    
+    #resumen-paso-container .favor-input {
+      max-width: 90px;
+      margin-left: auto;
+      text-align: right;
+    }
+    
     .local-filter-wrap {
       display: inline-flex;
       align-items: center;
@@ -100,6 +111,30 @@
     
     .target-filter-wrap input {
       width: 110px;
+    }
+    
+    .sync-fab {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 1060;
+      width: 52px;
+      height: 52px;
+      border-radius: 9999px;
+      border: 0;
+      background: #0d6efd;
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(13, 110, 253, 0.35);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    
+    .sync-fab:disabled {
+      opacity: 0.75;
+      cursor: wait;
     }
     
     @media (max-width: 767.98px) {
@@ -153,8 +188,13 @@
 {% block javascript_list %}
   <script>
     /* ── datos del contexto ──────────────────────────────────── */
-    const tiposVoto = JSON.parse('{{ tipos_voto_json|escapejs }}')
-    const rowsData = JSON.parse('{{ rows_data_json|escapejs }}')
+    let tiposVoto = JSON.parse('{{ tipos_voto_json|escapejs }}')
+    let rowsData = JSON.parse('{{ rows_data_json|escapejs }}')
+    let pasoLocalTotals = JSON.parse('{{ paso_local_totals_json|escapejs }}')
+    let pasoGlobalTotals = JSON.parse('{{ paso_global_totals_json|escapejs }}')
+    let resumenLocalTotals = JSON.parse('{{ resumen_local_totals_json|escapejs }}')
+    let resumenGlobalTotals = JSON.parse('{{ resumen_global_totals_json|escapejs }}')
+    let table = null
     
     /* ── helpers ─────────────────────────────────────────────── */
     function fmt(v) {
@@ -169,21 +209,6 @@
     
     function pct(v) {
       return Number(v || 0).toLocaleString('es-PY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%'
-    }
-    
-    function numberValue(v) {
-      const n = Number(v)
-      return Number.isFinite(n) ? n : 0
-    }
-    
-    function sumCol(api, colIdx, searchApplied) {
-      const scope = searchApplied ? { search: 'applied' } : {}
-      return api
-        .column(colIdx, scope)
-        .data()
-        .reduce(function (a, b) {
-          return Number(a || 0) + Number(b || 0)
-        }, 0)
     }
     
     function getCookie(name) {
@@ -299,19 +324,30 @@
       return String(text || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     }
     
-    function buildLocalFilter(tableApi) {
-      const uniqueLocals = tableApi
-        .column(0)
-        .data()
-        .toArray()
-        .map(function (v) {
-          return (v || 'SIN LOCAL').toString()
+    let selectedLocalIdFilter = ''
+    
+    function buildLocalFilter(tableApi, selectedLocalId) {
+      $('#data_filter .local-filter-wrap').remove()
+    
+      const uniqueLocals = rowsData
+        .map(function (row) {
+          return {
+            id: String(Number(row.local_id || 0)),
+            name: (row.local || 'SIN LOCAL').toString()
+          }
         })
-        .filter(function (value, index, arr) {
-          return arr.indexOf(value) === index
-        })
-        .sort(function (a, b) {
-          return a.localeCompare(b, 'es')
+        .reduce(
+          function (acc, item) {
+            if (!acc.map[item.id]) {
+              acc.map[item.id] = true
+              acc.list.push(item)
+            }
+            return acc
+          },
+          { map: {}, list: [] }
+        )
+        .list.sort(function (a, b) {
+          return a.name.localeCompare(b.name, 'es')
         })
     
       const $container = $('<div class="local-filter-wrap"></div>')
@@ -319,25 +355,91 @@
       const $select = $('<select id="filter-local-votacion" class="form-control form-control-sm"></select>')
     
       $select.append('<option value="">Todos</option>')
-      uniqueLocals.forEach(function (localName) {
-        $select.append($('<option></option>').val(localName).text(localName))
+      uniqueLocals.forEach(function (item) {
+        $select.append($('<option></option>').val(item.id).text(item.name))
       })
     
-      $select.on('change', function () {
-        const selected = $(this).val()
-        if (!selected) {
-          tableApi.column(0).search('', true, false).draw()
-          return
-        }
+      const initialSelectedId = String(selectedLocalId || '')
+      if (initialSelectedId && $select.find('option[value="' + initialSelectedId + '"]').length) {
+        $select.val(initialSelectedId)
+        selectedLocalIdFilter = initialSelectedId
+      } else {
+        $select.val('')
+        selectedLocalIdFilter = ''
+      }
     
-        tableApi
-          .column(0)
-          .search('^' + escapeRegex(selected) + '$', true, false)
-          .draw()
+      $select.on('change', function () {
+        selectedLocalIdFilter = String($(this).val() || '')
+        refreshAllShownData(selectedLocalIdFilter)
       })
     
       $container.append($label).append($select)
       $('#data_filter').append($container)
+    }
+    
+    function setSyncButtonLoading(isLoading) {
+      const $btn = $('#btn-sync-floating')
+      if (!$btn.length) {
+        return
+      }
+    
+      $btn.prop('disabled', isLoading)
+      $btn.html(isLoading ? '<i class="fas fa-spinner fa-spin"></i>' : '<i class="fas fa-sync-alt"></i>')
+    }
+    
+    function createSyncFloatingButton() {
+      if ($('#btn-sync-floating').length) {
+        return
+      }
+    
+      const $btn = $('<button id="btn-sync-floating" type="button" class="sync-fab" title="Sincronizar datos"><i class="fas fa-sync-alt"></i></button>')
+      $('body').append($btn)
+    
+      $btn.on('click', function () {
+        refreshAllShownData()
+      })
+    }
+    
+    function refreshAllShownData(localId) {
+      if (!table) {
+        return
+      }
+    
+      setSyncButtonLoading(true)
+      const prevSelectedLocalId = String(localId || selectedLocalIdFilter || '')
+    
+      const requestData = {
+        action: 'refresh_stats',
+        csrfmiddlewaretoken: getCookie('csrftoken')
+      }
+      if (prevSelectedLocalId) {
+        requestData.local_votacion_id = prevSelectedLocalId
+      }
+    
+      $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        dataType: 'json',
+        data: requestData
+      })
+        .done(function (resp) {
+          tiposVoto = Array.isArray(resp.tipos_voto) ? resp.tipos_voto : []
+          rowsData = Array.isArray(resp.rows_data) ? resp.rows_data : []
+          pasoLocalTotals = resp.paso_local_totals || {}
+          pasoGlobalTotals = resp.paso_global_totals || { pasoxpc: 0, pasoxmv: 0 }
+          resumenLocalTotals = resp.resumen_local_totals || {}
+          resumenGlobalTotals = resp.resumen_global_totals || { total_v1: 0, total_v2: 0, total_otros: 0, diferencia: 0 }
+    
+          table.clear()
+          table.rows.add(rowsData)
+    
+          buildLocalFilter(table, prevSelectedLocalId)
+    
+          table.draw(false)
+        })
+        .always(function () {
+          setSyncButtonLoading(false)
+        })
     }
     
     function buildTargetFilter(tableApi) {
@@ -386,9 +488,19 @@
         return
       }
     
-      const resumenHtml = '<div id="resumen-objetivo-container" class="card mt-3">' + '<div class="card-header py-2"><strong>Resumen</strong></div>' + '<div class="card-body p-2">' + '<div class="table-responsive">' + '<table class="table table-bordered table-sm mb-0">' + '<thead>' + '<tr>' + '<th>Concepto</th>' + '<th class="text-right">TOTAL</th>' + '<th class="text-right text-success col-favor">FAVOR (%)</th>' + '<th class="text-right text-danger col-contra">CONTRA (%)</th>' + '<th class="text-right text-success col-favor">+</th>' + '<th class="text-right text-danger col-contra">-</th>' + '</tr>' + '</thead>' + '<tbody id="resumen-objetivo-body"></tbody>' + '</table>' + '</div>' + '<div id="resumen-final-lineas" class="d-flex flex-wrap mt-2" style="gap: 8px;"></div>' + '</div>' + '</div>'
+      const resumenHtml = '<div id="resumen-objetivo-container" class="card mt-3">' + '<div class="card-header py-2"><strong>Control Tipo de Voto</strong></div>' + '<div class="card-body p-2">' + '<div class="table-responsive">' + '<table class="table table-bordered table-sm mb-0">' + '<thead>' + '<tr>' + '<th>Concepto</th>' + '<th class="text-right">TOTAL</th>' + '<th class="text-right text-success col-favor">FAVOR (%)</th>' + '<th class="text-right text-danger col-contra">CONTRA (%)</th>' + '<th class="text-right text-success col-favor">+</th>' + '<th class="text-right text-danger col-contra">-</th>' + '</tr>' + '</thead>' + '<tbody id="resumen-objetivo-body"></tbody>' + '</table>' + '</div>' + '<div id="resumen-final-lineas" class="d-flex flex-wrap mt-2" style="gap: 8px;"></div>' + '</div>' + '</div>'
     
       $('#data_wrapper').after(resumenHtml)
+    }
+    
+    function ensureResumenPasoContainer() {
+      if ($('#resumen-paso-container').length) {
+        return
+      }
+    
+      const pasoHtml = '<div id="resumen-paso-container" class="card mt-3">' + '<div class="card-header py-2"><strong>Control PC y Local de Votación</strong></div>' + '<div class="card-body p-2">' + '<div class="table-responsive">' + '<table class="table table-bordered table-sm mb-0">' + '<thead>' + '<tr>' + '<th>Concepto</th>' + '<th class="text-right">CANTIDAD</th>' + '<th class="text-right text-success col-favor">FAVOR (%)</th>' + '<th class="text-right text-danger col-contra">CONTRA (%)</th>' + '<th class="text-right text-success col-favor">+</th>' + '<th class="text-right text-danger col-contra">-</th>' + '</tr>' + '</thead>' + '<tbody id="resumen-paso-body"></tbody>' + '</table>' + '</div>' + '<div id="resumen-paso-final-lineas" class="d-flex flex-wrap mt-2" style="gap: 8px;"></div>' + '</div>' + '</div>'
+    
+      $('#resumen-objetivo-container').after(pasoHtml)
     }
     
     const resumenFavorState = {
@@ -398,11 +510,23 @@
     }
     
     const RESUMEN_FAVOR_STORAGE_KEY = 'reporte_tipo_voto_mesa_favor_state'
+    const RESUMEN_PASO_FAVOR_STORAGE_KEY = 'reporte_tipo_voto_mesa_paso_favor_state'
     
     let resumenTotalsState = {
       total_v1: 0,
       total_v2: 0,
       total_otros: 0
+    }
+    
+    const resumenPasoFavorState = {
+      pasoxpc: 90,
+      margen: 90
+    }
+    
+    let resumenPasoTotalsState = {
+      pasoxpc: 0,
+      pasoxmv: 0,
+      margen: 0
     }
     
     function loadResumenFavorState() {
@@ -428,6 +552,126 @@
       } catch (_err) {
         // Si localStorage no esta disponible, no interrumpir la UX.
       }
+    }
+    
+    function loadResumenPasoFavorState() {
+      try {
+        const raw = localStorage.getItem(RESUMEN_PASO_FAVOR_STORAGE_KEY)
+        if (!raw) {
+          return
+        }
+        const parsed = JSON.parse(raw)
+        if (parsed && typeof parsed === 'object') {
+          resumenPasoFavorState.pasoxpc = sanitizePct(parsed.pasoxpc)
+          resumenPasoFavorState.margen = sanitizePct(parsed.margen)
+        }
+      } catch (_err) {
+        // Ignorar estado corrupto y continuar con valores por defecto.
+      }
+    }
+    
+    function saveResumenPasoFavorState() {
+      try {
+        localStorage.setItem(RESUMEN_PASO_FAVOR_STORAGE_KEY, JSON.stringify(resumenPasoFavorState))
+      } catch (_err) {
+        // Si localStorage no esta disponible, no interrumpir la UX.
+      }
+    }
+    
+    function recalculateResumenPaso() {
+      const cantidad_pasoxpc = Number(resumenPasoTotalsState.pasoxpc || 0)
+      const cantidad_pasoxmv = Number(resumenPasoTotalsState.pasoxmv || 0)
+      const cantidad_margen = Number(resumenPasoTotalsState.margen || 0)
+    
+      const favor_pasoxpc = sanitizePct(resumenPasoFavorState.pasoxpc)
+      const contra_pasoxpc = 100 - favor_pasoxpc
+      const a_favor_pasoxpc = Math.round(cantidad_pasoxpc * (favor_pasoxpc / 100))
+      const en_contra_pasoxpc = Math.round(cantidad_pasoxpc - a_favor_pasoxpc)
+    
+      const favor_margen = sanitizePct(resumenPasoFavorState.margen)
+      const contra_margen = 100 - favor_margen
+      const a_favor_margen = Math.round(cantidad_margen * (favor_margen / 100))
+      const en_contra_margen = Math.round(cantidad_margen - a_favor_margen)
+    
+      const total_pasoxpc = a_favor_pasoxpc - en_contra_pasoxpc
+      const total_margen = a_favor_margen - en_contra_margen
+      const diferencia_total = total_pasoxpc - total_margen
+    
+      const rows = [
+        {
+          key: 'pasoxmv',
+          label: 'MV',
+          cantidad: cantidad_pasoxmv,
+          editable: false,
+          favorPct: null,
+          contraPct: null,
+          plus: cantidad_pasoxmv,
+          minus: 0
+        },
+        {
+          key: 'pasoxpc',
+          label: 'PC',
+          cantidad: cantidad_pasoxpc,
+          editable: true,
+          favorPct: favor_pasoxpc,
+          contraPct: contra_pasoxpc,
+          plus: a_favor_pasoxpc,
+          minus: en_contra_pasoxpc
+        },
+    
+        {
+          key: 'margen',
+          label: 'MARGEN = MV - PC',
+          cantidad: cantidad_margen,
+          editable: true,
+          favorPct: favor_margen,
+          contraPct: contra_margen,
+          plus: a_favor_margen,
+          minus: en_contra_margen
+        }
+      ]
+    
+      const $tbody = $('#resumen-paso-body')
+      $tbody.empty()
+    
+      rows.forEach(function (row) {
+        const $tr = $('<tr></tr>')
+    
+        let $favorCell
+        let $contraCell
+        if (row.editable) {
+          const $favorInput = $('<input type="number" class="form-control favor-input" min="0" max="100" step="0.1">').attr('data-key', row.key).val(pctInput(row.favorPct))
+    
+          $favorCell = $('<td class="text-right col-favor"></td>').append($('<div class="input-group input-group-sm justify-content-end"></div>').append($favorInput).append('<div class="input-group-append"><span class="input-group-text">%</span></div>'))
+          $contraCell = $('<td class="text-right col-contra"></td>').text(pct2(row.contraPct) + '%')
+        } else {
+          $favorCell = $('<td class="text-right col-favor">-</td>')
+          $contraCell = $('<td class="text-right col-contra">-</td>')
+        }
+    
+        $tr
+          .append($('<td></td>').text(row.label))
+          .append($('<td class="text-right"></td>').text(fmt(row.cantidad)))
+          .append($favorCell)
+          .append($contraCell)
+          .append($('<td class="text-right col-favor"></td>').text(fmt(row.plus)))
+          .append($('<td class="text-right col-contra"></td>').text(fmt(row.minus)))
+    
+        $tbody.append($tr)
+      })
+    
+      const finalHtml = '<span class="badge badge-success">TOTAL PASOXPC: ' + fmt(total_pasoxpc) + '</span>' + '<span class="badge badge-danger">TOTAL MARGEN: ' + fmt(total_margen) + '</span>' + '<span class="badge badge-dark">DIFERENCIA TOTAL: ' + fmt(diferencia_total) + '</span>'
+      $('#resumen-paso-final-lineas').html(finalHtml)
+    }
+    
+    function renderResumenPaso(model) {
+      ensureResumenPasoContainer()
+      resumenPasoTotalsState = {
+        pasoxpc: Number(model.pasoxpc || 0),
+        pasoxmv: Number(model.pasoxmv || 0),
+        margen: Number(model.margen || 0)
+      }
+      recalculateResumenPaso()
     }
     
     function sanitizePct(v) {
@@ -479,7 +723,7 @@
       const tableRows = [
         {
           key: 'v1',
-          label: 'TIPO VOTO 1',
+          label: 'TIPO +',
           total: total_v1,
           favorPct: favor_v1,
           contraPct: contra_v1,
@@ -488,7 +732,7 @@
         },
         {
           key: 'v2',
-          label: 'TIPO VOTO 2',
+          label: 'TIPO -',
           total: total_v2,
           favorPct: favor_v2,
           contraPct: contra_v2,
@@ -557,8 +801,10 @@
     
     $(function () {
       loadResumenFavorState()
+      loadResumenPasoFavorState()
+      createSyncFloatingButton()
     
-      const table = $('#data').DataTable({
+      table = $('#data').DataTable({
         data: rowsData,
         responsive: true,
         autoWidth: false,
@@ -570,12 +816,8 @@
           [1, 'asc']
         ],
         searching: true,
-        paging: true,
-        pageLength: 10,
-        lengthMenu: [
-          [10, 25, 50, -1],
-          [10, 25, 50, 'Todos']
-        ],
+        paging: false,
+        pageLength: -1,
         scrollY: false,
         scrollCollapse: false,
         info: true,
@@ -695,48 +937,32 @@
           const gDif = filteredRows.reduce(function (acc, row) {
             return acc + getDiferenciaRow(row)
           }, 0)
-          const gTotal = gTipo1 + gTipo2 + gOtros
-          const objetivo = Math.max(0, Math.min(100, getObjectivePercent()))
-          const objetivoValor = (gTipo1 * objetivo) / 100
-          const fuga = gTipo1 - objetivoValor
-          const ajustado = gOtros + fuga
-          const diferenciaObjetivo = objetivoValor - ajustado
-          const porcentajeEfectivos = gTotal > 0 ? (gTipo1 / gTotal) * 100 : 0
     
           const $totalRow = $('<tr class="fila-total-general">' + '<td class="text-uppercase font-weight-bold">TOTAL GENERAL</td>' + '<td class="text-right font-weight-bold">' + fmt(gTipo1) + '</td>' + '<td class="text-right font-weight-bold">' + fmt(gTipo2) + '</td>' + '<td class="text-right font-weight-bold">' + fmt(gOtros) + '</td>' + '<td class="text-right font-weight-bold">' + difHtml(gDif) + '</td>' + '</tr>')
     
-          const $otrosRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">TOTAL GENERAL OTROS TIPOS</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(gOtros) + '</td>' + '<td class="text-right">-</td>' + '</tr>')
-    
-          const $positivosRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">TOTAL GENERAL VOTOS POSITIVOS</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '</tr>')
-    
-          const $porcentajeRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">PORCENTAJE DE VOTOS EFECTIVOS</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + fmt(gTotal) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + pct(porcentajeEfectivos) + '</td>' + '</tr>')
-    
-          const $margenRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">MARGEN DE ERROR (OBJETIVO ' + pct(objetivo) + ')</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">' + pct(objetivo) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(objetivoValor) + '</td>' + '</tr>')
-    
-          const $diferenciaRow = $('<tr class="fila-resumen-extra">' + '<td class="text-uppercase">DIFERENCIA (MARGEN - POSITIVOS)</td>' + '<td class="text-right">' + fmt(objetivoValor) + '</td>' + '<td class="text-right">' + fmt(gTipo1) + '</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + difHtml(objetivoValor - gTipo1) + '</td>' + '</tr>')
-    
-          const $asignarRow = $('<tr class="fila-resumen-extra fila-destacada">' + '<td class="text-uppercase">ASIGNAR DIFERENCIA A OTROS TIPOS</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + fmt(Math.max(0, ajustado)) + '</td>' + '<td class="text-right">' + (diferenciaObjetivo > 0 ? difHtml(diferenciaObjetivo) : '0') + '</td>' + '</tr>')
-    
-          const $objetivoRow = $('<tr class="fila-objetivo">' + '<td class="text-uppercase">DIFERENCIA PORCENTAJE OBJETIVO</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">-</td>' + '<td class="text-right">' + difHtml(diferenciaObjetivo) + '</td>' + '</tr>')
-    
           $('#data tbody').append($totalRow)
-          $('#data tbody').append($otrosRow)
-          $('#data tbody').append($positivosRow)
-          $('#data tbody').append($porcentajeRow)
-          $('#data tbody').append($margenRow)
-          $('#data tbody').append($diferenciaRow)
-          $('#data tbody').append($asignarRow)
-          $('#data tbody').append($objetivoRow)
     
-          const factor = objetivo / 100
-          const total_v1 = gTipo1
-          const total_v2 = gTipo2
-          const total_otros = gOtros
+          const total_v1 = Number((resumenGlobalTotals && resumenGlobalTotals.total_v1) || 0)
+          const total_v2 = Number((resumenGlobalTotals && resumenGlobalTotals.total_v2) || 0)
+          const total_otros = Number((resumenGlobalTotals && resumenGlobalTotals.total_otros) || 0)
     
           renderResumenObjetivo({
             total_v1: total_v1,
             total_v2: total_v2,
             total_otros: total_otros
+          })
+    
+          const pasoTotals = {
+            pasoxpc: Number((pasoGlobalTotals && pasoGlobalTotals.pasoxpc) || 0),
+            pasoxmv: Number((pasoGlobalTotals && pasoGlobalTotals.pasoxmv) || 0)
+          }
+          const cantidad_pasoxpc = Number(pasoTotals.pasoxpc || 0)
+          const cantidad_pasoxmv = Number(pasoTotals.pasoxmv || 0)
+    
+          renderResumenPaso({
+            pasoxpc: cantidad_pasoxpc,
+            pasoxmv: cantidad_pasoxmv,
+            margen: cantidad_pasoxmv - cantidad_pasoxpc
           })
         },
     
@@ -751,7 +977,7 @@
         },
     
         initComplete: function () {
-          buildLocalFilter(this.api())
+          buildLocalFilter(this.api(), selectedLocalIdFilter)
           buildTargetFilter(this.api())
     
           $(document).on('change blur', '#resumen-objetivo-body .favor-input', function () {
@@ -759,6 +985,15 @@
             resumenFavorState[key] = sanitizePct($(this).val())
             saveResumenFavorState()
             recalculateResumenObjetivo()
+          })
+    
+          $(document).on('change blur', '#resumen-paso-body .favor-input', function () {
+            const key = $(this).data('key')
+            if (key === 'pasoxpc' || key === 'margen') {
+              resumenPasoFavorState[key] = sanitizePct($(this).val())
+              saveResumenPasoFavorState()
+              recalculateResumenPaso()
+            }
           })
         }
       })

@@ -2,9 +2,9 @@ import json
 from io import BytesIO
 
 from django.conf import settings
-from django.db.models import IntegerField, Max
+from django.db.models import IntegerField, Max, Value
 from django.db.models.aggregates import Count
-from django.db.models.functions import Cast
+from django.db.models.functions import Cast, Coalesce, Trim, Upper
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
@@ -78,6 +78,108 @@ class ReporteMesaPreviewView(ModuleMixin, TemplateView):
 class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
     template_name = "electoral/reports/reporte_tipo_voto_mesa.html"
 
+    @staticmethod
+    def _parse_int_values(request, keys):
+        values = []
+        for key in keys:
+            values.extend(request.GET.getlist(key))
+            values.extend(request.POST.getlist(key))
+
+            raw = request.GET.get(key)
+            if raw:
+                values.extend(str(raw).split(","))
+
+            raw = request.POST.get(key)
+            if raw:
+                values.extend(str(raw).split(","))
+
+        parsed = []
+        for value in values:
+            text = str(value).strip()
+            if not text:
+                continue
+            try:
+                parsed.append(int(text))
+            except (TypeError, ValueError):
+                continue
+
+        # Mantener orden y remover duplicados.
+        return list(dict.fromkeys(parsed))
+
+    @staticmethod
+    def _parse_flag_value(request, keys):
+        for key in keys:
+            raw = request.GET.get(key)
+            if raw is None:
+                raw = request.POST.get(key)
+            if raw is None:
+                continue
+
+            value = str(raw).strip().upper()
+            if not value or value in {"ALL", "TODOS", "*"}:
+                return None
+            if value in {"S", "N"}:
+                return value
+
+        return None
+
+    @staticmethod
+    def _parse_int_values_from_post(request, keys):
+        values = []
+        for key in keys:
+            values.extend(request.POST.getlist(key))
+
+            raw = request.POST.get(key)
+            if raw:
+                values.extend(str(raw).split(","))
+
+        parsed = []
+        for value in values:
+            text = str(value).strip()
+            if not text:
+                continue
+            try:
+                parsed.append(int(text))
+            except (TypeError, ValueError):
+                continue
+
+        return list(dict.fromkeys(parsed))
+
+    @staticmethod
+    def _parse_flag_value_from_post(request, keys):
+        for key in keys:
+            raw = request.POST.get(key)
+            if raw is None:
+                continue
+
+            value = str(raw).strip().upper()
+            if not value or value in {"ALL", "TODOS", "*"}:
+                return None
+            if value in {"S", "N"}:
+                return value
+
+        return None
+
+    def _get_elector_filters(self):
+        # Evita que parametros GET de navegacion (querystring) apliquen filtros ocultos.
+        local_ids = self._parse_int_values_from_post(
+            self.request,
+            ["local_votacion_id", "local_votacion_ids"],
+        )
+        tipo_voto_ids = self._parse_int_values_from_post(
+            self.request,
+            ["tipo_voto_id", "tipo_voto_ids"],
+        )
+        pasoxpc = self._parse_flag_value_from_post(self.request, ["pasoxpc"])
+        pasoxmv = self._parse_flag_value_from_post(self.request, ["pasoxmv"])
+
+        return {
+            "local_ids": local_ids,
+            "tipo_voto_ids": tipo_voto_ids,
+            "pasoxpc": pasoxpc,
+            "pasoxmv": pasoxmv,
+        }
+
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -85,6 +187,26 @@ class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
     def post(self, request, *args, **kwargs):
         try:
             action = request.POST.get("action", "")
+
+            if action == "refresh_stats":
+                (
+                    tipos_voto,
+                    rows,
+                    paso_local_totals,
+                    paso_global_totals,
+                    resumen_local_totals,
+                    resumen_global_totals,
+                ) = self._build_stats_data()
+                return JsonResponse(
+                    {
+                        "tipos_voto": tipos_voto,
+                        "rows_data": rows,
+                        "paso_local_totals": paso_local_totals,
+                        "paso_global_totals": paso_global_totals,
+                        "resumen_local_totals": resumen_local_totals,
+                        "resumen_global_totals": resumen_global_totals,
+                    }
+                )
 
             if action == "generate_excel_custom":
                 payload_str = request.POST.get("datatable_payload", "")
@@ -110,7 +232,14 @@ class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
             from itertools import groupby
             from operator import itemgetter
 
-            tipos_voto, rows = self._build_stats_data()
+            (
+                tipos_voto,
+                rows,
+                _paso_local_totals,
+                _paso_global_totals,
+                _resumen_local_totals,
+                _resumen_global_totals,
+            ) = self._build_stats_data()
 
             grupos = []
             for local_name, group_iter in groupby(rows, key=itemgetter("local")):
@@ -263,10 +392,55 @@ class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
         return response
 
     def _build_stats_data(self):
-        base_qs = Elector.objects.filter(
+        def normalize_local_name(value):
+            local_name = str(value or "SIN LOCAL").strip()
+            return local_name or "SIN LOCAL"
+
+        def normalize_local_id(value):
+            try:
+                return int(value)
+            except (TypeError, ValueError):
+                return 0
+
+        filtros = self._get_elector_filters()
+
+        all_qs = Elector.objects.filter(
             distrito=self.request.user.distrito,
-            pasoxmv="S",
         )
+
+        # QS base de la tabla: puede filtrar por local y tipo_voto.
+        table_qs = all_qs
+
+        if filtros["local_ids"]:
+            table_qs = table_qs.filter(local_votacion_id__in=filtros["local_ids"])
+
+        if filtros["tipo_voto_ids"]:
+            table_qs = table_qs.filter(tipo_voto_id__in=filtros["tipo_voto_ids"])
+
+        normalized_table_qs = table_qs.annotate(
+            pasoxmv_norm=Coalesce(Upper(Trim("pasoxmv")), Value("N")),
+            pasoxpc_norm=Coalesce(Upper(Trim("pasoxpc")), Value("N")),
+        )
+
+        # QS base del RESUMEN PASO: independiente de filtros de tabla (tipo/local request).
+        normalized_paso_qs = all_qs.annotate(
+            pasoxmv_norm=Coalesce(Upper(Trim("pasoxmv")), Value("N")),
+            pasoxpc_norm=Coalesce(Upper(Trim("pasoxpc")), Value("N")),
+        )
+
+        pasoxmv_filter = filtros["pasoxmv"] if filtros["pasoxmv"] in {"S", "N"} else "S"
+        pasoxpc_filter = filtros["pasoxpc"] if filtros["pasoxpc"] in {"S", "N"} else "S"
+
+        # Base de grilla: mantiene criterio de PASOXMV sin combinar con PASOXPC.
+        base_qs = normalized_table_qs.filter(pasoxmv_norm=pasoxmv_filter)
+
+        # RESUMEN PASO para la tabla: misma base que la grilla para evitar desfasajes.
+        pasoxmv_table_qs = base_qs
+        pasoxpc_table_qs = normalized_table_qs.filter(pasoxpc_norm=pasoxpc_filter)
+
+        # Mantener tambien los globales independientes para otros usos.
+        pasoxmv_summary_qs = normalized_paso_qs.filter(pasoxmv_norm=pasoxmv_filter)
+        pasoxpc_summary_qs = normalized_paso_qs.filter(pasoxpc_norm=pasoxpc_filter)
 
         tipo_ids = list(
             base_qs.exclude(tipo_voto_id__isnull=True)
@@ -281,10 +455,10 @@ class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
         )
 
         mesas_base = list(
-            base_qs.values("local_votacion__denominacion", "mesa")
+            base_qs.values("local_votacion_id", "local_votacion__denominacion", "mesa")
             .annotate(mesa_int=Cast("mesa", IntegerField()))
             .order_by("local_votacion__denominacion", "mesa_int", "mesa")
-            .values("local_votacion__denominacion", "mesa")
+            .values("local_votacion_id", "local_votacion__denominacion", "mesa")
             .distinct()
         )
 
@@ -292,6 +466,7 @@ class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
             base_qs.exclude(tipo_voto_id__isnull=True)
             .annotate(mesa_int=Cast("mesa", IntegerField()))
             .values(
+                "local_votacion_id",
                 "local_votacion__denominacion",
                 "mesa",
                 "tipo_voto_id",
@@ -302,28 +477,159 @@ class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
             )
         )
 
+        conteos_null_qs = (
+            base_qs.filter(tipo_voto_id__isnull=True)
+            .annotate(mesa_int=Cast("mesa", IntegerField()))
+            .values(
+                "local_votacion_id",
+                "local_votacion__denominacion",
+                "mesa",
+            )
+            .annotate(cantidad_null=Count("id"))
+            .order_by("local_votacion__denominacion", "mesa_int", "mesa")
+        )
+
+        pasoxmv_counts_map = {
+            f"{normalize_local_id(row['local_votacion_id'])}|{(row['mesa'] or '')}": int(
+                row["pasoxmv_count"]
+            )
+            for row in pasoxmv_table_qs.values(
+                "local_votacion_id", "local_votacion__denominacion", "mesa"
+            ).annotate(pasoxmv_count=Count("id"))
+        }
+
+        pasoxpc_counts_map = {
+            f"{normalize_local_id(row['local_votacion_id'])}|{(row['mesa'] or '')}": int(
+                row["pasoxpc_count"]
+            )
+            for row in pasoxpc_table_qs.values(
+                "local_votacion_id", "local_votacion__denominacion", "mesa"
+            ).annotate(pasoxpc_count=Count("id"))
+        }
+
+        pasoxmv_local_totals = {
+            str(normalize_local_id(row["local_votacion_id"])): int(row["pasoxmv_count"])
+            for row in pasoxmv_table_qs.values(
+                "local_votacion_id", "local_votacion__denominacion"
+            ).annotate(pasoxmv_count=Count("id"))
+        }
+
+        pasoxpc_local_totals = {
+            str(normalize_local_id(row["local_votacion_id"])): int(row["pasoxpc_count"])
+            for row in pasoxpc_table_qs.values(
+                "local_votacion_id", "local_votacion__denominacion"
+            ).annotate(pasoxpc_count=Count("id"))
+        }
+
+        paso_local_totals = {}
+        for local_name in set(pasoxmv_local_totals.keys()) | set(
+            pasoxpc_local_totals.keys()
+        ):
+            paso_local_totals[local_name] = {
+                "pasoxmv": int(pasoxmv_local_totals.get(local_name, 0)),
+                "pasoxpc": int(pasoxpc_local_totals.get(local_name, 0)),
+            }
+
+        paso_global_totals = {
+            "pasoxmv": int(pasoxmv_table_qs.count()),
+            "pasoxpc": int(pasoxpc_table_qs.count()),
+        }
+
+        resumen_tipo1_local_totals = {
+            str(normalize_local_id(row["local_votacion_id"])): int(row["cantidad"])
+            for row in base_qs.filter(tipo_voto_id=1)
+            .values("local_votacion_id")
+            .annotate(cantidad=Count("id"))
+        }
+
+        resumen_tipo2_local_totals = {
+            str(normalize_local_id(row["local_votacion_id"])): int(row["cantidad"])
+            for row in base_qs.filter(tipo_voto_id=2)
+            .values("local_votacion_id")
+            .annotate(cantidad=Count("id"))
+        }
+
+        resumen_otros_local_totals = {
+            str(normalize_local_id(row["local_votacion_id"])): int(row["cantidad"])
+            for row in base_qs.exclude(tipo_voto_id__in=[1, 2])
+            .values("local_votacion_id")
+            .annotate(cantidad=Count("id"))
+        }
+
+        resumen_local_totals = {}
+        for local_id in (
+            set(resumen_tipo1_local_totals.keys())
+            | set(resumen_tipo2_local_totals.keys())
+            | set(resumen_otros_local_totals.keys())
+        ):
+            total_v1 = int(resumen_tipo1_local_totals.get(local_id, 0))
+            total_v2 = int(resumen_tipo2_local_totals.get(local_id, 0))
+            total_otros = int(resumen_otros_local_totals.get(local_id, 0))
+            resumen_local_totals[local_id] = {
+                "total_v1": total_v1,
+                "total_v2": total_v2,
+                "total_otros": total_otros,
+                "diferencia": total_v1 - (total_v2 + total_otros),
+            }
+
+        resumen_global_totals = {
+            "total_v1": int(base_qs.filter(tipo_voto_id=1).count()),
+            "total_v2": int(base_qs.filter(tipo_voto_id=2).count()),
+            "total_otros": int(base_qs.exclude(tipo_voto_id__in=[1, 2]).count()),
+        }
+        resumen_global_totals["diferencia"] = resumen_global_totals["total_v1"] - (
+            resumen_global_totals["total_v2"] + resumen_global_totals["total_otros"]
+        )
+
         rows_map = {}
         for mesa_row in mesas_base:
-            local_name = mesa_row["local_votacion__denominacion"] or "SIN LOCAL"
+            local_id = normalize_local_id(mesa_row["local_votacion_id"])
+            local_name = normalize_local_name(mesa_row["local_votacion__denominacion"])
             mesa_num = mesa_row["mesa"] or ""
-            key = f"{local_name}|{mesa_num}"
+            key = f"{local_id}|{mesa_num}"
             rows_map[key] = {
+                "local_id": local_id,
                 "local": local_name,
                 "mesa": mesa_num,
+                "pasoxmv_count": int(pasoxmv_counts_map.get(key, 0)),
+                "pasoxpc_count": int(pasoxpc_counts_map.get(key, 0)),
+                "tipo_0": 0,
                 **{f"tipo_{tipo['id']}": 0 for tipo in tipos_voto},
             }
 
         for count_row in conteos_qs:
-            local_name = count_row["local_votacion__denominacion"] or "SIN LOCAL"
+            local_id = normalize_local_id(count_row["local_votacion_id"])
+            local_name = normalize_local_name(count_row["local_votacion__denominacion"])
             mesa_num = count_row["mesa"] or ""
-            key = f"{local_name}|{mesa_num}"
+            key = f"{local_id}|{mesa_num}"
             if key not in rows_map:
                 rows_map[key] = {
+                    "local_id": local_id,
                     "local": local_name,
                     "mesa": mesa_num,
+                    "pasoxmv_count": int(pasoxmv_counts_map.get(key, 0)),
+                    "pasoxpc_count": int(pasoxpc_counts_map.get(key, 0)),
+                    "tipo_0": 0,
                     **{f"tipo_{tipo['id']}": 0 for tipo in tipos_voto},
                 }
             rows_map[key][f"tipo_{count_row['tipo_voto_id']}"] = count_row["cantidad"]
+
+        for count_row in conteos_null_qs:
+            local_id = normalize_local_id(count_row["local_votacion_id"])
+            local_name = normalize_local_name(count_row["local_votacion__denominacion"])
+            mesa_num = count_row["mesa"] or ""
+            key = f"{local_id}|{mesa_num}"
+            if key not in rows_map:
+                rows_map[key] = {
+                    "local_id": local_id,
+                    "local": local_name,
+                    "mesa": mesa_num,
+                    "pasoxmv_count": int(pasoxmv_counts_map.get(key, 0)),
+                    "pasoxpc_count": int(pasoxpc_counts_map.get(key, 0)),
+                    "tipo_0": 0,
+                    **{f"tipo_{tipo['id']}": 0 for tipo in tipos_voto},
+                }
+            rows_map[key]["tipo_0"] = int(count_row["cantidad_null"])
 
         tipo_principal_key = "tipo_1"
         for row in rows_map.values():
@@ -345,11 +651,25 @@ class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
             )
         )
 
-        return tipos_voto, rows
+        return (
+            tipos_voto,
+            rows,
+            paso_local_totals,
+            paso_global_totals,
+            resumen_local_totals,
+            resumen_global_totals,
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        tipos_voto, rows = self._build_stats_data()
+        (
+            tipos_voto,
+            rows,
+            paso_local_totals,
+            paso_global_totals,
+            resumen_local_totals,
+            resumen_global_totals,
+        ) = self._build_stats_data()
 
         context["title"] = "Estadistica de Votos por Tipo"
         context["distrito"] = getattr(self.request.user.distrito, "denominacion", "")
@@ -357,6 +677,18 @@ class ReporteVotoTipoMesaView(ModuleMixin, TemplateView):
         context["rows_data"] = rows
         context["tipos_voto_json"] = json.dumps(tipos_voto, ensure_ascii=False)
         context["rows_data_json"] = json.dumps(rows, ensure_ascii=False)
+        context["paso_local_totals_json"] = json.dumps(
+            paso_local_totals, ensure_ascii=False
+        )
+        context["paso_global_totals_json"] = json.dumps(
+            paso_global_totals, ensure_ascii=False
+        )
+        context["resumen_local_totals_json"] = json.dumps(
+            resumen_local_totals, ensure_ascii=False
+        )
+        context["resumen_global_totals_json"] = json.dumps(
+            resumen_global_totals, ensure_ascii=False
+        )
         context["list_url"] = reverse_lazy("reporte_tipo_voto_mesa")
         return context
 
