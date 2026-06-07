@@ -578,24 +578,24 @@
       }
     }
     
+    function sanitizePctInt(v) {
+      return Math.round(sanitizePct(v))
+    }
+    
     function recalculateResumenPaso() {
       const cantidad_pasoxpc = Number(resumenPasoTotalsState.pasoxpc || 0)
       const cantidad_pasoxmv = Number(resumenPasoTotalsState.pasoxmv || 0)
       const cantidad_margen = Number(resumenPasoTotalsState.margen || 0)
     
-      const favor_pasoxpc = sanitizePct(resumenPasoFavorState.pasoxpc)
+      const favor_pasoxpc = sanitizePctInt(resumenPasoFavorState.pasoxpc)
       const contra_pasoxpc = 100 - favor_pasoxpc
       const a_favor_pasoxpc = Math.round(cantidad_pasoxpc * (favor_pasoxpc / 100))
       const en_contra_pasoxpc = Math.round(cantidad_pasoxpc - a_favor_pasoxpc)
     
-      const favor_margen = sanitizePct(resumenPasoFavorState.margen)
+      const favor_margen = sanitizePctInt(resumenPasoFavorState.margen)
       const contra_margen = 100 - favor_margen
       const a_favor_margen = Math.round(cantidad_margen * (favor_margen / 100))
       const en_contra_margen = Math.round(cantidad_margen - a_favor_margen)
-    
-      const total_pasoxpc = a_favor_pasoxpc - en_contra_pasoxpc
-      const total_margen = a_favor_margen - en_contra_margen
-      const diferencia_total = total_pasoxpc - total_margen
     
       const rows = [
         {
@@ -605,7 +605,7 @@
           editable: false,
           favorPct: null,
           contraPct: null,
-          plus: cantidad_pasoxmv,
+          plus: 0,
           minus: 0
         },
         {
@@ -631,6 +631,14 @@
         }
       ]
     
+      const total_pasoxpc = rows.reduce(function (acc, row) {
+        return acc + Number(row.plus || 0)
+      }, 0)
+      const total_margen = rows.reduce(function (acc, row) {
+        return acc + Number(row.minus || 0)
+      }, 0)
+      const diferencia_total = total_pasoxpc - total_margen
+    
       const $tbody = $('#resumen-paso-body')
       $tbody.empty()
     
@@ -640,10 +648,10 @@
         let $favorCell
         let $contraCell
         if (row.editable) {
-          const $favorInput = $('<input type="number" class="form-control favor-input" min="0" max="100" step="0.1">').attr('data-key', row.key).val(pctInput(row.favorPct))
+          const $favorInput = $('<input type="number" class="form-control favor-input" min="0" max="100" step="1">').attr('data-key', row.key).val(String(row.favorPct))
     
           $favorCell = $('<td class="text-right col-favor"></td>').append($('<div class="input-group input-group-sm justify-content-end"></div>').append($favorInput).append('<div class="input-group-append"><span class="input-group-text">%</span></div>'))
-          $contraCell = $('<td class="text-right col-contra"></td>').text(pct2(row.contraPct) + '%')
+          $contraCell = $('<td class="text-right col-contra"></td>').text(String(row.contraPct) + '%')
         } else {
           $favorCell = $('<td class="text-right col-favor">-</td>')
           $contraCell = $('<td class="text-right col-contra">-</td>')
@@ -660,7 +668,7 @@
         $tbody.append($tr)
       })
     
-      const finalHtml = '<span class="badge badge-success">TOTAL PASOXPC: ' + fmt(total_pasoxpc) + '</span>' + '<span class="badge badge-danger">TOTAL MARGEN: ' + fmt(total_margen) + '</span>' + '<span class="badge badge-dark">DIFERENCIA TOTAL: ' + fmt(diferencia_total) + '</span>'
+      const finalHtml = '<span class="badge badge-success">TOTAL PASOXPC: ' + fmt(total_pasoxpc) + '</span>' + '<span class="badge badge-danger">TOTAL MARGEN: ' + fmt(total_margen) + '</span>' + '<span class="badge badge-dark">DIFERENCIA FINAL: ' + fmt(diferencia_total) + '</span>'
       $('#resumen-paso-final-lineas').html(finalHtml)
     }
     
@@ -990,7 +998,7 @@
           $(document).on('change blur', '#resumen-paso-body .favor-input', function () {
             const key = $(this).data('key')
             if (key === 'pasoxpc' || key === 'margen') {
-              resumenPasoFavorState[key] = sanitizePct($(this).val())
+              resumenPasoFavorState[key] = sanitizePctInt($(this).val())
               saveResumenPasoFavorState()
               recalculateResumenPaso()
             }
