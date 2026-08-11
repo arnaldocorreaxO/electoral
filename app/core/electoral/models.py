@@ -1,7 +1,8 @@
 # from core.utils import calculate_age
-from core.base.models import ModeloBase
 from django.db import models
 from django.forms import model_to_dict
+
+from core.base.models import ModeloBase
 from core.electoral.utils import calculate_age
 
 """ 
@@ -277,6 +278,7 @@ class Elector(ModeloBase):
     partido = models.CharField(max_length=250, null=True, blank=True)
     fecha_nacimiento = models.DateField(null=True, blank=True)
     fecha_afiliacion = models.DateField(null=True, blank=True)
+    fecha_inscripcion = models.DateField(null=True, blank=True)
     tipo_voto = models.ForeignKey(
         TipoVoto,
         related_name="tipo_voto",
