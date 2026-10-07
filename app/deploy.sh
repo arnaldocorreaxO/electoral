@@ -5,7 +5,7 @@ GREEN='\033[0-32m'
 BLUE='\033[0-34m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}--- 🚀 Iniciando Despliegue SGL ---${NC}"
+echo -e "${BLUE}--- 🚀 Iniciando Despliegue ELECTORAL ---${NC}"
 
 # 1. Bajar cambios de Git
 echo -e "${BLUE}📥 Sincronizando con el repositorio (git pull)...${NC}"
