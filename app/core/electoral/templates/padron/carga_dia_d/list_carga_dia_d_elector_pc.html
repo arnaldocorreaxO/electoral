@@ -4,6 +4,8 @@
     <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/spanish.js' %}"></script>
     <script src="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.js' %}"></script>
     <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.0.5/daterangepicker.css' %}"/>
+    <link rel="stylesheet" href="{% static 'padron/carga_dia_d/css/buscador_elector.css' %}"/>
+    <script src="{% static 'padron/carga_dia_d/js/elector_verificacion.js' %}"></script>
     <script src="{% static 'padron/carga_dia_d/js/list_carga_dia_d_elector_pc.js' %}"></script>
 {% endblock %}
 
@@ -27,12 +29,16 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <div class="form-group">
+                    <div class="form-group buscador-elector">
                         <label>Buscar por Cédula o Nombre y Apellido</label>
-                        <div class="input-group input-group-search">
+                        <div class="input-group input-group-lg input-group-search">
                             <input type="text" class="form-control" autocomplete="off" name="searchElector"
                                    placeholder="Ingrese Numero de Cédula o Nombre y/o Apellido">
                             <div class="input-group-append">
+                                <button class="btn bg-{{ dshboard.get_theme_color|default:'primary' }} btn-flat font-weight-bold btnConsultarElector"
+                                        type="button" title="Consultar elector (ENTER)">
+                                    <i class="fas fa-user-check"></i> <span class="btn-text">Consultar Elector</span>
+                                </button>
                                 <button class="btn btn-primary dropdown-toggle" type="button"
                                         data-toggle="dropdown" aria-haspopup="true"
                                         aria-expanded="false"><i class="fas fa-tasks"></i>
@@ -50,4 +56,8 @@
                     </div>                 
                 </div>
             </div> 
+{% endblock %}
+
+{% block content_modals %}
+    {% include 'padron/carga_dia_d/modal_verificar_elector.html' %}
 {% endblock %}

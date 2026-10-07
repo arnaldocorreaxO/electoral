@@ -1,0 +1,120 @@
+<!-- Modal reutilizable de verificación de elector (usar con padron/carga_dia_d/js/elector_verificacion.js) -->
+{% with tema=dshboard.get_theme_color|default:'primary' %}
+<div class="modal fade" id="modal-verificar-elector" tabindex="-1" role="dialog" aria-hidden="true"
+     aria-labelledby="modal-verificar-elector-title" data-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-{{ tema }}">
+                <h5 class="modal-title" id="modal-verificar-elector-title">
+                    <i class="fas fa-user-check"></i> <span class="verificar-titulo">Verificación de Elector</span>
+                </h5>
+                <button type="button" class="close" style="color: inherit; opacity: .9;" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <!-- Lista de coincidencias -->
+                <div class="verificar-lista" style="display: none;">
+                    <p class="mb-2">
+                        Se encontraron <b class="verificar-total"></b> coincidencias.
+                        Seleccione el elector correcto.
+                    </p>
+                    <div class="alert alert-warning py-2 verificar-limite" style="display: none;"></div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover table-sm mb-0">
+                            <thead class="bg-{{ tema }}">
+                            <tr>
+                                <th style="width: 15%;">CI</th>
+                                <th>Apellido y Nombre</th>
+                                <th style="width: 22%;">Local Votación</th>
+                                <th style="width: 10%;" class="text-center">Mesa</th>
+                                <th style="width: 10%;" class="text-center">Orden</th>
+                                <th style="width: 10%;" class="text-center">Opción</th>
+                            </tr>
+                            </thead>
+                            <tbody class="verificar-lista-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Detalle individual -->
+                <div class="verificar-detalle" style="display: none;">
+                    <div class="alert alert-warning font-weight-bold verificar-ya-paso" style="display: none;" role="alert">
+                        <i class="fas fa-exclamation-triangle"></i> <span></span>
+                    </div>
+                    <div class="alert alert-success font-weight-bold verificar-pago" style="display: none;" role="alert">
+                        <span class="badge badge-light text-success" style="font-size: 1.3rem;"><i class="fas fa-dollar-sign"></i></span>
+                        <span class="verificar-pago-texto"></span>
+                    </div>
+                    <div class="row text-center mb-3 verificar-mesa-orden">
+                        <div class="col-6">
+                            <div class="bg-{{ tema }} rounded elevation-2 py-2">
+                                <div class="text-uppercase font-weight-bold">Mesa</div>
+                                <div class="display-4 font-weight-bold" data-field="mesa"></div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="bg-{{ tema }} rounded elevation-2 py-2">
+                                <div class="text-uppercase font-weight-bold">Orden</div>
+                                <div class="display-4 font-weight-bold" data-field="orden"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded elevation-2 text-center py-2 px-3 mb-3 verificar-local"
+                         style="background-color: #6c757d; color: #fff;">
+                        <div class="text-uppercase small font-weight-bold">
+                            <i class="fas fa-school"></i> Local de Votación
+                        </div>
+                        <div class="h4 font-weight-bold mb-0" data-field="local_votacion_denominacion"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5">Cédula</dt>
+                                <dd class="col-sm-7 h5 font-weight-bold" data-field="ci"></dd>
+                                <dt class="col-sm-5">Apellido</dt>
+                                <dd class="col-sm-7" data-field="apellido"></dd>
+                                <dt class="col-sm-5">Nombre</dt>
+                                <dd class="col-sm-7" data-field="nombre"></dd>
+                                <dt class="col-sm-5">Fecha Nac.</dt>
+                                <dd class="col-sm-7" data-field="fecha_nacimiento"></dd>
+                                <dt class="col-sm-5">Edad</dt>
+                                <dd class="col-sm-7" data-field="edad"></dd>
+                                <dt class="col-sm-5">Dirección</dt>
+                                <dd class="col-sm-7" data-field="direccion"></dd>
+                                <dt class="col-sm-5">Teléfono</dt>
+                                <dd class="col-sm-7" data-field="telefono"></dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row mb-0">
+                                <dt class="col-sm-5">Seccional</dt>
+                                <dd class="col-sm-7" data-field="seccional_denominacion"></dd>
+                                <dt class="col-sm-5">Ciudad</dt>
+                                <dd class="col-sm-7" data-field="ciudad_denominacion"></dd>
+                                <dt class="col-sm-5">Barrio</dt>
+                                <dd class="col-sm-7" data-field="barrio_fullname"></dd>
+                                <dt class="col-sm-5">Manzana</dt>
+                                <dd class="col-sm-7" data-field="manzana_fullname"></dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-flat verificar-btn-volver" style="display: none;">
+                    <i class="fas fa-arrow-left"></i> Volver a la lista
+                </button>
+                <button type="button" class="btn btn-secondary btn-flat" data-dismiss="modal">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+                <button type="button" class="btn bg-{{ tema }} btn-flat verificar-btn-confirmar" style="display: none;">
+                    <i class="fas fa-check"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endwith %}

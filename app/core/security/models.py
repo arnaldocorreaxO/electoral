@@ -33,6 +33,15 @@ class Dashboard(models.Model):
             return self.icon
         return 'fa fa-cubes'
 
+    def get_theme_color(self):
+        """Color AdminLTE predominante (ej. 'danger') para usar en clases bg-*/btn-*."""
+        for value, prefix in ((self.card, 'card-'), (self.navbar, 'navbar-')):
+            for css in (value or '').split():
+                color = css[len(prefix):] if css.startswith(prefix) else ''
+                if color and color not in ('outline', 'dark', 'light', 'white', 'expand'):
+                    return color
+        return 'primary'
+
     def get_image(self):
         if self.image:
             return '{}{}'.format(settings.MEDIA_URL, self.image)

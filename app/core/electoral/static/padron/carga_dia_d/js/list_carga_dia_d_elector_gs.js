@@ -80,13 +80,27 @@ function getData(all) {
     });
 }
 
+function getMonto() {
+    return $.trim($('select[name="monto"]').val() || '');
+}
+
+function validarMonto() {
+    var select_monto = $('select[name="monto"]');
+    if (getMonto().length) {
+        select_monto.removeClass('is-invalid');
+        return true;
+    }
+    select_monto.addClass('is-invalid').trigger('focus');
+    message_warning('Debe seleccionar primero el monto para poder consultar');
+    return false;
+}
+
 function addElector(id) {
     // monto = $("input[type=radio][name=monto]:checked").val();    
     // monto = $("[name=monto]:checked").val();    
-    monto = $('select[name="monto"]').val();   
+    monto = getMonto();
     
-    if (monto===undefined){
-        message_warning('Debe seleccionar monto');
+    if (!validarMonto()){
         return false;    
     };
     
@@ -153,10 +167,20 @@ $(function () {
         delay: 300,
         select: function (event, ui) {
             event.preventDefault();
-            $(this).blur();
-            addElector(ui.item.id)
-            // console.log(ui.item);
-            $(this).val('').focus();
+            $(this).val('');
+            ElectorVerificacion.openById(ui.item.id);
+        }
+    });
+
+    ElectorVerificacion.init({
+        input: input_searchElector,
+        button: $('.btnConsultarElector'),
+        url: pathname,
+        statusField: 'pasoxgs',
+        statusMessage: 'ESTE ELECTOR YA PASÓ POR PC GS',
+        beforeSearch: validarMonto,
+        onConfirm: function (elector) {
+            addElector(elector.id);
         }
     });
 
@@ -176,6 +200,13 @@ $(function () {
     initTable();
     getData(false);
 
+
+    $('select[name="monto"]').on('change', function () {
+        if (getMonto().length) {
+            $(this).removeClass('is-invalid');
+            input_searchElector.trigger('focus');
+        }
+    });
 
     $('.btnClearElector').on('click', function () {
         input_searchElector.val('').focus();

@@ -1,4 +1,5 @@
 # from core.utils import calculate_age
+from django.core.validators import RegexValidator
 from django.db import models
 from django.forms import model_to_dict
 
@@ -188,11 +189,36 @@ class Seccional(ModeloBase):
 
 
 class LocalVotacion(ModeloBase):
+    # Paleta usada cuando el local no tiene color configurado (se asigna por id).
+    COLORES_DEFECTO = (
+        "#1F77B4", "#2CA02C", "#9467BD", "#FF7F0E", "#17BECF",
+        "#8C564B", "#E377C2", "#BCBD22", "#7F7F7F", "#D62728",
+    )
+
     ciudad = models.ForeignKey(Ciudad, on_delete=models.PROTECT)
     denominacion = models.CharField(max_length=50, verbose_name="Denominacion")
+    color = models.CharField(
+        max_length=7,
+        blank=True,
+        default="",
+        verbose_name="Color",
+        validators=[RegexValidator(r"^#[0-9A-Fa-f]{6}$", "Ingrese un color hexadecimal válido (ej. #1F77B4)")],
+        help_text="Color con el que se resalta el local en el Puesto de Control",
+    )
 
     def __str__(self):
         return f"{self.id} - {self.denominacion}"
+
+    def get_color(self):
+        if self.color:
+            return self.color.upper()
+        return self.COLORES_DEFECTO[(self.id or 0) % len(self.COLORES_DEFECTO)]
+
+    def get_text_color(self):
+        """Blanco o negro según el contraste con el color de fondo."""
+        color = self.get_color().lstrip("#")
+        r, g, b = (int(color[i:i + 2], 16) for i in (0, 2, 4))
+        return "#000000" if (r * 299 + g * 587 + b * 114) / 1000 > 150 else "#FFFFFF"
 
     def toJSON(self):
         item = model_to_dict(self)

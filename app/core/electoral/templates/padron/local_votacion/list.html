@@ -6,6 +6,7 @@
     <th>Distrito</th>
     <th>Ciudad</th>
      <th>Denominación</th>
+    <th class="text-center">Color</th>
     <th class="text-center">Opciones</th>
 {% endblock %}
 
@@ -17,6 +18,9 @@
             <td>{{ i.ciudad.distrito }}</td>
             <td>{{ i.ciudad }}</td>
             <td>{{ i.denominacion }}</td>
+            <td class="text-center">
+                <span class="badge" style="background-color: {{ i.get_color }}; color: {{ i.get_text_color }}; min-width: 70px;">{{ i.get_color }}</span>
+            </td>
             <td class="text-center">
                 <a href="{% url 'local_votacion_update' i.id %}" data-toggle="tooltip" title="Editar registro"
                    class="btn btn-warning btn-flat">

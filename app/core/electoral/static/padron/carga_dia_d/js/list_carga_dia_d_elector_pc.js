@@ -139,10 +139,21 @@ $(function () {
         delay: 300,
         select: function (event, ui) {
             event.preventDefault();
-            $(this).blur();
-            addElector(ui.item.id)
-            // console.log(ui.item);
-            $(this).val('').focus();
+            $(this).val('');
+            ElectorVerificacion.openById(ui.item.id);
+        }
+    });
+
+    ElectorVerificacion.init({
+        input: input_searchElector,
+        button: $('.btnConsultarElector'),
+        url: pathname,
+        statusField: 'pasoxpc',
+        statusMessage: 'ESTE ELECTOR YA PASÓ POR PC',
+        pagoField: 'pasoxgs',
+        pagoMessage: 'ESTE ELECTOR YA PASÓ POR GS',
+        onConfirm: function (elector) {
+            addElector(elector.id);
         }
     });
 

@@ -1,0 +1,156 @@
+/* ==========================================================================
+   Buscador de electores del Puesto de Control (PC y GS)
+   Ajusta los controles del tema global (style.css usa !important en
+   .form-control y .btn) para que cada fila sea una barra única y alineada.
+   ========================================================================== */
+.buscador-elector {
+    --buscador-alto: 60px;
+    --buscador-radio: var(--peya-radius-sm, 12px);
+    margin-bottom: 1.25rem;
+}
+
+.buscador-elector > label {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+}
+
+.buscador-elector > label .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    font-size: .85rem;
+}
+
+/* --- Barra: todos los segmentos con la misma altura y unidos --- */
+.buscador-elector .input-group {
+    flex-wrap: nowrap;
+    align-items: stretch;
+    border-radius: var(--buscador-radio);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+
+.buscador-elector .input-group > .form-control,
+.buscador-elector .input-group > .input-group-prepend > .input-group-text,
+.buscador-elector .input-group > .input-group-append > .btn {
+    height: var(--buscador-alto) !important;
+    margin: 0 !important;
+}
+
+.buscador-elector .input-group > .form-control {
+    min-width: 0;
+    background-color: #ffffff !important;
+    border-radius: 0 !important;
+}
+
+.buscador-elector .input-group > .form-control:first-child {
+    border-top-left-radius: var(--buscador-radio) !important;
+    border-bottom-left-radius: var(--buscador-radio) !important;
+}
+
+.buscador-elector .input-group > .form-control:last-child {
+    border-top-right-radius: var(--buscador-radio) !important;
+    border-bottom-right-radius: var(--buscador-radio) !important;
+}
+
+/* --- Input de búsqueda --- */
+.buscador-elector .input-group > input.form-control {
+    padding: 0 1.1rem !important;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: .03em;
+    line-height: normal;
+    color: #212529 !important;
+}
+
+.buscador-elector .input-group > input.form-control::placeholder {
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: normal;
+    color: #9a9a9a;
+}
+
+/* --- Botones unidos al input (sin forma de píldora) --- */
+.buscador-elector .input-group-append {
+    margin-left: 0;
+}
+
+.buscador-elector .input-group-append > .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: 0 1.4rem !important;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.buscador-elector .input-group-append > .btn + .btn {
+    border-left: 1px solid rgba(255, 255, 255, .35) !important;
+}
+
+.buscador-elector .input-group-append > .btn:last-of-type {
+    border-top-right-radius: var(--buscador-radio) !important;
+    border-bottom-right-radius: var(--buscador-radio) !important;
+}
+
+.buscador-elector .input-group-append > .btn:hover {
+    filter: brightness(.92);
+}
+
+.buscador-elector .input-group-append > .dropdown-toggle {
+    padding: 0 1rem !important;
+}
+
+/* --- Monto (GS): prefijo "Gs." unido al select --- */
+.buscador-monto .input-group-prepend > .input-group-text {
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--peya-text-muted, #757575);
+    background-color: #f1f1f1;
+    border: 1.5px solid #eee;
+    border-right: 0;
+    border-radius: var(--buscador-radio) 0 0 var(--buscador-radio) !important;
+}
+
+.buscador-monto .input-group > select.form-control {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: normal !important;
+    padding-left: 1rem !important;
+}
+
+.buscador-monto .input-group > select.form-control.is-invalid {
+    border-color: var(--peya-main, #dc3545) !important;
+    background-color: #fff5f5 !important;
+}
+
+/* El prefijo acompaña el resaltado del select en hover/foco */
+.buscador-monto .input-group:focus-within .input-group-text,
+.buscador-monto .input-group:hover .input-group-text {
+    border-color: var(--peya-main, #dc3545);
+}
+
+/* --- Sugerencias del autocompletado --- */
+.ui-autocomplete .ui-menu-item-wrapper {
+    font-size: 1.15rem;
+    padding: .45rem .8rem;
+}
+
+/* --- Pantallas angostas: el texto del botón se oculta, queda el ícono --- */
+@media (max-width: 575.98px) {
+    .buscador-elector .btnConsultarElector .btn-text {
+        display: none;
+    }
+}

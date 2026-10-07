@@ -311,6 +311,8 @@ class LocalVotacionForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # self.fields['cod'].widget.attrs['autofocus'] = True
+        if not self.instance.color:
+            self.initial["color"] = self.instance.get_color()
 
     class Meta:
         model = LocalVotacion
@@ -319,6 +321,9 @@ class LocalVotacionForm(ModelForm):
         widgets = {
             "denominacion": forms.TextInput(
                 attrs={"placeholder": "Ingrese una Denominacion"}
+            ),
+            "color": forms.TextInput(
+                attrs={"type": "color", "style": "max-width: 120px; padding: 2px;"}
             ),
         }
 

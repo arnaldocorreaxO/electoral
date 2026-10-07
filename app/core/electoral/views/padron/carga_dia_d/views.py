@@ -8,7 +8,7 @@ from datetime import date, datetime
 from core.reports.forms import ReportForm
 import json
 
-from django.db.models import Q
+from django.db.models import Case, IntegerField, Q, When
 from django.http import JsonResponse, HttpResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -124,7 +124,7 @@ class CargaDiaDListView(PermissionMixin,FormView):
 				data['error'] = 'No ha ingresado una opción'
 		except Exception as e:
 			data['error'] = str(e)
-		return HttpResponse(json.dumps(data), content_type='application/json')
+		return JsonResponse(data, safe=False)
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -281,7 +281,57 @@ class CargaDiaDDeleteView(PermissionMixin, DeleteView):
 		context['list_url'] = self.success_url
 		return context
 
-class CargaDiaDElectorView(PermissionMixin, FormView):
+class ElectorVerificacionMixin(object):
+	"""Búsqueda de electores para el modal de verificación (action 'verify_elector')."""
+	verify_result_limit = 20
+
+	def _serialize_elector_verificacion(self, elector):
+		item = elector.toJSON()
+		item['fullname'] = f"{elector.apellido}, {elector.nombre}"
+		item['local_votacion_denominacion'] = str(elector.local_votacion) if elector.local_votacion else None
+		item['local_votacion_color'] = elector.local_votacion.get_color() if elector.local_votacion else None
+		item['local_votacion_text_color'] = elector.local_votacion.get_text_color() if elector.local_votacion else None
+		item['seccional_denominacion'] = str(elector.seccional) if elector.seccional else None
+		item['distrito_denominacion'] = str(elector.distrito) if elector.distrito else None
+		return item
+
+	def verify_elector(self):
+		post = self.request.POST
+		qs = Elector.objects.filter(distrito=self.request.user.distrito).select_related(
+			'local_votacion', 'seccional', 'distrito', 'ciudad', 'tipo_voto', 'barrio', 'manzana__barrio'
+		)
+		elector_id = post.get('id', '').strip()
+		term = ' '.join(post.get('term', '').split())
+		ci = term.replace('.', '').replace('-', '').replace(' ', '')
+
+		if elector_id.isdigit():
+			mode = 'id'
+			qs = qs.filter(id=int(elector_id))
+		elif ci.isdigit():
+			mode = 'ci'
+			qs = qs.filter(ci=int(ci))
+		elif any(c.isalpha() for c in term):
+			mode = 'nombre'
+			tokens = term.split()
+			for token in tokens:
+				qs = qs.filter(Q(nombre__icontains=token) | Q(apellido__icontains=token))
+			first = tokens[0]
+			qs = qs.annotate(
+				_rank=Case(
+					When(Q(apellido__istartswith=first) | Q(nombre__istartswith=first), then=0),
+					default=1,
+					output_field=IntegerField(),
+				)
+			).order_by('_rank', 'apellido', 'nombre')
+		else:
+			return {'error': 'Ingrese un número de cédula o nombre y/o apellido válido'}
+
+		total = qs.count()
+		electores = [self._serialize_elector_verificacion(e) for e in qs[:self.verify_result_limit]]
+		return {'mode': mode, 'total': total, 'limit': self.verify_result_limit, 'electores': electores}
+
+
+class CargaDiaDElectorView(ElectorVerificacionMixin, PermissionMixin, FormView):
 	# model = Elector
 	template_name = 'padron/carga_dia_d/list_carga_dia_d_elector_pc.html'
 	permission_required = 'view_elector'
@@ -321,6 +371,8 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
 						data.append(item)
 						position += 1
 					# print(data)
+			elif action == 'verify_elector':
+				data = self.verify_elector()
 			elif action == 'search_pasoxpc':
 				data = []          
 				_start = request.POST['start']
@@ -429,7 +481,7 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
 				data['error'] = 'No ha ingresado una opción'
 		except Exception as e:
 			data['error'] = str(e)
-		return HttpResponse(json.dumps(data), content_type='application/json')
+		return JsonResponse(data, safe=False)
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
@@ -439,7 +491,7 @@ class CargaDiaDElectorView(PermissionMixin, FormView):
 		return context
 
 
-class CargaDiaDElectorViewGs(PermissionMixin, FormView):
+class CargaDiaDElectorViewGs(ElectorVerificacionMixin, PermissionMixin, FormView):
 	# model = Elector
 	template_name = 'padron/carga_dia_d/list_carga_dia_d_elector_gs.html'
 	permission_required = 'view_elector'
@@ -479,6 +531,8 @@ class CargaDiaDElectorViewGs(PermissionMixin, FormView):
 						data.append(item)
 						position += 1
 					# print(data)
+			elif action == 'verify_elector':
+				data = self.verify_elector()
 			elif action == 'search_pasoxgs':
 				data = []          
 				_start = request.POST['start']
@@ -541,7 +595,10 @@ class CargaDiaDElectorViewGs(PermissionMixin, FormView):
 			
 			elif action == 'edit_pasoxgs':                                
 				id = request.POST['id']
-				monto = request.POST['monto']
+				monto = request.POST.get('monto', '').strip()
+				if not monto.isdigit():
+					data['error'] = 'Debe seleccionar primero el monto para poder consultar'
+					return JsonResponse(data, safe=False)
 				elector = Elector.objects.get(id=id)
 				if elector.pasoxgs=='S':
 					info =  f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b> <br>" 
@@ -590,7 +647,7 @@ class CargaDiaDElectorViewGs(PermissionMixin, FormView):
 				data['error'] = 'No ha ingresado una opción'
 		except Exception as e:
 			data['error'] = str(e)
-		return HttpResponse(json.dumps(data), content_type='application/json')
+		return JsonResponse(data, safe=False)
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
