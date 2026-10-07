@@ -295,6 +295,12 @@ class ElectorVerificacionMixin(object):
 		item['distrito_denominacion'] = str(elector.distrito) if elector.distrito else None
 		return item
 
+	def _resultado_carga(self, data, elector, estado):
+		"""Datos estructurados para la ventana de resultado (estado: 'registrado' | 'ya_paso')."""
+		data['estado'] = estado
+		data['elector'] = self._serialize_elector_verificacion(elector)
+		return data
+
 	def verify_elector(self):
 		post = self.request.POST
 		qs = Elector.objects.filter(distrito=self.request.user.distrito).select_related(
@@ -444,6 +450,7 @@ class CargaDiaDElectorView(ElectorVerificacionMixin, PermissionMixin, FormView):
 					info += f"{elector.local_votacion} <br> <br>"                    
 					info += '<b>=====> YA PASÓ POR PC <===== </b> <br>'              
 					data['error'] = info
+					self._resultado_carga(data, elector, 'ya_paso')
 				else:
 					elector.pasoxpc = 'S'
 					elector.save()
@@ -475,6 +482,7 @@ class CargaDiaDElectorView(ElectorVerificacionMixin, PermissionMixin, FormView):
 					info += f"{local_votacion_alerts}"
 					info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"
 					data['info'] = info
+					self._resultado_carga(data, elector, 'registrado')
 					
 
 			else:
@@ -608,6 +616,7 @@ class CargaDiaDElectorViewGs(ElectorVerificacionMixin, PermissionMixin, FormView
 					info += f"{elector.local_votacion} <br> <br>"                    
 					info += "<b>=====> YA PASÓ  POR PC <i class='fas fa-dollar-sign'></i> <===== </b> <br>"
 					data['error'] = info
+					self._resultado_carga(data, elector, 'ya_paso')
 				else:
 					elector.pasoxpc = 'S'
 					elector.pasoxgs = 'S'
@@ -641,6 +650,7 @@ class CargaDiaDElectorViewGs(ElectorVerificacionMixin, PermissionMixin, FormView
 					info += f"{local_votacion_alerts}"
 					info += f"MESA: <b> {elector.mesa} </b> ORDEN: <b> {elector.orden} </b>"
 					data['info'] = info
+					self._resultado_carga(data, elector, 'registrado')
 					
 
 			else:

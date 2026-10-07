@@ -120,12 +120,7 @@ function addElector(id) {
         success: function (request) {
             // console.log(request);
             getData() ;
-            
-            if (!request.hasOwnProperty('error')) {
-                message_info(request.info);
-                return false;
-            }
-            message_warning(request.error);
+            ElectorVerificacion.showResult(request, {etapa: 'GS', monto: monto});
         },
         error: function (jqXHR, textStatus, errorThrown) {
             message_error(errorThrown + ' ' + textStatus);

@@ -225,6 +225,42 @@ class ElectorVerificacionTests(CargaDiaDTestBase):
                 self.assertIn("monto", payload["error"])
                 self.queryset.get.assert_not_called()
 
+    def test_edit_returns_structured_result_for_both_states(self):
+        cases = (
+            (CargaDiaDElectorView, {"action": "edit_pasoxpc", "id": "1"}, "pasoxpc"),
+            (CargaDiaDElectorViewGs, {"action": "edit_pasoxgs", "id": "1", "monto": "100000"}, "pasoxgs"),
+        )
+        for view_class, params, field in cases:
+            for previo, estado, clave in (("N", "registrado", "info"), ("S", "ya_paso", "error")):
+                with self.subTest(view=view_class.__name__, previo=previo):
+                    setattr(self.elector, field, previo)
+                    with patch.object(Elector, "save"):
+                        response = self.post_get(view_class, params)
+                    payload = json.loads(response.content)
+                    self.assertEqual(payload["estado"], estado)
+                    self.assertIn(clave, payload)
+                    self.assertEqual(payload["elector"]["fullname"], "Perez, Ana")
+                    self.assertEqual(payload["elector"]["mesa"], "12")
+                    self.assertEqual(payload["elector"]["orden"], "34")
+                    self.assertTrue(payload["elector"]["local_votacion_color"].startswith("#"))
+
+    def post_get(self, view_class, params):
+        with patch("core.electoral.views.padron.carga_dia_d.views.Elector.objects") as objects:
+            objects.get.return_value = self.elector
+            request = self.factory.post("/electoral/carga_dia_d_list_pc", params)
+            request.user = SimpleNamespace(distrito=1)
+            return view_class.as_view()(request)
+
+    def test_result_window_is_used_by_pc_and_gs(self):
+        module = open(finders.find("padron/carga_dia_d/js/elector_verificacion.js"), encoding="utf-8").read()
+        self.assertIn("showResult: showResult", module)
+        self.assertTrue(finders.find("padron/carga_dia_d/css/resultado_elector.css"))
+        for name, etapa in (("pc", "PC"), ("gs", "GS")):
+            js = open(finders.find("padron/carga_dia_d/js/list_carga_dia_d_elector_%s.js" % name), encoding="utf-8").read()
+            self.assertIn("ElectorVerificacion.showResult(request, {etapa: '%s'" % etapa, js)
+            source = get_template("padron/carga_dia_d/list_carga_dia_d_elector_%s.html" % name).template.source
+            self.assertIn("resultado_elector.css", source)
+
 
 class LocalVotacionColorTests(SimpleTestCase):
     def test_configured_color_and_contrast(self):

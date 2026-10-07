@@ -255,9 +255,97 @@ var ElectorVerificacion = (function ($) {
         });
     }
 
+    function formatNumber(value) {
+        var n = parseInt(value, 10);
+        return isNaN(n) ? textOrDash(value) : n.toLocaleString('es-PY');
+    }
+
+    /*
+     * Ventana de resultado tras confirmar la carga (respuesta de edit_pasoxpc / edit_pasoxgs).
+     * options: {etapa: 'PC' | 'GS', monto: valor cargado (solo GS), onClose: fn}
+     */
+    function showResult(request, options) {
+        var opts = $.extend({etapa: 'PC', monto: null, onClose: null}, options);
+        var elector = request.elector;
+        if (!elector) {
+            if (request.hasOwnProperty('error')) {
+                message_warning(request.error);
+            } else {
+                message_info(request.info);
+            }
+            return;
+        }
+
+        var ok = request.estado === 'registrado';
+        var esGs = opts.etapa === 'GS';
+        var colors = localColors(elector);
+        var monto = ok ? opts.monto : elector.monto;
+
+        var $wrap = $('<div class="resultado-elector">');
+        var $header = $('<div class="re-header">').addClass(ok ? 're-ok' : 're-alerta');
+        $header.append($('<div class="re-icono">').append(
+            $('<i class="fas">').addClass(ok ? 'fa-check' : (esGs ? 'fa-dollar-sign' : 'fa-exclamation'))
+        ));
+        $header.append($('<div class="re-titulo">').text(
+            ok ? (esGs ? 'PAGO REGISTRADO' : 'ELECTOR REGISTRADO') : (esGs ? 'YA PASÓ POR GS' : 'YA PASÓ POR PC')
+        ));
+        $header.append($('<div class="re-subtitulo">').text(
+            ok ? 'Puesto de Control' + (esGs ? ' GS' : '') : 'El elector ya fue registrado anteriormente'
+        ));
+        $wrap.append($header);
+
+        var $body = $('<div class="re-body">');
+        $body.append($('<div class="re-nombre">').text(textOrDash(elector.fullname)));
+        $body.append($('<div class="re-ci">').append(
+            $('<i class="fas fa-id-card">'), ' CI ', $('<b>').text(formatNumber(elector.ci))
+        ));
+        if (!esGs && hasPago(elector)) {
+            $body.find('.re-ci').append(' ', pagoBadge());
+        }
+
+        $body.append($('<div class="re-local">').css({'background-color': colors.bg, 'color': colors.fg}).append(
+            $('<small>').append('<i class="fas fa-map-marker-alt"></i> VOTA EN'),
+            $('<div class="re-local-nombre">').text(textOrDash(elector.local_votacion_denominacion))
+        ));
+
+        $body.append($('<div class="re-mesa-orden">').append(
+            $('<div class="re-box">').append($('<span>').text('MESA'), $('<b>').text(textOrDash(elector.mesa))),
+            $('<div class="re-box">').append($('<span>').text('ORDEN'), $('<b>').text(textOrDash(elector.orden)))
+        ));
+
+        if (esGs && monto) {
+            $body.append($('<div class="re-monto">').append(
+                $('<span>').text(ok ? 'MONTO ENTREGADO' : 'MONTO ENTREGADO ANTERIORMENTE'),
+                $('<b>').text('Gs. ' + formatNumber(monto))
+            ));
+        }
+        $wrap.append($body);
+
+        Swal.fire({
+            html: $wrap[0],
+            width: 520,
+            padding: 0,
+            showCloseButton: true,
+            buttonsStyling: false,
+            confirmButtonText: '<i class="fas fa-check"></i> Aceptar',
+            customClass: {
+                popup: 'resultado-elector-popup',
+                confirmButton: 'btn re-btn ' + (ok ? 're-btn-ok' : 're-btn-alerta')
+            },
+            onAfterClose: function () {
+                if ($.isFunction(opts.onClose)) {
+                    opts.onClose();
+                } else if (cfg.input) {
+                    cfg.input.trigger('focus');
+                }
+            }
+        });
+    }
+
     return {
         init: init,
         search: search,
+        showResult: showResult,
         openById: function (id) {
             open({'id': id});
         }

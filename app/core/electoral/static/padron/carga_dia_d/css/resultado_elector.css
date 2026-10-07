@@ -1,0 +1,202 @@
+/* ==========================================================================
+   Ventana de resultado tras confirmar la carga del elector (PC y GS).
+   SweetAlert2 con encabezado de estado, local coloreado y MESA/ORDEN grandes.
+   ========================================================================== */
+.swal2-popup.resultado-elector-popup {
+    padding: 0 0 1.25rem !important;
+    border-radius: var(--peya-radius-lg, 16px) !important;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .25);
+}
+
+.resultado-elector-popup .swal2-content {
+    padding: 0 !important;
+}
+
+.resultado-elector-popup .swal2-close {
+    color: rgba(255, 255, 255, .85);
+    font-size: 2.2rem;
+    z-index: 2;
+}
+
+.resultado-elector-popup .swal2-close:hover {
+    color: #ffffff;
+}
+
+.resultado-elector {
+    text-align: center;
+    color: var(--peya-text-main, #2d2e2e);
+}
+
+/* --- Encabezado de estado --- */
+.resultado-elector .re-header {
+    padding: 1.4rem 1.5rem 1.2rem;
+    color: #ffffff;
+}
+
+.resultado-elector .re-header.re-ok {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+}
+
+.resultado-elector .re-header.re-alerta {
+    background: linear-gradient(135deg, var(--peya-main, #dc3545) 0%, var(--peya-main-hover, #bd2130) 100%);
+}
+
+.resultado-elector .re-icono {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: .55rem;
+    border-radius: 50%;
+    font-size: 1.9rem;
+    background: rgba(255, 255, 255, .2);
+    border: 3px solid rgba(255, 255, 255, .85);
+    animation: re-pop .35s ease-out;
+}
+
+.resultado-elector .re-titulo {
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+    line-height: 1.2;
+}
+
+.resultado-elector .re-subtitulo {
+    font-size: .95rem;
+    opacity: .9;
+}
+
+/* --- Datos del elector --- */
+.resultado-elector .re-body {
+    padding: 1.2rem 1.5rem 0;
+}
+
+.resultado-elector .re-nombre {
+    font-size: 1.35rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.25;
+}
+
+.resultado-elector .re-ci {
+    margin-top: .25rem;
+    font-size: 1.15rem;
+    color: var(--peya-text-muted, #757575);
+}
+
+.resultado-elector .re-ci b {
+    color: var(--peya-text-main, #2d2e2e);
+    font-size: 1.3rem;
+}
+
+.resultado-elector .re-local {
+    margin-top: 1rem;
+    padding: .75rem 1rem;
+    border-radius: var(--peya-radius-sm, 12px);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08);
+}
+
+.resultado-elector .re-local small {
+    display: block;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    opacity: .85;
+}
+
+.resultado-elector .re-local-nombre {
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1.25;
+}
+
+/* --- MESA / ORDEN destacados --- */
+.resultado-elector .re-mesa-orden {
+    display: flex;
+    gap: .8rem;
+    margin-top: 1rem;
+}
+
+.resultado-elector .re-box {
+    flex: 1;
+    padding: .5rem .5rem .6rem;
+    border: 2px solid var(--peya-main, #dc3545);
+    border-radius: var(--peya-radius-sm, 12px);
+    background: var(--peya-main-alpha, rgba(220, 53, 69, .06));
+}
+
+.resultado-elector .re-box span {
+    display: block;
+    font-size: .85rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    color: var(--peya-text-muted, #757575);
+}
+
+.resultado-elector .re-box b {
+    display: block;
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.05;
+    color: var(--peya-main, #dc3545);
+}
+
+/* --- Monto (GS) --- */
+.resultado-elector .re-monto {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: .8rem;
+    padding: .6rem 1rem;
+    border-radius: var(--peya-radius-sm, 12px);
+    background: #e9f7ef;
+    border: 1.5px solid #28a745;
+    color: #1e7e34;
+}
+
+.resultado-elector .re-monto span {
+    font-size: .85rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+}
+
+.resultado-elector .re-monto b {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+/* --- Botón Aceptar --- */
+.resultado-elector-popup .swal2-actions {
+    margin-top: 1.2rem;
+    padding: 0 1.5rem;
+}
+
+.resultado-elector-popup .re-btn {
+    width: 100%;
+    padding: .8rem 1rem !important;
+    font-size: 1.2rem;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    border-radius: var(--peya-radius-sm, 12px) !important;
+}
+
+.resultado-elector-popup .re-btn-ok {
+    background-color: #28a745 !important;
+}
+
+.resultado-elector-popup .re-btn-alerta {
+    background-color: var(--peya-main, #dc3545) !important;
+}
+
+.resultado-elector-popup .re-btn:focus {
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, .15) !important;
+}
+
+@keyframes re-pop {
+    0% { transform: scale(.4); opacity: 0; }
+    80% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
